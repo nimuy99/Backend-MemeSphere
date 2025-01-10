@@ -11,8 +11,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@Builder
 @DynamicUpdate
 @DynamicInsert
 @AllArgsConstructor
@@ -25,7 +23,7 @@ public class Chat extends BaseEntity {
     private Long id;
 
     @Column
-    private String messaeg;
+    private String message;
 
 
     @ManyToOne(fetch=FetchType.LAZY)

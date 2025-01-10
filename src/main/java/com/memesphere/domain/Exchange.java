@@ -6,12 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
-@Setter
 @Builder
 @DynamicUpdate
 @DynamicInsert
