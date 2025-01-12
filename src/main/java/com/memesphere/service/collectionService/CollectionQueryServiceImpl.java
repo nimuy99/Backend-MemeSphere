@@ -16,7 +16,7 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
     private final UserRepository userRepository;
     private final CollectionRepository collectionRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Page<Collection> getCollectionList(Long userId, Integer pageNumber) {
         User user = userRepository.findById(userId).get();

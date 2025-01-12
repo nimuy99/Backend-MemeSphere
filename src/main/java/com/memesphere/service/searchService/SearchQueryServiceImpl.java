@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SearchQueryServiceImpl implements SearchQueryService {
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Page<MemeCoin> getSearchList(String searchWord, String viewType, Integer pageNumber) {
         return null;
