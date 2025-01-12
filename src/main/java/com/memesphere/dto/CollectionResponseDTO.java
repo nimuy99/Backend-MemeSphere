@@ -23,6 +23,6 @@ public class CollectionResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CollectionDTO {
-
+        Long userId;
     }
 }

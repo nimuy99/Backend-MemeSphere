@@ -21,6 +21,6 @@ public class SearchResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SearchDTO {
-
+        Long searchId;
     }
 }
