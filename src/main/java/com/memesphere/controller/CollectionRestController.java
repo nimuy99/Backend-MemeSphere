@@ -26,7 +26,7 @@ public class CollectionRestController {
 //            @AuthenticationPrincipal UserPrincipal userPrincipal, // 현재 로그인한 사용자 (아직 구현 x)
             @CheckPage @RequestParam(name = "page") Integer page // 페이지 번호
     ) {
-        int pageNumber = (page == 1) ? 0 : page;
+        int pageNumber = page - 1;
 //        Long userId = userPrincipal.getId();
         Long userId = 1L;
         Page<Collection> collectionList = collectionService.getCollectionList(userId, pageNumber);
