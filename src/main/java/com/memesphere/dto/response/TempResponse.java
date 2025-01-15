@@ -1,4 +1,4 @@
-package com.memesphere.dto;
+package com.memesphere.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
