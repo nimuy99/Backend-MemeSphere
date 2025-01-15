@@ -44,6 +44,9 @@ public class MemeCoin extends BaseEntity {
     @Column(name = "keyword")
     private List<String> keywords = new ArrayList<>();
 
+    @Column
+    private boolean CollectionActive;
+
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<Collection> collectionList = new ArrayList<>();
 
