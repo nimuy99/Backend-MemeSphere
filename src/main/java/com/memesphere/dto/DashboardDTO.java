@@ -18,14 +18,14 @@ public class DashboardDTO {
         private Integer price;
         private String direction;
         private Integer priceChange;
-        private Float percentChange;
+        private Float changeRate;
     }
 
     @Builder
     @Getter
     public static class TrendResponse {
-        private Integer totalVolume; // 등록된 밈코인의 총 거래량
-        private Integer totalCoin;   // 등록된 밈코인의 총 개수
+        private Long totalVolume; // 등록된 밈코인의 총 거래량
+        private Long totalCoin;   // 등록된 밈코인의 총 개수
         private List<Trend> trendList; // 5위까지의 밈코인 트렌드
     }
 

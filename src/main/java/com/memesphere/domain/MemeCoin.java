@@ -37,7 +37,7 @@ public class MemeCoin extends BaseEntity {
     private String description;
 
     @Column
-    private Integer total_transaction;
+    private Integer volume;
 
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))

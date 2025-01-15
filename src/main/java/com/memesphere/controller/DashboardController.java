@@ -35,10 +35,10 @@ public class DashboardController {
                     - "image": 밈코인 이미지
                     - "name": 밈코인 이름
                     - "symbol": 밈코인 심볼
-                    - "price": 밈코인 현재 가격
+                    - "price": 밈코인 현재가
                     - "direction": 밈코인 상승(up)/하락(down) 방향
-                    - "priceChange": 변화량
-                    - "percentChange": 변화 퍼센트
+                    - "priceChange": 가격 변화량
+                    - "changeRate": 가격 변화율
                     ```""")
     public ApiResponse<DashboardDTO.TrendResponse> getTrendList() {
         return ApiResponse.onSuccess(dashboardService.findTrendList());
