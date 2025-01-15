@@ -1,23 +1,18 @@
 package com.memesphere.jwt;
 
+import com.memesphere.service.user.UserServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -28,11 +23,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
+    private static final String AUTHORITIES_KEY = "auth";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60; // access token은 24시간
     private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60 * 7; // refresh token은 1주일
 
     private Key key;
-    private final UserDetailsService userDetailsService;
+    private final UserServiceImpl userServiceImpl;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -77,7 +73,7 @@ public class TokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("auth", authorities)
+                .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -94,14 +90,6 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
-    public String getAccessToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
     public String getTokenUserId(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
@@ -109,7 +97,7 @@ public class TokenProvider implements InitializingBean {
 
     public Authentication getAuthentication(String token) {
         log.info("Getting authentication for token user ID: {}", getTokenUserId(token));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getTokenUserId(token));
+        UserDetails userDetails = (UserDetails) userServiceImpl.getUserInfo(token);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -128,5 +116,4 @@ public class TokenProvider implements InitializingBean {
         }
         return false;
     }
-    
 }

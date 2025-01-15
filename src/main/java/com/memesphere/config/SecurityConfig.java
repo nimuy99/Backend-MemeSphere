@@ -29,11 +29,6 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(TokenProvider tokenProvider) {
-        return new JwtAuthenticationFilter(tokenProvider);
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
