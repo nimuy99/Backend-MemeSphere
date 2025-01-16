@@ -36,9 +36,6 @@ public class MemeCoin extends BaseEntity {
     @Column
     private String description;
 
-    @Column
-    private Integer volume;
-
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
@@ -52,12 +49,6 @@ public class MemeCoin extends BaseEntity {
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<Chat> chatList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
-    private List<Trading> tradingList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemeExchange> memeExchangeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<ChartData> chartDataList = new ArrayList<>();
