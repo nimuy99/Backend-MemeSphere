@@ -1,6 +1,6 @@
 package com.memesphere.domain;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
+import com.memesphere.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemeExchange extends Serializers.Base {
+public class MemeExchange extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
