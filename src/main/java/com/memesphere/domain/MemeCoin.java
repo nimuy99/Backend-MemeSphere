@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,34 +36,10 @@ public class MemeCoin extends BaseEntity {
     @Column
     private String description;
 
-    @Column
-    private Integer total_transaction; // 총 거래량..?
-
-    @Column
-    private BigDecimal low_price;
-
-    @Column
-    private BigDecimal high_price;
-
-    @Column
-    private BigDecimal variation; // change
-
-    @Column
-    private BigDecimal market_cap;
-
-    @Column
-    private BigDecimal current_price;
-
-    @Column
-    private Integer volume; // 총 거래량..?
-
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
     private List<String> keywords = new ArrayList<>();
-
-    @Column
-    private boolean CollectionActive;
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<Collection> collectionList = new ArrayList<>();
@@ -74,12 +49,6 @@ public class MemeCoin extends BaseEntity {
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<Chat> chatList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
-    private List<Trading> tradingList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemeExchange> memeExchangeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<ChartData> chartDataList = new ArrayList<>();
