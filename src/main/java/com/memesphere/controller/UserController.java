@@ -26,8 +26,12 @@ public class UserController {
     @PostMapping("/login/oauth2/kakao")
     @Operation(summary = "카카오 로그인 API")
     public ApiResponse<UserResponseDTO.LoginResult> callback(@RequestParam("code") String code) throws IOException {
-        KakaoTokenResponseDTO kakaoTokenResponseDTO = kakaoServiceImpl.getAccessTokenFromKakao(code);
-        KakaoUserInfoResponseDTO userInfo = kakaoServiceImpl.getUserInfo(kakaoTokenResponseDTO.getAccessToken());
+        // KakaoTokenResponseDTO kakaoTokenResponseDTO = kakaoServiceImpl.getAccessTokenFromKakao(code);
+        // KakaoUserInfoResponseDTO userInfo = kakaoServiceImpl.getUserInfo(kakaoTokenResponseDTO.getAccessToken());
+        // UserResponseDTO.LoginResult loginResult = kakaoServiceImpl.handleUserLogin(userInfo);
+
+        String accessToken = kakaoServiceImpl.getAccessTokenFromKakao(code); // 반환 타입 수정
+        KakaoUserInfoResponseDTO userInfo = kakaoServiceImpl.getUserInfo(accessToken); // accessToken 사용
         UserResponseDTO.LoginResult loginResult = kakaoServiceImpl.handleUserLogin(userInfo);
 
         return ApiResponse.onSuccess(loginResult);

@@ -6,6 +6,7 @@ import com.memesphere.dto.user.response.KakaoUserInfoResponseDTO;
 import com.memesphere.dto.user.response.UserResponseDTO;
 import com.memesphere.jwt.TokenProvider;
 import com.memesphere.repository.UserRepository;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +14,12 @@ import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 
@@ -27,8 +32,13 @@ public class KakaoServiceImpl implements KakaoService {
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
 
+    private static final String KAUTH_TOKEN_URL_HOST = "https://kauth.kakao.com";
+
     @Value("${security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
+
+    @Value("${security.oauth2.client.registration.kakao.client-secret}")
+    private String clientSecret;
 
     @Value("${security.oauth2.client.provider.kakao.token-uri}")
     private String tokenUri;
@@ -36,11 +46,11 @@ public class KakaoServiceImpl implements KakaoService {
     @Value("${security.oauth2.client.provider.kakao.user-info-uri}")
     private String userInfoUri;
 
+    /*
     public KakaoTokenResponseDTO getAccessTokenFromKakao(String code) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String uri = UriComponentsBuilder.fromUriString(tokenUri)
-                    .path("/oauth/token")
                     .queryParam("grant_type", "authorization_code")
                     .queryParam("client_id", clientId)
                     .queryParam("code", code)
@@ -53,6 +63,29 @@ public class KakaoServiceImpl implements KakaoService {
             throw new RuntimeException("Failed to retrieve access token from Kakao", e);
         }
     }
+    */
+
+    public String getAccessTokenFromKakao(String code) {
+
+        KakaoTokenResponseDTO kakaoTokenResponseDTO = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
+                .uri(uriBuilder -> uriBuilder
+                        .scheme("https")
+                        .path("/oauth/token")
+                        .queryParam("grant_type", "authorization_code")
+                        .queryParam("client_id", clientId)
+                        .queryParam("code", code)
+                        .queryParam("client_secret", clientSecret)
+                        .queryParam("redirect_uri", "http://localhost:8080/user/login/oauth2/kakao")
+                        .build(true))
+                .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .bodyToMono(KakaoTokenResponseDTO.class)
+                .block();
+
+        return kakaoTokenResponseDTO.getAccessToken();
+    }
 
     public KakaoUserInfoResponseDTO getUserInfo(String accessToken) {
         try {
@@ -62,7 +95,6 @@ public class KakaoServiceImpl implements KakaoService {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             String uri = UriComponentsBuilder.fromUriString(userInfoUri)
-                    .path("/v2/user/me")
                     .toUriString();
 
             ResponseEntity<KakaoUserInfoResponseDTO> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, KakaoUserInfoResponseDTO.class);
@@ -79,7 +111,7 @@ public class KakaoServiceImpl implements KakaoService {
         Long kakaoId = userInfo.getId();
         User existingUser = userServiceImpl.findByKakaoId(kakaoId);
 
-        if (existingUser != null) { // 유저가 존재하지 않으면 회원가입 처리
+        if (existingUser == null) { // 유저가 존재하지 않으면 회원가입 처리
             User newUser = User.builder()
                     .kakaoId(kakaoId)
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
