@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     private long id;
 
     @Column(nullable = false, unique = true)
-    private Long kakaoId;
+    private Long socialId;
 
     @Column(nullable = false, unique = true)
     private String nickname;

@@ -1,14 +1,14 @@
 package com.memesphere.converter;
 
 import com.memesphere.domain.User;
-import com.memesphere.dto.user.response.UserResponseDTO;
+import com.memesphere.dto.response.UserInfoResponse;
 
 public class UserConverter {
 
-    public static UserResponseDTO.UserInfo toUserInfo(User user) {
+    public static UserInfoResponse toUserInfo(User user) {
 
-        return UserResponseDTO.UserInfo.builder()
-                .kakaoId(user.getKakaoId())
+        return UserInfoResponse.builder()
+                .socialId(user.getSocialId())
                 .nickname(user.getNickname())
                 .build();
     }

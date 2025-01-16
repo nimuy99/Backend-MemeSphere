@@ -1,9 +1,9 @@
 package com.memesphere.service.user;
 
 import com.memesphere.domain.User;
-import com.memesphere.dto.user.response.KakaoTokenResponseDTO;
-import com.memesphere.dto.user.response.KakaoUserInfoResponseDTO;
-import com.memesphere.dto.user.response.UserResponseDTO;
+import com.memesphere.dto.response.LoginResponse;
+import com.memesphere.dto.response.KakaoTokenResponse;
+import com.memesphere.dto.response.KakaoUserInfoResponse;
 import com.memesphere.jwt.TokenProvider;
 import com.memesphere.repository.UserRepository;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -14,8 +14,6 @@ import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -67,7 +65,7 @@ public class KakaoServiceImpl implements KakaoService {
 
     public String getAccessTokenFromKakao(String code) {
 
-        KakaoTokenResponseDTO kakaoTokenResponseDTO = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
+        KakaoTokenResponse kakaoTokenResponse = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
                         .path("/oauth/token")
@@ -81,13 +79,13 @@ public class KakaoServiceImpl implements KakaoService {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
-                .bodyToMono(KakaoTokenResponseDTO.class)
+                .bodyToMono(KakaoTokenResponse.class)
                 .block();
 
-        return kakaoTokenResponseDTO.getAccessToken();
+        return kakaoTokenResponse.getAccessToken();
     }
 
-    public KakaoUserInfoResponseDTO getUserInfo(String accessToken) {
+    public KakaoUserInfoResponse getUserInfo(String accessToken) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -97,7 +95,7 @@ public class KakaoServiceImpl implements KakaoService {
             String uri = UriComponentsBuilder.fromUriString(userInfoUri)
                     .toUriString();
 
-            ResponseEntity<KakaoUserInfoResponseDTO> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, KakaoUserInfoResponseDTO.class);
+            ResponseEntity<KakaoUserInfoResponse> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, KakaoUserInfoResponse.class);
             return responseEntity.getBody();
         } catch (Exception e) {
             log.error("Error occurred while getting user info from Kakao: ", e);
@@ -106,32 +104,32 @@ public class KakaoServiceImpl implements KakaoService {
     }
 
     // 사용자 정보로 회원가입 처리
-    public void handleUserRegistration(KakaoUserInfoResponseDTO userInfo, KakaoTokenResponseDTO kakaoTokenResponseDTO) {
+    public void handleUserRegistration(KakaoUserInfoResponse userInfo, KakaoTokenResponse kakaoTokenResponse) {
 
-        Long kakaoId = userInfo.getId();
-        User existingUser = userServiceImpl.findByKakaoId(kakaoId);
+        Long socialId = userInfo.getId();
+        User existingUser = userServiceImpl.findBySocialId(socialId);
 
         if (existingUser == null) { // 유저가 존재하지 않으면 회원가입 처리
             User newUser = User.builder()
-                    .kakaoId(kakaoId)
-                    .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
-                    .email(userInfo.getKakaoAccount().getEmail())
-                    .accessToken(kakaoTokenResponseDTO.getAccessToken())
-                    .refreshToken(kakaoTokenResponseDTO.getRefreshToken())
+                    .socialId(socialId)
+                    .nickname(userInfo.getKakaoUserInfo().getNickname())
+                    .email(userInfo.getKakaoUserInfo().getEmail())
+                    .accessToken(kakaoTokenResponse.getAccessToken())
+                    .refreshToken(kakaoTokenResponse.getRefreshToken())
                     .build();
 
             userServiceImpl.save(newUser);
         } else {
             // 이미 존재하는 경우 토큰을 업데이트
             User user = existingUser;
-            user.setAccessToken(kakaoTokenResponseDTO.getAccessToken());
-            user.setRefreshToken(kakaoTokenResponseDTO.getRefreshToken());
+            user.setAccessToken(kakaoTokenResponse.getAccessToken());
+            user.setRefreshToken(kakaoTokenResponse.getRefreshToken());
             userServiceImpl.save(user); // 갱신된 정보 저장
         }
     }
 
-    public UserResponseDTO.LoginResult handleUserLogin(KakaoUserInfoResponseDTO userInfo) {
-        User existingUser = userServiceImpl.findByKakaoId(userInfo.getId());
+    public LoginResponse handleUserLogin(KakaoUserInfoResponse userInfo) {
+        User existingUser = userServiceImpl.findBySocialId(userInfo.getId());
 
         String accessToken;
         if (existingUser != null) {
@@ -149,15 +147,15 @@ public class KakaoServiceImpl implements KakaoService {
             // DB에 업데이트
             userRepository.save(existingUser);
 
-            return new UserResponseDTO.LoginResult(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken);
 
         } else {
             // 유저가 없으면 회원가입 처리 후 토큰 발급
             User newUser = User.builder()
-                    .kakaoId(userInfo.getId())
-                    .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
-                    .email(userInfo.getKakaoAccount().getEmail())
-                    .build(); // 회원가입 처리 로직 추가
+                    .socialId(userInfo.getId())
+                    .nickname(userInfo.getKakaoUserInfo().getNickname())
+                    .email(userInfo.getKakaoUserInfo().getEmail())
+                    .build();
 
             newUser = userRepository.save(newUser);
 
@@ -171,7 +169,7 @@ public class KakaoServiceImpl implements KakaoService {
 
             userRepository.save(newUser);
 
-            return new UserResponseDTO.LoginResult(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken);
         }
     }
 }
