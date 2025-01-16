@@ -2,7 +2,10 @@ package com.memesphere.controller;
 
 import com.memesphere.apipayload.ApiResponse;
 import com.memesphere.domain.MemeCoin;
-import com.memesphere.dto.SearchResponseDTO;
+import com.memesphere.domain.enums.SortType;
+import com.memesphere.domain.enums.ViewType;
+import com.memesphere.dto.response.SearchResponseDTO;
+import com.memesphere.service.collectionService.CollectionQueryService;
 import com.memesphere.service.searchService.SearchQueryService;
 import com.memesphere.converter.SearchConverter;
 import com.memesphere.validation.annotation.CheckPage;
@@ -10,25 +13,34 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/search")
+//@RequestMapping("/")
 public class SearchRestController {
     private final SearchQueryService searchQueryService;
+    private final CollectionQueryService collectionQueryService;
 
-    @GetMapping("/")
+    @GetMapping("/search")
     @Operation(summary = "검색 결과 조회 API", description = "검색어와 페이지 번호를 기준으로 검색 결과를 반환합니다.")
-    public ApiResponse<SearchResponseDTO.SearchListDTO> getSearchList(
+    public ApiResponse<SearchResponseDTO.SearchPageDTO> getSearchPage(
             @RequestParam(name = "searchWord") String searchWord, // 검색어
-            @RequestParam(name = "viewType", defaultValue = "grid") String viewType, // 뷰 타입 (grid 또는 list)
+            @RequestParam(name = "viewType", defaultValue = "GRID") ViewType viewType, // 뷰 타입 (grid 또는 list)
+            @RequestParam(name = "sortType", defaultValue = "MKT_CAP") SortType sortType, // 정렬 기준 (MKTCap, 24h Volume, Price)
             @CheckPage @RequestParam(name = "page") Integer page // 페이지 번호
+//            @AuthenticationPrincipal User user // 현재 로그인한 유저
     ) {
-        int pageNumber = (page == 1) ? 0 : page;
-        Page<MemeCoin> searchList = searchQueryService.getSearchList(searchWord, viewType, pageNumber);
-        return ApiResponse.onSuccess(SearchConverter.toSearchListDTO(searchList, viewType));
+        Integer pageNumber = page - 1;
+//        Long userId = user.getId();
+        Long userId = 1L;
+
+        Page<MemeCoin> searchPage = searchQueryService.getSearchPage(searchWord, viewType, sortType, pageNumber);
+        List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(userId);
+
+        return ApiResponse.onSuccess(SearchConverter.toSearchPageDTO(searchPage, viewType, userCollectionIds));
     }
 }
