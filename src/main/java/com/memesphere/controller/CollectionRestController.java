@@ -15,11 +15,11 @@ import com.memesphere.converter.CollectionConverter;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/collection")
+//@RequestMapping("/collection")
 public class CollectionRestController {
     private final CollectionQueryService collectionQueryService;
 
-    @GetMapping("/")
+    @GetMapping("/collection")
     @Operation(summary = "사용자의 밈코인 콜렉션 모음 조회 API")
     public ApiResponse<CollectionResponseDTO.CollectionPageDTO> getCollectionList (
 //            @AuthenticationPrincipal User user, // 현재 로그인한 사용자 (아직 구현 x)
