@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,6 @@ public class MemeCoin extends BaseEntity {
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<Chat> chatList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
-    private List<ChartData> chartDataList = new ArrayList<>();
+    @OneToOne(mappedBy = "memeCoin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ChartData chartData;
 }

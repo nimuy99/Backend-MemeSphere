@@ -39,10 +39,10 @@ public class SearchConverter {
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
-                .currentPrice(memeCoin.getCurrent_price())
-                .highPrice(memeCoin.getHigh_price())
-                .lowPrice(memeCoin.getLow_price())
-                .variation(memeCoin.getVariation())
+                .currentPrice(memeCoin.getChartData().getPrice())
+                .highPrice(memeCoin.getChartData().getHigh_price())
+                .lowPrice(memeCoin.getChartData().getLow_price())
+                .variation(memeCoin.getChartData().getPrice_change())
                 .isCollected(isCollected)
                 .build();
     }
@@ -51,9 +51,9 @@ public class SearchConverter {
         return SearchResponseDTO.SearchListPreviewDTO.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
-                .currentPrice(memeCoin.getCurrent_price())
-                .market_cap(memeCoin.getMarket_cap())
-                .volume(memeCoin.getVolume())
+                .currentPrice(memeCoin.getChartData().getPrice())
+                .market_cap(memeCoin.getChartData().getMarketCap())
+                .volume(memeCoin.getChartData().getVolume())
                 .isCollected(isCollected)
                 .build();
     }
