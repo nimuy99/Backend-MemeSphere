@@ -4,8 +4,7 @@ import com.memesphere.domain.User;
 import com.memesphere.dto.response.UserInfoResponse;
 
 public interface UserService {
-    User findBySocialId(Long socialId);
+    User findByLoginId(Long loginId);
     void save(User user);
     UserInfoResponse getUserInfo(String token);
-    User findById(Long Id);
 }

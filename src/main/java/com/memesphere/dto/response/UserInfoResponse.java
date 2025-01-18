@@ -10,7 +10,7 @@ import lombok.*;
 public class UserInfoResponse {
 
     @Schema(description = "계정 아이디", example = "1")
-    private Long socialId;
+    private Long loginId;
 
     @Schema(description = "계정 닉네임", example = "홍길동")
     private String nickname;

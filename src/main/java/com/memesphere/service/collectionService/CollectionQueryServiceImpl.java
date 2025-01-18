@@ -19,7 +19,7 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
     @Transactional(readOnly = true)
     @Override
     public Page<Collection> getCollectionList(Long userId, Integer pageNumber) {
-         User user = userRepository.findById(String.valueOf(userId)).get();
+         User user = userRepository.findByLoginId(userId).get();
          Page<Collection> collectionPage = collectionRepository.findAllByUser(user, PageRequest.of(pageNumber, 9 ));
          return collectionPage;
     }

@@ -1,6 +1,7 @@
 package com.memesphere.controller;
 
 import com.memesphere.apipayload.ApiResponse;
+import com.memesphere.dto.response.KakaoTokenResponse;
 import com.memesphere.dto.response.LoginResponse;
 import com.memesphere.dto.response.KakaoUserInfoResponse;
 import com.memesphere.service.user.KakaoServiceImpl;
@@ -25,12 +26,8 @@ public class UserController {
     @PostMapping("/login/oauth2/kakao")
     @Operation(summary = "카카오 로그인 API")
     public ApiResponse<LoginResponse> callback(@RequestParam("code") String code) throws IOException {
-        // KakaoTokenResponseDTO kakaoTokenResponseDTO = kakaoServiceImpl.getAccessTokenFromKakao(code);
-        // KakaoUserInfoResponseDTO userInfo = kakaoServiceImpl.getUserInfo(kakaoTokenResponseDTO.getAccessToken());
-        // UserResponseDTO.LoginResult loginResult = kakaoServiceImpl.handleUserLogin(userInfo);
-
-        String accessToken = kakaoServiceImpl.getAccessTokenFromKakao(code); // 반환 타입 수정
-        KakaoUserInfoResponse userInfo = kakaoServiceImpl.getUserInfo(accessToken); // accessToken 사용
+        KakaoTokenResponse kakaoTokenResponse = kakaoServiceImpl.getAccessTokenFromKakao(code);
+        KakaoUserInfoResponse userInfo = kakaoServiceImpl.getUserInfo(kakaoTokenResponse.getAccessToken());
         LoginResponse loginResponse = kakaoServiceImpl.handleUserLogin(userInfo);
 
         return ApiResponse.onSuccess(loginResponse);

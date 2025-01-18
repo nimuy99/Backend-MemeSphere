@@ -8,7 +8,7 @@ public class UserConverter {
     public static UserInfoResponse toUserInfo(User user) {
 
         return UserInfoResponse.builder()
-                .socialId(user.getSocialId())
+                .loginId(user.getLoginId())
                 .nickname(user.getNickname())
                 .build();
     }
