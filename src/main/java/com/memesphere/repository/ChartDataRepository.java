@@ -14,7 +14,4 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
 
     @EntityGraph(attributePaths = {"memeCoin"})
     List<ChartData> findTop5ByOrderByVolumeDesc();
-
-    @Query("SELECT c FROM ChartData c WHERE c.memeCoin = :coin ORDER BY c.createdAt DESC")
-    ChartData findLatestDataByCoin(MemeCoin coin);
 }
