@@ -101,7 +101,7 @@ public class KakaoServiceImpl implements KakaoService {
 
         String accessToken;
         if (existingUser != null) {
-            // 이미 유저가 존재하면 Authentication 객체 생성
+            // 기존 유저가 존재하는 경우 Authentication 객체 생성
             Authentication authentication = new UsernamePasswordAuthenticationToken(existingUser.getEmail(), null, new ArrayList<>());
 
             // 액세스 토큰과 리프레쉬 토큰을 발급
@@ -118,6 +118,7 @@ public class KakaoServiceImpl implements KakaoService {
             return new LoginResponse(accessToken, refreshToken);
 
         } else {
+            // 새로운 유저 등록
             User newUser = User.builder()
                     .loginId(userInfo.getId())
                     .nickname(userInfo.getKakaoUserInfo().getNickname())
@@ -126,10 +127,10 @@ public class KakaoServiceImpl implements KakaoService {
 
             newUser = userRepository.save(newUser);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(existingUser.getEmail(), null, new ArrayList<>());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
 
-            accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), authentication);
-            String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
+            accessToken = tokenProvider.createAccessToken(newUser.getEmail(), authentication);
+            String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
             newUser.setAccessToken(accessToken);
             newUser.setRefreshToken(refreshToken);

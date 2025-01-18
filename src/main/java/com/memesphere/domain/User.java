@@ -27,13 +27,13 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private Long loginId;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String nickname;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -42,9 +42,6 @@ public class User extends BaseEntity {
 
     @Column
     private String wallet;
-
-    @Column
-    private String image;
 
     @Setter
     private String accessToken;
