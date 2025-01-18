@@ -44,7 +44,7 @@ public class ChartData extends BaseEntity {
     @Column
     private BigDecimal high_price;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="coin_id")
     private MemeCoin memeCoin;
 }
