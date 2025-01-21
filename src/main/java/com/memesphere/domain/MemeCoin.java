@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,25 @@ public class MemeCoin extends BaseEntity {
     private String description;
 
     @Column
-    private Integer total_transaction;
+    private Integer total_transaction; // 총 거래량..?
+
+    @Column
+    private BigDecimal low_price;
+
+    @Column
+    private BigDecimal high_price;
+
+    @Column
+    private BigDecimal variation; // change
+
+    @Column
+    private BigDecimal market_cap;
+
+    @Column
+    private BigDecimal current_price;
+
+    @Column
+    private Integer volume; // 총 거래량..?
 
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
