@@ -2,6 +2,7 @@ package com.memesphere.service.user;
 
 import com.memesphere.converter.UserConverter;
 import com.memesphere.domain.User;
+import com.memesphere.domain.enums.SocialType;
 import com.memesphere.dto.response.LoginResponse;
 import com.memesphere.dto.response.KakaoTokenResponse;
 import com.memesphere.dto.response.KakaoUserInfoResponse;
@@ -61,8 +62,7 @@ public class KakaoServiceImpl implements KakaoService {
             headers.set("Authorization", "Bearer " + accessToken);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            String uri = UriComponentsBuilder.fromUriString(userInfoUri)
-                    .toUriString();
+            String uri = UriComponentsBuilder.fromUriString(userInfoUri).toUriString();
 
             ResponseEntity<KakaoUserInfoResponse> responseEntity = restTemplate.exchange(uri, HttpMethod.GET, entity, KakaoUserInfoResponse.class);
             return responseEntity.getBody();
@@ -83,6 +83,7 @@ public class KakaoServiceImpl implements KakaoService {
         } else {
             // 이미 존재하는 경우 토큰을 업데이트
             User updatedUser = UserConverter.updateUser(userInfo, kakaoTokenResponse); // 기존 유저 업데이트
+            existingUser.setSocialType(SocialType.KAKAO);
             userServiceImpl.save(updatedUser);
         }
     }

@@ -36,6 +36,7 @@ public class User extends BaseEntity {
     @Column
     private String password;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
