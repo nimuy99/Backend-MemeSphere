@@ -10,6 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CollectionQueryServiceImpl implements CollectionQueryService {
@@ -18,9 +21,16 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<Collection> getCollectionList(Long userId, Integer pageNumber) {
-         User user = userRepository.findByLoginId(userId).get();
-         Page<Collection> collectionPage = collectionRepository.findAllByUser(user, PageRequest.of(pageNumber, 9 ));
-         return collectionPage;
+    public Page<Collection> getCollectionPage(Long userId, Integer pageNumber) {
+        Page<Collection> collectionPage = collectionRepository.findAllByUserId(userId, PageRequest.of(pageNumber, 9 ));
+        return collectionPage;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Long> getUserCollectionIds(Long userId) {
+        return collectionRepository.findAllByUserId(userId).stream()
+                .map(Collection::getMemeCoinId)
+                .collect(Collectors.toList());
     }
 }
