@@ -16,6 +16,10 @@ public enum ErrorStatus implements BaseCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // unsupported enum type
+    UNSUPPORTED_SORT_TYPE(HttpStatus.BAD_REQUEST,"ENUM400","가능한 SortType은 MKT_CAP, VOLUME_24H, PRICE 입니다."),
+    UNSUPPORTED_VIEW_TYPE(HttpStatus.BAD_REQUEST,"ENUM400","가능한 ViewType은 GRID, LIST 입니다."),
+
     // 밈코인 에러
     MEMECOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMECOIN NOT FOUND", "밈코인을 찾을 수 없습니다."),
 
