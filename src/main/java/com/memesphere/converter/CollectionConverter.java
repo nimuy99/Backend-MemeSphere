@@ -1,21 +1,21 @@
 package com.memesphere.converter;
 
-import com.memesphere.domain.ChartData;
 import com.memesphere.domain.Collection;
 import com.memesphere.domain.MemeCoin;
-import com.memesphere.dto.response.CollectionResponseDTO;
+import com.memesphere.dto.response.CollectionPageResponse;
+import com.memesphere.dto.response.CollectionPreviewResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CollectionConverter {
-    public static CollectionResponseDTO.CollectionPageDTO toCollectionPageDTO(Page<Collection> collectionPage) {
-        List<CollectionResponseDTO.CollectionPreviewDTO> collectionItems = collectionPage.getContent().stream()
+    public static CollectionPageResponse toCollectionPageDTO(Page<Collection> collectionPage) {
+        List<CollectionPreviewResponse> collectionItems = collectionPage.getContent().stream()
                 .map(collection -> toCollectionPreviewDTO(collection))
                 .collect(Collectors.toList());
 
-        return CollectionResponseDTO.CollectionPageDTO.builder()
+        return CollectionPageResponse.builder()
                 .collectionItems(collectionItems)
                 .listSize(collectionItems.size())
                 .totalPage(collectionPage.getTotalPages())
@@ -25,10 +25,10 @@ public class CollectionConverter {
                 .build();
     }
 
-    private static CollectionResponseDTO.CollectionPreviewDTO toCollectionPreviewDTO(Collection collection) {
+    private static CollectionPreviewResponse toCollectionPreviewDTO(Collection collection) {
         MemeCoin memeCoin = collection.getMemeCoin();
 
-        return CollectionResponseDTO.CollectionPreviewDTO.builder()
+        return CollectionPreviewResponse.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
