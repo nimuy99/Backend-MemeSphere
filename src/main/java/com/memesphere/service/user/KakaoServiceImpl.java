@@ -1,5 +1,6 @@
 package com.memesphere.service.user;
 
+import com.memesphere.converter.UserConverter;
 import com.memesphere.domain.User;
 import com.memesphere.dto.response.LoginResponse;
 import com.memesphere.dto.response.KakaoTokenResponse;
@@ -73,33 +74,23 @@ public class KakaoServiceImpl implements KakaoService {
 
     // 사용자 정보로 회원가입 처리
     public void handleUserRegistration(KakaoUserInfoResponse userInfo, KakaoTokenResponse kakaoTokenResponse) {
-
         Long loginId = userInfo.getId();
         User existingUser = userServiceImpl.findByLoginId(loginId);
 
         if (existingUser == null) { // 유저가 존재하지 않으면 회원가입 처리
-            User newUser = User.builder()
-                    .loginId(loginId)
-                    .nickname(userInfo.getKakaoUserInfo().getNickname())
-                    .email(userInfo.getKakaoUserInfo().getEmail())
-                    .accessToken(kakaoTokenResponse.getAccessToken())
-                    .refreshToken(kakaoTokenResponse.getRefreshToken())
-                    .build();
-
+            User newUser = UserConverter.createUser(userInfo); // 신규 유저 생성
             userServiceImpl.save(newUser);
         } else {
             // 이미 존재하는 경우 토큰을 업데이트
-            User user = existingUser;
-            user.setAccessToken(kakaoTokenResponse.getAccessToken());
-            user.setRefreshToken(kakaoTokenResponse.getRefreshToken());
-            userServiceImpl.save(user);
+            User updatedUser = UserConverter.updateUser(userInfo, kakaoTokenResponse); // 기존 유저 업데이트
+            userServiceImpl.save(updatedUser);
         }
     }
 
     public LoginResponse handleUserLogin(KakaoUserInfoResponse userInfo) {
         User existingUser = userServiceImpl.findByLoginId(userInfo.getId());
-
         String accessToken;
+
         if (existingUser != null) {
             // 기존 유저가 존재하는 경우 Authentication 객체 생성
             Authentication authentication = new UsernamePasswordAuthenticationToken(existingUser.getEmail(), null, new ArrayList<>());
@@ -111,20 +102,11 @@ public class KakaoServiceImpl implements KakaoService {
             // 발급된 토큰을 기존 유저 객체에 업데이트
             existingUser.setAccessToken(accessToken);
             existingUser.setRefreshToken(refreshToken);
-
-            // DB에 업데이트
             userRepository.save(existingUser);
 
             return new LoginResponse(accessToken, refreshToken);
-
         } else {
-            // 새로운 유저 등록
-            User newUser = User.builder()
-                    .loginId(userInfo.getId())
-                    .nickname(userInfo.getKakaoUserInfo().getNickname())
-                    .email(userInfo.getKakaoUserInfo().getEmail())
-                    .build();
-
+            User newUser = UserConverter.createUser(userInfo); // 신규 유저 생성
             newUser = userRepository.save(newUser);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
@@ -134,7 +116,6 @@ public class KakaoServiceImpl implements KakaoService {
 
             newUser.setAccessToken(accessToken);
             newUser.setRefreshToken(refreshToken);
-
             userRepository.save(newUser);
 
             return new LoginResponse(accessToken, refreshToken);

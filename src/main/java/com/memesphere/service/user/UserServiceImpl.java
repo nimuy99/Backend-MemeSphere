@@ -1,5 +1,7 @@
 package com.memesphere.service.user;
 
+import com.memesphere.apipayload.code.status.ErrorStatus;
+import com.memesphere.apipayload.exception.GeneralException;
 import com.memesphere.converter.UserConverter;
 import com.memesphere.domain.User;
 import com.memesphere.dto.response.LoginResponse;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserInfoResponse getUserInfo(String token) {
         User user = userRepository.findByAccessToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         return UserConverter.toUserInfo(user);
     }
