@@ -2,15 +2,14 @@ package com.memesphere.controller;
 
 import com.memesphere.apipayload.ApiResponse;
 import com.memesphere.domain.Collection;
+import com.memesphere.dto.response.CollectionPageResponse;
 import com.memesphere.service.collectionService.CollectionQueryService;
 import com.memesphere.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
-import com.memesphere.dto.response.CollectionResponseDTO;
 import com.memesphere.converter.CollectionConverter;
 
 @RestController
@@ -21,7 +20,7 @@ public class CollectionRestController {
 
     @GetMapping("/collection")
     @Operation(summary = "사용자의 밈코인 콜렉션 모음 조회 API")
-    public ApiResponse<CollectionResponseDTO.CollectionPageDTO> getCollectionList (
+    public ApiResponse<CollectionPageResponse> getCollectionList (
 //            @AuthenticationPrincipal User user, // 현재 로그인한 사용자 (아직 구현 x)
             @CheckPage @RequestParam(name = "page") Integer page // 페이지 번호
     ) {

@@ -2,16 +2,18 @@ package com.memesphere.converter;
 
 import com.memesphere.domain.MemeCoin;
 import com.memesphere.domain.enums.ViewType;
-import com.memesphere.dto.response.SearchResponseDTO;
+import com.memesphere.dto.response.SearchGridPreviewResponse;
+import com.memesphere.dto.response.SearchListPreviewResponse;
+import com.memesphere.dto.response.SearchPageResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SearchConverter {
-    public static SearchResponseDTO.SearchPageDTO toSearchPageDTO(Page<MemeCoin> searchPage, ViewType viewType, List<Long> userCollectionIds) {
-        List<SearchResponseDTO.SearchGridPreviewDTO> gridItems = null;
-        List<SearchResponseDTO.SearchListPreviewDTO> listItems = null;
+    public static SearchPageResponse toSearchPageDTO(Page<MemeCoin> searchPage, ViewType viewType, List<Long> userCollectionIds) {
+        List<SearchGridPreviewResponse> gridItems = null;
+        List<SearchListPreviewResponse> listItems = null;
 
         if (viewType == ViewType.GRID) {
             gridItems = searchPage.stream()
@@ -23,7 +25,7 @@ public class SearchConverter {
                     .collect(Collectors.toList());
         }
 
-        return SearchResponseDTO.SearchPageDTO.builder()
+        return SearchPageResponse.builder()
                 .gridItems(gridItems)
                 .listItems(listItems)
                 .listSize(searchPage.getContent().size())
@@ -34,8 +36,8 @@ public class SearchConverter {
                 .build();
     }
 
-    public static SearchResponseDTO.SearchGridPreviewDTO toSearchGridPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
-        return SearchResponseDTO.SearchGridPreviewDTO.builder()
+    public static SearchGridPreviewResponse toSearchGridPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
+        return SearchGridPreviewResponse.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
@@ -47,8 +49,8 @@ public class SearchConverter {
                 .build();
     }
 
-    public static SearchResponseDTO.SearchListPreviewDTO toSearchListPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
-        return SearchResponseDTO.SearchListPreviewDTO.builder()
+    public static SearchListPreviewResponse toSearchListPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
+        return SearchListPreviewResponse.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .currentPrice(memeCoin.getChartData().getPrice())
