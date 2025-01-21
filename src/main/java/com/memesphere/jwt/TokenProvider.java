@@ -51,16 +51,20 @@ public class TokenProvider implements InitializingBean {
             return claims.getSubject();
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");
+            throw new RuntimeException("Invalid JWT signature", ex);
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
+            throw new RuntimeException("Invalid JWT token", ex);
         } catch (ExpiredJwtException ex) {
             log.error("Expired JWT token");
+            throw new RuntimeException("Expired JWT token", ex);
         } catch (UnsupportedJwtException ex) {
             log.error("Unsupported JWT token");
+            throw new RuntimeException("Unsupported JWT token", ex);
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
+            throw new RuntimeException("JWT claims string is empty.", ex);
         }
-        return null;
     }
 
     public String createAccessToken(String username, Authentication authentication) {
@@ -107,13 +111,16 @@ public class TokenProvider implements InitializingBean {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
+            throw new RuntimeException("잘못된 JWT 서명입니다.", e);
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다.");
+            throw new RuntimeException("만료된 JWT 토큰입니다.", e);
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
+            throw new RuntimeException("지원되지 않는 JWT 토큰입니다.", e);
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
+            throw new RuntimeException("JWT 토큰이 잘못되었습니다.", e);
         }
-        return false;
     }
 }
