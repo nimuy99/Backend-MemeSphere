@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChartData extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="chart_id")
@@ -33,7 +32,7 @@ public class ChartData extends BaseEntity {
     private BigDecimal price_change;
 
     @Column
-    private BigDecimal market_cap;
+    private BigDecimal marketCap;
 
     @Column
     private Integer volume;
@@ -44,7 +43,7 @@ public class ChartData extends BaseEntity {
     @Column
     private BigDecimal high_price;
 
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="coin_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coin_id", nullable = false) // 외래 키
     private MemeCoin memeCoin;
 }
