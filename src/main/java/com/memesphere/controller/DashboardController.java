@@ -1,8 +1,6 @@
 package com.memesphere.controller;
 
 import com.memesphere.apipayload.ApiResponse;
-import com.memesphere.converter.SearchConverter;
-import com.memesphere.domain.MemeCoin;
 import com.memesphere.domain.enums.SortType;
 import com.memesphere.domain.enums.ViewType;
 import com.memesphere.dto.response.DashboardOverviewResponse;
@@ -13,27 +11,23 @@ import com.memesphere.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Tag(name="대시보드", description = "대시보드 관련  API")
 @RestController
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
-
     private final DashboardQueryService dashboardQueryService;
 
     @GetMapping("/overview")
     @Operation(summary = "밈코인 총 거래량 및 총 개수 조회 API",
             description = """
-                    밈스피어에 등록된 밈코인의 총 거래량 및 총 개수를 보여줍니다. \n
-                    
+                    밈스피어에 등록된 24시간 내 거래량이 가장 많은 밈코인을 5위까지 보여줍니다. \n
+
                     **요청 형식**: ```없음```
                     
                     **응답 형식**:
@@ -50,7 +44,10 @@ public class DashboardController {
             description = """
                     밈스피어에 등록된 24시간 내 거래량이 가장 많은 밈코인을 5위까지 보여줍니다. \n
                     
-                    **요청 형식**: ```없음```
+                    **요청 형식**: ```
+                    - "show" : 보기 방식
+                    - "sort" : 정렬 방식
+                    ```
                     
                     **응답 형식**:
                     ```
