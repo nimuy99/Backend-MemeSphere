@@ -26,7 +26,7 @@ public class DashboardController {
     @GetMapping("/overview")
     @Operation(summary = "밈코인 총 거래량 및 총 개수 조회 API",
             description = """
-                    밈스피어에 등록된 24시간 내 거래량이 가장 많은 밈코인을 5위까지 보여줍니다. \n
+                    밈스피어에 등록된 밈코인의 총 거래량 및 총 개수를 보여줍니다. \n
 
                     **요청 형식**: ```없음```
                     
@@ -44,10 +44,7 @@ public class DashboardController {
             description = """
                     밈스피어에 등록된 24시간 내 거래량이 가장 많은 밈코인을 5위까지 보여줍니다. \n
                     
-                    **요청 형식**: ```
-                    - "show" : 보기 방식
-                    - "sort" : 정렬 방식
-                    ```
+                    **요청 형식**: ```없음```
                     
                     **응답 형식**:
                     ```
@@ -70,7 +67,7 @@ public class DashboardController {
     @Operation(summary = "차트 조회 API",
             description = """
                     밈스피어에 등록된 밈코인의 차트 데이터를 보기 방식과 정렬 기준에 따라 보여줍니다. \n
-                    
+
                     **요청 형식**:
                     ```
                     - "viewType": 보기 방식 (GRID / LIST)
