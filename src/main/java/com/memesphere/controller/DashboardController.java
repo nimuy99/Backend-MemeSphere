@@ -62,7 +62,7 @@ public class DashboardController {
                     - "price": 밈코인 현재가
                     - "priceChange": 가격 변화량
                     - "changeAbsolute": 가격 변화량(절대값)
-                    - "changeDirection": 밈코인 상승(up)/하락(down)/유지(-) 방향
+                    - "changeDirection": 밈코인 상승(up)/하락(down)/유지(= 변화량 0일 때, -) 방향
                     - "changeRate": 가격 변화율
                     ```""")
     public ApiResponse<DashboardTrendListResponse> getTrendList() {
