@@ -5,7 +5,7 @@ import com.memesphere.apipayload.exception.GeneralException;
 import com.memesphere.converter.DetailConverter;
 import com.memesphere.domain.MemeCoin;
 import com.memesphere.dto.response.DetailGetResponse;
-import com.memesphere.repository.MemeRepository;
+import com.memesphere.repository.MemeCoinRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DetailService {
 
-    private final MemeRepository memeRepository;
+    private final MemeCoinRepository memeCoinRepository;
 
     @Transactional
     public DetailGetResponse getDetail(Long meme_id) {
 
-        MemeCoin memeCoin = memeRepository.findById(meme_id)
+        MemeCoin memeCoin = memeCoinRepository.findById(meme_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
         DetailGetResponse detailGetResponse = DetailConverter.toDetailGetResponse(memeCoin);

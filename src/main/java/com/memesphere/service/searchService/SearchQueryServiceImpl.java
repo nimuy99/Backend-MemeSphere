@@ -5,7 +5,7 @@ import com.memesphere.apipayload.exception.GeneralException;
 import com.memesphere.domain.MemeCoin;
 import com.memesphere.domain.enums.SortType;
 import com.memesphere.domain.enums.ViewType;
-import com.memesphere.repository.MemeRepository;
+import com.memesphere.repository.MemeCoinRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class SearchQueryServiceImpl implements SearchQueryService {
-    private final MemeRepository memeRepository;
+    private final MemeCoinRepository memeCoinRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -41,7 +41,7 @@ public class SearchQueryServiceImpl implements SearchQueryService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortField));
 
-        Page<MemeCoin> searchPage = memeRepository.findByNameContainingIgnoreCaseOrSymbolContainingIgnoreCaseOrKeywordsContainingIgnoreCase(searchWord, searchWord, searchWord, pageable);
+        Page<MemeCoin> searchPage = memeCoinRepository.findByNameContainingIgnoreCaseOrSymbolContainingIgnoreCaseOrKeywordsContainingIgnoreCase(searchWord, searchWord, searchWord, pageable);
 
         return searchPage;
     }

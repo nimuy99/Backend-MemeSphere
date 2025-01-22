@@ -38,6 +38,7 @@ public class SearchConverter {
 
     public static SearchGridPreviewResponse toSearchGridPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
         return SearchGridPreviewResponse.builder()
+                .coinId(memeCoin.getId())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
@@ -51,6 +52,7 @@ public class SearchConverter {
 
     public static SearchListPreviewResponse toSearchListPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
         return SearchListPreviewResponse.builder()
+                .coinId(memeCoin.getId())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .currentPrice(memeCoin.getChartData().getPrice())

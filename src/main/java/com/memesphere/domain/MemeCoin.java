@@ -37,23 +37,27 @@ public class MemeCoin extends BaseEntity {
     @Column
     private String description;
 
-    @Column
-    private boolean CollectionActive;
+//    @Column
+//    private boolean CollectionActive;
 
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
+    @Builder.Default
     private List<String> keywords = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Collection> collectionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Notification> notificationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Chat> chatList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "memeCoin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ChartData chartData;
 }
