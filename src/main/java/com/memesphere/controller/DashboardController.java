@@ -1,8 +1,9 @@
 package com.memesphere.controller;
 
 import com.memesphere.apipayload.ApiResponse;
-import com.memesphere.dto.DashboardDTO;
-import com.memesphere.service.dashboard.DashboardService;
+import com.memesphere.dto.response.DashboardOverviewResponse;
+import com.memesphere.dto.response.DashboardTrendListResponse;
+import com.memesphere.service.dashboardService.DashboardQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
+    private final DashboardQueryService dashboardQueryService;
 
-    private final DashboardService dashboardService;
+    @GetMapping("/overview")
+    @Operation(summary = "밈코인 총 거래량 및 총 개수 조회 API",
+            description = """
+                    밈스피어에 등록된 밈코인의 총 거래량 및 총 개수를 보여줍니다. \n
+                    
+                    **요청 형식**: ```없음```
+                    
+                    **응답 형식**:
+                    ```
+                    - "totalVolume": 등록된 밈코인의 총 거래량
+                    - "totalCoin": 등록된 밈코인의 총 개수
+                    ```""")
+    public ApiResponse<DashboardOverviewResponse> getOverview() {
+        return ApiResponse.onSuccess(dashboardQueryService.getOverview());
+    }
 
     @GetMapping("/trend")
     @Operation(summary = "트렌드 조회 API",
             description = """
-                    밈스피어에 등록된 밈코인의 총 거래량 및 총 개수, \n
-                    그리고 24시간 내 거래량이 가장 많은 밈코인을 5위까지 보여줍니다. \n
+                    밈스피어에 등록된 24시간 내 거래량이 가장 많은 밈코인을 5위까지 보여줍니다. \n
                     
                     **요청 형식**: ```없음```
                     
@@ -35,32 +50,30 @@ public class DashboardController {
                     - "image": 밈코인 이미지
                     - "name": 밈코인 이름
                     - "symbol": 밈코인 심볼
-                    - "price": 밈코인 현재 가격
-                    - "direction": 밈코인 상승(up)/하락(down) 방향
-                    - "priceChange": 변화량
-                    - "percentChange": 변화 퍼센트
+                    - "price": 밈코인 현재가
+                    - "priceChange": 가격 변화량
+                    - "changeAbsolute": 가격 변화량(절대값)
+                    - "changeDirection": 밈코인 상승(up)/하락(down) 방향
+                    - "changeRate": 가격 변화율
                     ```""")
-    public ApiResponse<DashboardDTO.TrendResponse> getTrendList() {
-        return ApiResponse.onSuccess(dashboardService.findTrendList());
+    public ApiResponse<DashboardTrendListResponse> getTrendList() {
+        return ApiResponse.onSuccess(dashboardQueryService.getTrendList());
     }
 
-    @GetMapping("/related-search")
-    @Operation(summary = "연관 검색어 조회 API",
+    @GetMapping("/chart")
+    @Operation(summary = "차트 조회 API",
             description = """
-                    24시간 기준 밈코인과 관련된 연관 검색어 2개를 수치와 함께 보여줍니다. \n
+                    밈스피어에 등록된 밈코인의 차트 데이터를 보기 방식과 정렬 기준에 따라 보여줍니다. \n
                     
-                    **요청 형식**: ```없음```
+                    **요청 형식**: ```
+                    - "show" : 보기 방식
+                    - "sort" : 정렬 방식
+                    ```
                     
                     **응답 형식**:
                     ```
-                    - "label1": 첫 번째 연관 검색어의 이름,
-                    - "searchVolumeList1": 첫 번째 연관 검색어의 시간에 따른 검색량 수 리스트
-                    - "label2": 두 번째 연관 검색어의 이름
-                    - "searchVolumeList2": 두 번째 연관 검색어의 시간에 따른 검색량 수 리스트
-                    - "time": 시간
-                    - "volume": 검색량
                     ```""")
-    public ApiResponse<DashboardDTO.RelatedSearchResponse> getRelatedSearch() {
-        return ApiResponse.onSuccess(dashboardService.findRelatedSearch());
+    public ApiResponse<DashboardTrendListResponse> getChartList() {
+        return ApiResponse.onSuccess(null);
     }
 }
