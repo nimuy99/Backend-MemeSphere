@@ -25,14 +25,18 @@ public class User extends BaseEntity {
     private long id;
 
     @Column(nullable = false, unique = true)
+    private Long loginId;
+
+    @Column(unique = true)
     private String nickname;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
@@ -40,8 +44,11 @@ public class User extends BaseEntity {
     @Column
     private String wallet;
 
-    @Column
-    private String image;
+    @Setter
+    private String accessToken;
+
+    @Setter
+    private String refreshToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default

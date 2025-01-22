@@ -44,6 +44,4 @@ public class DashboardConverter {
                 .changeRate(null) // todo: string할건지 float형 할건지 결정
                 .build();
     }
-
-    // ** 차트 응답 형식 ** //
 }

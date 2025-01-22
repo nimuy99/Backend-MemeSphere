@@ -26,7 +26,6 @@ import java.util.List;
 @RequestMapping("/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
-
     private final DashboardQueryService dashboardQueryService;
 
     @GetMapping("/overview")
@@ -73,7 +72,7 @@ public class DashboardController {
     @Operation(summary = "차트 조회 API",
             description = """
                     밈스피어에 등록된 밈코인의 차트 데이터를 보기 방식과 정렬 기준에 따라 보여줍니다. \n
-                    
+
                     **요청 형식**:
                     ```
                     - "viewType": 보기 방식 (GRID / LIST)

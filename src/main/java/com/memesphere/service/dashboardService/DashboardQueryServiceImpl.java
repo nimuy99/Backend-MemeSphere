@@ -31,7 +31,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     private final MemeCoinRepository memeCoinRepository;
     private final ChartDataRepository chartDataRepository;
     private final CollectionQueryService collectionQueryService;
-
+  
     // ** 총 거래량 및 총 개수 ** //
     @Override
     public DashboardOverviewResponse getOverview() {
@@ -40,6 +40,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 
         // 등록된 모든 밈코인 수
         Long totalCoin = memeCoinRepository.count();
+
 
         return DashboardConverter.toOverView(totalVolume, totalCoin);
     }
