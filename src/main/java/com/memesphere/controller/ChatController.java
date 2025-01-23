@@ -37,17 +37,18 @@ public class ChatController {
         return chatService.saveMessage(coin_id, chatRequest);
     }
 
-    // 최신 댓글 조회 API
+    //최신 댓글 조회 Api
     @GetMapping("/latest/{coin_id}")
     @Operation(summary = "코인별 최신 댓글 조회 API",
             description = "특정 코인에 대한 최신 댓글을 반환합니다. 요청 시 최신 댓글 하나만 가져옵니다.")
-    public ApiResponse<List<ChatResponse>> getLatestMessages(
-            @PathVariable("coin_id") Long coinId) {
+    public ApiResponse<ChatResponse> getLatestMessages(
+            @PathVariable("coin_id") Long coin_id) {
 
         // 최신 댓글을 가져오는 서비스 메서드 호출
-        List<ChatResponse> latestMessages = chatService.getLatestMessages(coinId);
+        ChatResponse latestMessage = chatService.getLatestMessages(coin_id);
 
-        return ApiResponse.onSuccess(latestMessages);
+        return ApiResponse.onSuccess(latestMessage);
     }
+
 
 }
