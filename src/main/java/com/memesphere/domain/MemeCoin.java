@@ -56,4 +56,7 @@ public class MemeCoin extends BaseEntity {
 
     @OneToOne(mappedBy = "memeCoin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ChartData chartData;
+
+    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Alarm> alarmList = new ArrayList<>();
 }
