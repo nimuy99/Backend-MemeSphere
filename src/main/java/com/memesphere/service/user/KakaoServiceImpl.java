@@ -29,13 +29,13 @@ public class KakaoServiceImpl implements KakaoService {
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
 
-    @Value("${security.oauth2.client.registration.kakao.client-id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    @Value("${security.oauth2.client.provider.kakao.token-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
     private String tokenUri;
 
-    @Value("${security.oauth2.client.provider.kakao.user-info-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
     private String userInfoUri;
 
     public KakaoTokenResponse getAccessTokenFromKakao(String code) {

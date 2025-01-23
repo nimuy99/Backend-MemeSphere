@@ -35,7 +35,8 @@ public class CollectionConverter {
                 .currentPrice(memeCoin.getChartData().getPrice())
                 .highPrice(memeCoin.getChartData().getHigh_price())
                 .lowPrice(memeCoin.getChartData().getLow_price())
-                .variation(memeCoin.getChartData().getPrice_change())
+                .priceChange(memeCoin.getChartData().getPriceChange())
+                .priceChangeRate(memeCoin.getChartData().getPriceChangeRate())
                 .build();
     }
 }

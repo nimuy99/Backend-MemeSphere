@@ -44,7 +44,8 @@ public class SearchConverter {
                 .currentPrice(memeCoin.getChartData().getPrice())
                 .highPrice(memeCoin.getChartData().getHigh_price())
                 .lowPrice(memeCoin.getChartData().getLow_price())
-                .variation(memeCoin.getChartData().getPrice_change())
+                .priceChange(memeCoin.getChartData().getPriceChange())
+                .priceChangeRate(memeCoin.getChartData().getPriceChangeRate())
                 .isCollected(isCollected)
                 .build();
     }
@@ -54,7 +55,8 @@ public class SearchConverter {
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .currentPrice(memeCoin.getChartData().getPrice())
-                .market_cap(memeCoin.getChartData().getMarketCap())
+                .priceChange(memeCoin.getChartData().getPriceChangeRate())
+                .weightedAveragePrice(memeCoin.getChartData().getWeighted_average_price())
                 .volume(memeCoin.getChartData().getVolume())
                 .isCollected(isCollected)
                 .build();

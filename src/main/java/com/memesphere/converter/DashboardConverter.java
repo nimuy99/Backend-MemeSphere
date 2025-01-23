@@ -38,9 +38,9 @@ public class DashboardConverter {
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .price(data.getPrice().intValue()) // todo: 외부 api 응답 형식 보고 엔티티 자료형 변경
-                .priceChange(data.getPrice_change().intValue())
-                .changeAbsolute(Math.abs(data.getPrice_change().intValue()))
-                .changeDirection(data.getPrice_change().intValue() > 0? "up" : "down")
+                .priceChange(data.getPriceChange().intValue())
+                .changeAbsolute(Math.abs(data.getPriceChange().intValue()))
+                .changeDirection(data.getPriceChange().intValue() > 0? "up" : "down")
                 .changeRate(null) // todo: string할건지 float형 할건지 결정
                 .build();
     }
