@@ -37,6 +37,9 @@ public class MemeCoin extends BaseEntity {
     @Column
     private String description;
 
+    @Column
+    private boolean CollectionActive;
+
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
