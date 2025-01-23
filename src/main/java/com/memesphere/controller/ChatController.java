@@ -49,6 +49,4 @@ public class ChatController {
 
         return ApiResponse.onSuccess(latestMessage);
     }
-
-
 }

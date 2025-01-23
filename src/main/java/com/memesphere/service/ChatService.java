@@ -33,6 +33,11 @@ public class ChatService {
 
     // 최신 댓글을 가져오는 메서드
     public ChatResponse getLatestMessages(Long coin_id) {
+
+        //id에 해당하는 밈코인 없을 때
+        MemeCoin memeCoin = memeRepository.findById(coin_id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
+
         // 최신 댓글을 하나만 가져옴
         Chat latestChat = chatRepository.findLatestMessageByCoinId(coin_id);
 
@@ -44,6 +49,5 @@ public class ChatService {
         // 최신 댓글을 ChatResponse로 변환하여 반환
         return ChatConverter.toChatResponse(latestChat);
     }
-
 
 }
