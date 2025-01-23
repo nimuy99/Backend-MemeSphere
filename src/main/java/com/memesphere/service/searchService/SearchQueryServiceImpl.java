@@ -33,7 +33,7 @@ public class SearchQueryServiceImpl implements SearchQueryService {
         };
 
         String sortField = switch (sortType) {
-            case MKT_CAP -> "chartData.marketCap";
+            case PRICE_CHANGE -> "chartData.priceChange";
             case VOLUME_24H -> "chartData.volume";
             case PRICE -> "chartData.price";
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);

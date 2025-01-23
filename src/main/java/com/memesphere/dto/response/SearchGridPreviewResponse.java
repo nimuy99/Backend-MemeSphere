@@ -26,7 +26,9 @@ public class SearchGridPreviewResponse {
     @Schema(description = "차트 데이터의 low_price", example = "1500")
     BigDecimal lowPrice;
     @Schema(description = "차트 데이터의 price_change", example = "500")
-    BigDecimal variation;
+    BigDecimal priceChange;
+    @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
+    BigDecimal priceChangeRate;
     @Schema(description = "collection에 해당 밈코인 유무", example = "true / false")
     Boolean isCollected;
 }

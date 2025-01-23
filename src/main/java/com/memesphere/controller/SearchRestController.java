@@ -30,7 +30,7 @@ public class SearchRestController {
     public ApiResponse<SearchPageResponse> getSearchPage(
             @RequestParam(name = "searchWord") String searchWord, // 검색어
             @RequestParam(name = "viewType", defaultValue = "GRID") ViewType viewType, // 뷰 타입 (grid 또는 list)
-            @RequestParam(name = "sortType", defaultValue = "MKT_CAP") SortType sortType, // 정렬 기준 (MKTCap, 24h Volume, Price)
+            @RequestParam(name = "sortType", defaultValue = "PRICE_CHANGE") SortType sortType, // 정렬 기준 (MKTCap, 24h Volume, Price)
             @CheckPage @RequestParam(name = "page") Integer page // 페이지 번호
 //            @AuthenticationPrincipal UserDetails user // 현재 로그인한 유저
     ) {

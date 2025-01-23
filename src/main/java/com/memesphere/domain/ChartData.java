@@ -29,10 +29,16 @@ public class ChartData extends BaseEntity {
     private BigDecimal price;
 
     @Column
-    private BigDecimal price_change;
+    private BigDecimal priceChange;
 
     @Column
-    private BigDecimal marketCap;
+    private BigDecimal priceChangeRate;
+
+//    @Column
+//    private BigDecimal marketCap;
+
+    @Column
+    private BigDecimal weighted_average_price;
 
     @Column
     private Integer volume;
