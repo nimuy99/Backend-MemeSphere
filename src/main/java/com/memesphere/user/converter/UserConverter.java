@@ -48,11 +48,5 @@ public class UserConverter {
                 .build();
     }
 
-    public static UserInfoResponse toUserInfo(User user) {
-        return UserInfoResponse.builder()
-                .loginId(user.getLoginId())
-                .nickname(user.getNickname())
-                .build();
-    }
 }
 

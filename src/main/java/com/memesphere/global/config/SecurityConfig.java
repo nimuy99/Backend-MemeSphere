@@ -42,8 +42,6 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login"
                                 ,"/user/**"
                                 ,"/swagger-ui/**"
-                                ,"/css/**"
-                                ,"/img/**"
                                 ,"/swagger-resources/**"
                                 ,"/v3/api-docs/**").permitAll().anyRequest().hasRole("USER")
                 )
