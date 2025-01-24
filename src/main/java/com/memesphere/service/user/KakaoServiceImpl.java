@@ -3,9 +3,10 @@ package com.memesphere.service.user;
 import com.memesphere.converter.UserConverter;
 import com.memesphere.domain.User;
 import com.memesphere.domain.enums.SocialType;
-import com.memesphere.dto.response.LoginResponse;
-import com.memesphere.dto.response.KakaoTokenResponse;
 import com.memesphere.dto.response.KakaoUserInfoResponse;
+import com.memesphere.dto.response.LoginResponse;
+import com.memesphere.dto.response.TokenResponse;
+import com.memesphere.dto.response.UserInfoResponse;
 import com.memesphere.jwt.TokenProvider;
 import com.memesphere.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class KakaoServiceImpl implements KakaoService {
     @Value("${security.oauth2.client.provider.kakao.user-info-uri}")
     private String userInfoUri;
 
-    public KakaoTokenResponse getAccessTokenFromKakao(String code) {
+    public TokenResponse getAccessTokenFromKakao(String code) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String uri = UriComponentsBuilder.fromUriString(tokenUri)
@@ -47,7 +48,7 @@ public class KakaoServiceImpl implements KakaoService {
                     .queryParam("code", code)
                     .toUriString();
 
-            ResponseEntity<KakaoTokenResponse> responseEntity = restTemplate.postForEntity(uri, null, KakaoTokenResponse.class);
+            ResponseEntity<TokenResponse> responseEntity = restTemplate.postForEntity(uri, null, TokenResponse.class);
             return responseEntity.getBody();
         } catch (Exception e) {
             log.error("Error occurred while getting access token from Kakao: ", e);
@@ -73,23 +74,23 @@ public class KakaoServiceImpl implements KakaoService {
     }
 
     // 사용자 정보로 회원가입 처리
-    public void handleUserRegistration(KakaoUserInfoResponse userInfo, KakaoTokenResponse kakaoTokenResponse) {
-        Long loginId = userInfo.getId();
+    public void handleUserRegistration(KakaoUserInfoResponse kakaoUserInfoResponse, TokenResponse tokenResponse) {
+        Long loginId = kakaoUserInfoResponse.getId();
         User existingUser = userServiceImpl.findByLoginId(loginId);
 
         if (existingUser == null) { // 유저가 존재하지 않으면 회원가입 처리
-            User newUser = UserConverter.createUser(userInfo); // 신규 유저 생성
+            User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse); // 신규 유저 생성
             userServiceImpl.save(newUser);
         } else {
             // 이미 존재하는 경우 토큰을 업데이트
-            User updatedUser = UserConverter.updateUser(userInfo, kakaoTokenResponse); // 기존 유저 업데이트
+            User updatedUser = UserConverter.toUpdatedKakaoUser(kakaoUserInfoResponse, tokenResponse); // 기존 유저 업데이트
             existingUser.setSocialType(SocialType.KAKAO);
             userServiceImpl.save(updatedUser);
         }
     }
 
-    public LoginResponse handleUserLogin(KakaoUserInfoResponse userInfo) {
-        User existingUser = userServiceImpl.findByLoginId(userInfo.getId());
+    public LoginResponse handleUserLogin(KakaoUserInfoResponse kakaoUserInfoResponse) {
+        User existingUser = userServiceImpl.findByLoginId(kakaoUserInfoResponse.getId());
         String accessToken;
 
         if (existingUser != null) {
@@ -107,7 +108,7 @@ public class KakaoServiceImpl implements KakaoService {
 
             return new LoginResponse(accessToken, refreshToken);
         } else {
-            User newUser = UserConverter.createUser(userInfo); // 신규 유저 생성
+            User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse); // 신규 유저 생성
             newUser = userRepository.save(newUser);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
