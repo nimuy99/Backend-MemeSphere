@@ -31,7 +31,6 @@ public class CustomUserDetails implements UserDetails {
         return user.getNickname();
     }
 
-    // 사용자의 권한을 GrantedAuthority 로 추상화 및 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {		// 3.
         UserRole role = user.getUserRole();

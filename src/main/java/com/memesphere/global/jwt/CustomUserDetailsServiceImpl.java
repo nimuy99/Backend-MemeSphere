@@ -28,13 +28,4 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
         return new CustomUserDetails(userData);
     }
-
-    public Optional<User> getCurrentAuthenticatedMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-            String userName = authentication.getName();
-            return userRepository.findByNickname(userName);
-        }
-        throw new UsernameNotFoundException("인증된 사용자를 찾을 수 없습니다.");
-    }
 }

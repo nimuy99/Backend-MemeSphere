@@ -49,13 +49,18 @@ public class User extends BaseEntity {
     private String wallet;
 
     @Setter
+    @Column
     private String accessToken;
 
     @Setter
+    @Column
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    @Column(length = 8)
+    private String birth;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Collection> collectionList = new ArrayList<>();

@@ -25,4 +25,8 @@ public class SignUpRequest {
     @NotEmpty
     @Schema(description = "사용자 닉네임", example = "홍길동")
     String nickname;
+
+    @NotEmpty
+    @Schema(description = "사용자 생년월일", example = "20001010")
+    String birth;
 }
