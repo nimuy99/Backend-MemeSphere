@@ -40,7 +40,7 @@ public class ChatService {
         // 최신 댓글을 하나만 가져옴
         Chat latestChat = chatRepository.findLatestMessageByCoinId(coin_id);
 
-        // 댓글이 없으면 null 반환 - 필요없나? (null 값 처리)
+        // 댓글이 없으면 null 반환
         if (latestChat == null) {
             return null;
         }
