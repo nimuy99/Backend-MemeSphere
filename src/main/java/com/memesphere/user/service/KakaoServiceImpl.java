@@ -68,7 +68,6 @@ public class KakaoServiceImpl implements KakaoService {
         }
     }
 
-    // 사용자 정보로 회원가입 처리
     public void handleUserRegistration(KakaoUserInfoResponse kakaoUserInfoResponse, TokenResponse tokenResponse) {
         Long loginId = kakaoUserInfoResponse.getId();
         User existingUser = userServiceImpl.findByLoginId(loginId);

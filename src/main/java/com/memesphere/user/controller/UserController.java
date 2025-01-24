@@ -38,7 +38,6 @@ public class UserController {
     @PostMapping("/signup")
     @Operation(summary = "일반 회원가입 API")
     public ApiResponse<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-
         authServiceImpl.handleUserRegistration(signUpRequest);
         return ApiResponse.onSuccess(null);
     }

@@ -14,9 +14,9 @@ import java.util.Collection;
 @Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private final User user;        // 1.
+    private final User user;
 
-    public User getUser() {         // 2.
+    public User getUser() {
         return user;
     }
 
@@ -31,7 +31,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {		// 3.
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         UserRole role = user.getUserRole();
         String authority = role.getAuthority();
 
