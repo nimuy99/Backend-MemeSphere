@@ -16,6 +16,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @EnableWebSecurity
@@ -36,10 +37,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(CsrfConfigurer::disable)
                 .formLogin((auth) -> auth.disable())
-                .sessionManagement(configurer -> configurer.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS))
+                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
-                        .anyRequest().permitAll() // 일단 인증 없이 모든 요청 허용
+                        .requestMatchers("/", "/login"
+                                ,"/user/**"
+                                ,"/swagger-ui/**"
+                                ,"/css/**"
+                                ,"/img/**"
+                                ,"/swagger-resources/**"
+                                ,"/v3/api-docs/**").permitAll().anyRequest().hasRole("USER")
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -48,10 +54,11 @@ public class SecurityConfig {
 
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));
         configuration.setAllowedHeaders(List.of("*")); //모든 HTTP 헤더를 허용
-        configuration.setAllowedMethods(List.of("*")); //모든 HTTP 메소드를 허용
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true); //인증 정보와 관련된 요청을 허용
         configuration.setMaxAge(3600L);
 

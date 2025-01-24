@@ -54,6 +54,9 @@ public class User extends BaseEntity {
     @Setter
     private String refreshToken;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Collection> collectionList = new ArrayList<>();
 

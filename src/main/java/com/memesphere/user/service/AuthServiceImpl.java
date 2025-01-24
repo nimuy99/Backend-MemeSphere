@@ -10,12 +10,9 @@ import com.memesphere.user.dto.request.SignUpRequest;
 import com.memesphere.user.dto.response.LoginResponse;
 import com.memesphere.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +46,7 @@ public class AuthServiceImpl implements AuthService{
 
             checkPassword(existingUser, signInRequest.getPassword());
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(existingUser.getEmail(), null, new ArrayList<>());
-
-            accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), authentication);
+            accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
             existingUser.setAccessToken(accessToken);

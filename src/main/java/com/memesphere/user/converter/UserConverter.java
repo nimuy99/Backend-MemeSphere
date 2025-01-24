@@ -2,6 +2,7 @@ package com.memesphere.user.converter;
 
 import com.memesphere.user.domain.User;
 import com.memesphere.user.domain.SocialType;
+import com.memesphere.user.domain.UserRole;
 import com.memesphere.user.dto.request.SignUpRequest;
 import com.memesphere.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.user.dto.response.TokenResponse;
@@ -19,6 +20,7 @@ public class UserConverter {
                 .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
                 .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
                 .socialType(SocialType.KAKAO)
+                .userRole(UserRole.USER)
                 .build();
     }
 
@@ -28,6 +30,7 @@ public class UserConverter {
                 .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
                 .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
                 .socialType(SocialType.KAKAO)
+                .userRole(UserRole.USER)
                 .accessToken(tokenResponse.getAccessToken())
                 .refreshToken(tokenResponse.getRefreshToken())
                 .build();
@@ -41,6 +44,7 @@ public class UserConverter {
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .socialType(SocialType.GENERAL)
+                .userRole(UserRole.USER)
                 .build();
     }
 

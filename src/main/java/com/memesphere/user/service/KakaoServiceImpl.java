@@ -12,13 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.ArrayList;
 
 @Slf4j
 @Service
@@ -81,7 +77,6 @@ public class KakaoServiceImpl implements KakaoService {
             User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse); // 신규 유저 생성
             userServiceImpl.save(newUser);
         } else {
-            // 이미 존재하는 경우 토큰을 업데이트
             User updatedUser = UserConverter.toUpdatedKakaoUser(kakaoUserInfoResponse, tokenResponse); // 기존 유저 업데이트
             existingUser.setSocialType(SocialType.KAKAO);
             userServiceImpl.save(updatedUser);
@@ -93,26 +88,20 @@ public class KakaoServiceImpl implements KakaoService {
         String accessToken;
 
         if (existingUser != null) {
-            // 기존 유저가 존재하는 경우 Authentication 객체 생성
-            Authentication authentication = new UsernamePasswordAuthenticationToken(existingUser.getEmail(), null, new ArrayList<>());
 
-            // 액세스 토큰과 리프레쉬 토큰을 발급
-            accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), authentication);
+            accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            // 발급된 토큰을 기존 유저 객체에 업데이트
             existingUser.setAccessToken(accessToken);
             existingUser.setRefreshToken(refreshToken);
             userRepository.save(existingUser);
 
             return new LoginResponse(accessToken, refreshToken);
         } else {
-            User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse); // 신규 유저 생성
+            User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse);
             newUser = userRepository.save(newUser);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(newUser.getEmail(), null, new ArrayList<>());
-
-            accessToken = tokenProvider.createAccessToken(newUser.getEmail(), authentication);
+            accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
             newUser.setAccessToken(accessToken);
