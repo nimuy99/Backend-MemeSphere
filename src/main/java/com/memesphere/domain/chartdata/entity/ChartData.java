@@ -1,6 +1,6 @@
 package com.memesphere.domain.chartdata.entity;
 
-import com.memesphere.global.domain.BaseEntity;
+import com.memesphere.global.common.BaseEntity;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import jakarta.persistence.*;
 import lombok.*;

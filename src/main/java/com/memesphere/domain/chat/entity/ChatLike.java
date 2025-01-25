@@ -1,6 +1,6 @@
 package com.memesphere.domain.chat.entity;
 
-import com.memesphere.global.domain.BaseEntity;
+import com.memesphere.global.common.BaseEntity;
 import com.memesphere.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

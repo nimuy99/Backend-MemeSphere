@@ -3,7 +3,7 @@ package com.memesphere.domain.memecoin.entity;
 import com.memesphere.domain.chat.entity.Chat;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.chartdata.entity.ChartData;
-import com.memesphere.global.domain.BaseEntity;
+import com.memesphere.global.common.BaseEntity;
 import com.memesphere.domain.notification.entity.Notification;
 import jakarta.persistence.*;
 import lombok.*;

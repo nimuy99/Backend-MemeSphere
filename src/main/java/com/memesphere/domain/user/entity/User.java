@@ -4,7 +4,7 @@ import com.memesphere.domain.chat.entity.Chat;
 import com.memesphere.domain.chat.entity.ChatLike;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.notification.entity.Notification;
-import com.memesphere.global.domain.BaseEntity;
+import com.memesphere.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;

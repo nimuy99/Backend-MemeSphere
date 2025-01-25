@@ -1,7 +1,7 @@
 package com.memesphere.domain.collection.entity;
 
 import com.memesphere.domain.memecoin.entity.MemeCoin;
-import com.memesphere.global.domain.BaseEntity;
+import com.memesphere.global.common.BaseEntity;
 import com.memesphere.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

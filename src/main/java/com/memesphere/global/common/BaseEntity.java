@@ -1,4 +1,4 @@
-package com.memesphere.global.domain;
+package com.memesphere.global.common;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
