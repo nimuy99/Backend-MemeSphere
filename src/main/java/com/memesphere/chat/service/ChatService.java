@@ -39,7 +39,7 @@ public class ChatService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
         // 최신 댓글을 하나만 가져옴
-        Chat latestChat = chatRepository.findLatestMessageByMemeCoin(memeCoin);
+        Chat latestChat = chatRepository.findFirstByMemeCoin_IdOrderByCreatedAtDesc(coin_id);
 
         // 댓글이 없으면 null 반환
         if (latestChat == null) {

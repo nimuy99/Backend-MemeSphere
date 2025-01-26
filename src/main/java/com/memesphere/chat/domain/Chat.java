@@ -8,7 +8,6 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +27,6 @@ public class Chat extends BaseEntity {
 
     @Column
     private String message;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
