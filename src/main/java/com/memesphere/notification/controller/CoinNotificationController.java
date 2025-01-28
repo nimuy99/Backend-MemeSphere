@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name="알림", description = "알림 관련 API")
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/notification")
 @RequiredArgsConstructor
 public class CoinNotificationController {
 
     final private CoinNotificationService coinNotificationService;
 
-    @GetMapping
-    @Operation(summary = "등록한 알림 조회 API",
+    @GetMapping("/list")
+    @Operation(summary = "등록한 알림 리스트 조회 API",
             description = """
                     사용자가 등록해 놓은 알림 리스트를 보여줍니다. \n
                     
@@ -41,7 +41,7 @@ public class CoinNotificationController {
         return ApiResponse.onSuccess(coinNotificationService.findNotificationList());
     }
 
-    @PostMapping
+    @PostMapping("/enroll")
     @Operation(summary = "알림 등록 API",
             description = """
                     사용자가 직접 필드를 입력하여 알림을 등록합니다. \n

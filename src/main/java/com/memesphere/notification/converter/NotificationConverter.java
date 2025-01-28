@@ -3,7 +3,10 @@ package com.memesphere.notification.converter;
 import com.memesphere.memecoin.domain.MemeCoin;
 import com.memesphere.notification.domain.Notification;
 import com.memesphere.notification.dto.request.NotificationRequest;
+import com.memesphere.notification.dto.response.NotificationListResponse;
 import com.memesphere.notification.dto.response.NotificationResponse;
+
+import java.util.List;
 
 public class NotificationConverter {
 
@@ -24,6 +27,12 @@ public class NotificationConverter {
                 .volatility(notification.getVolatility())
                 .stTime(notification.getStTime())
                 .isRising(notification.getIsRising())
+                .build();
+    }
+
+    public static NotificationListResponse toNotificationListResponse(List<NotificationResponse> notificationResponses) {
+        return NotificationListResponse.builder()
+                .notificationList(notificationResponses)
                 .build();
     }
 }

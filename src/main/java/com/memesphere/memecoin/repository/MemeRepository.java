@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface MemeRepository extends JpaRepository<MemeCoin, Long> {
     @EntityGraph(attributePaths = {"chartData"})
     Page<MemeCoin> findByNameContainingIgnoreCaseOrSymbolContainingIgnoreCaseOrKeywordsContainingIgnoreCase(String name, String symbol, String keyword, Pageable pageable);
 
-    MemeCoin findByName(String name);
+    Optional<MemeCoin> findByName(String name);
 }

@@ -31,7 +31,7 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private Boolean isRising;  // 상승 또는 하락
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "BOOLEAN DEFAULT true")
     private Boolean isOn;  // 알람 on/off
 
     @ManyToOne(fetch=FetchType.LAZY)
