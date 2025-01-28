@@ -1,7 +1,7 @@
 package com.memesphere.notification.controller;
 
 import com.memesphere.global.apipayload.ApiResponse;
-import com.memesphere.notification.dto.NotificationDTO;
+import com.memesphere.notification.dto.response.NotificationListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class PushNotificationController {
                     읽음 여부를 확인해야 한다면 푸시 알림 테이블을 만드는게 맞을까요?  \n
                     푸시 알림 기능이 어떻게 작동되는지 몰라서 컨트롤러만 두었습니다.  \n
                     응답 형식은 일단 무시해주세요.""")
-    public ApiResponse<NotificationDTO.NotificationListResponse> getPushList() {
+    public ApiResponse<NotificationListResponse> getPushList() {
         return ApiResponse.onSuccess(null);
     }
 
@@ -33,7 +33,7 @@ public class PushNotificationController {
                     푸시된 알림 리스트를 삭제? 확인?합니다. \n
                     이 기능은 푸시 알림 기능을 더 정의한 후에 수정해야 할 듯 보입니다. 
                     """)
-    public ApiResponse<NotificationDTO.NotificationListResponse> deletePushNotification() {
+    public ApiResponse<NotificationListResponse> deletePushNotification() {
         return ApiResponse.onSuccess(null);
     }
 }

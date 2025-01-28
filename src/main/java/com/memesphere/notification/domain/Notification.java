@@ -23,16 +23,16 @@ public class Notification extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Integer volatility;
+    private Integer volatility;  // 변동성
 
     @Column(nullable = false)
-    private Integer st_time;
+    private Integer stTime;  // 기준 시간
 
     @Column(nullable = false)
-    private Boolean is_rising;
+    private Boolean isRising;  // 상승 또는 하락
 
     @Column(nullable = false)
-    private Boolean is_on;
+    private Boolean isOn;  // 알람 on/off
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
