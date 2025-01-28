@@ -37,7 +37,6 @@ public class User extends BaseEntity {
     private String email;
 
     @Setter
-    @Column
     private String password;
 
     @Setter
@@ -45,15 +44,12 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private SocialType socialType;
 
-    @Column
     private String wallet;
 
     @Setter
-    @Column
     private String accessToken;
 
     @Setter
-    @Column
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
