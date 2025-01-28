@@ -1,0 +1,170 @@
+[
+  {
+    "name": "Dogecoin",
+    "symbol": "DOGE",
+    "image": "memecoin-img/doge.png",
+    "description": "Dogecoin",
+    "collectionActive": false,
+    "keywords": ["Animal", "Hot", "Accessible"]
+  },
+  {
+    "name": "SHIBA INU",
+    "symbol": "SHIB",
+    "image": "memecoin-img/shib.png",
+    "description": "SHIBA INU",
+    "collectionActive": false,
+    "keywords": ["Animal", "Inu", "Trending"]
+  },
+  {
+    "name": "OFFICIAL TRUMP",
+    "symbol": "TRUMP",
+    "image": "memecoin-img/trump.png",
+    "description": "OFFICIAL TRUMP",
+    "collectionActive": false,
+    "keywords": ["Political", "Meme", "Viral"]
+  },
+  {
+    "name": "Pepe",
+    "symbol": "PEPE",
+    "image": "memecoin-img/pepe.png",
+    "description": "Pepe",
+    "collectionActive": false,
+    "keywords": ["Meme", "Ethereum", "No-Tax"]
+  },
+  {
+    "name": "Bonk",
+    "symbol": "BONK",
+    "image": "memecoin-img/bonk.png",
+    "description": "Bonk",
+    "collectionActive": false,
+    "keywords": ["Animal", "Solana", "Airdrop"]
+  },
+  {
+    "name": "Pudgy Penguins",
+    "symbol": "PENGU",
+    "image": "memecoin-img/pengu.png",
+    "description": "Pudgy Penguins",
+    "collectionActive": false,
+    "keywords": ["Animal", "NFT", "Collectibles"]
+  },
+  {
+    "name": "Dogwifhat",
+    "symbol": "WIF",
+    "image": "memecoin-img/wif.png",
+    "description": "Dogwifhat",
+    "collectionActive": false,
+    "keywords": ["Animal", "Solana", "Community"]
+  },
+  {
+    "name": "FLOKI",
+    "symbol": "FLOKI",
+    "image": "memecoin-img/floki.png",
+    "description": "FLOKI",
+    "collectionActive": false,
+    "keywords": ["Animal", "Elon Musk", "Web3"]
+  },
+  {
+    "name": "aixbt by Virtuals",
+    "symbol": "AIXBT",
+    "image": "memecoin-img/aixbt.png",
+    "description": "aixbt by Virtuals",
+    "collectionActive": false,
+    "keywords": ["AI", "Market Intelligence", "Community"]
+  },
+  {
+    "name": "Turbo",
+    "symbol": "TURBO",
+    "image": "memecoin-img/turbo.png",
+    "description": "Turbo",
+    "collectionActive": false,
+    "keywords": ["AI", "Decentralized", "Fast"]
+  },
+  {
+    "name": "ORDI",
+    "symbol": "ORDI",
+    "image": "memecoin-img/ordi.png",
+    "description": "ORDI",
+    "collectionActive": false,
+    "keywords": ["Bitcoin", "Ordinals", "Tokenization"]
+  },
+  {
+    "name": "Peanut the Squirrel",
+    "symbol": "PNUT",
+    "image": "memecoin-img/pnut.png",
+    "description": "Peanut the Squirrel",
+    "collectionActive": false,
+    "keywords": ["Animal", "Viral", "Tribute"]
+  },
+  {
+    "name": "1M x BABYDOGE",
+    "symbol": "1MBABYDOGE",
+    "image": "memecoin-img/babydoge.png",
+    "description": "1M x BABYDOGE",
+    "collectionActive": false,
+    "keywords": ["Animal", "Deflationary", "Meme"]
+  },
+  {
+    "name": "Memecoin",
+    "symbol": "MEME",
+    "image": "memecoin-img/meme.png",
+    "description": "Memecoin",
+    "collectionActive": false,
+    "keywords": ["Meme", "Web3", "SocialFi"]
+  },
+  {
+    "name": "BOOK OF MEME",
+    "symbol": "BOME",
+    "image": "memecoin-img/bome.jpeg",
+    "description": "BOOK OF MEME",
+    "collectionActive": false,
+    "keywords": ["Meme", "Solana", "Decentralized"]
+  },
+  {
+    "name": "1000*SATS (Ordinals)",
+    "symbol": "1000SATS",
+    "image": "memecoin-img/sats.png",
+    "description": "1000*SATS (Ordinals)",
+    "collectionActive": false,
+    "keywords": ["Bitcoin", "Tokenization", "Mining"]
+  },
+  {
+    "name": "First Neiro On Ethereum",
+    "symbol": "NEIRO",
+    "image": "memecoin-img/neiro.jpeg",
+    "description": "First Neiro On Ethereum",
+    "collectionActive": false,
+    "keywords": ["Animal", "Ethereum", "Community-Driven"]
+  },
+  {
+    "name": "Dogs",
+    "symbol": "DOGS",
+    "image": "memecoin-img/dogs.jpeg",
+    "description": "Dogs",
+    "collectionActive": false,
+    "keywords": ["Animal", "Telegram", "Charity"]
+  },
+  {
+    "name": "ConstitutionDAO",
+    "symbol": "PEOPLE",
+    "image": "memecoin-img/people.png",
+    "description": "ConstitutionDAO",
+    "collectionActive": false,
+    "keywords": ["DAO", "Ethereum", "Crowdfunding"]
+  },
+  {
+    "name": "Act I: The AI Prophecy",
+    "symbol": "ACT",
+    "image": "memecoin-img/act1.png",
+    "description": "Act I: The AI Prophecy",
+    "collectionActive": false,
+    "keywords": ["AI", "Decentralized", "Community"]
+  },
+  {
+    "name": "1000*Simons Cat",
+    "symbol": "1000CAT",
+    "image": "memecoin-img/simons-cat.png",
+    "description": "1000*Simons Cat",
+    "collectionActive": false,
+    "keywords": ["Animal", "NFT", "Fan-Driven"]
+  }
+]

@@ -1,6 +1,7 @@
 package com.memesphere.chartdata.repository;
 
 import com.memesphere.chartdata.domain.ChartData;
+import com.memesphere.memecoin.domain.MemeCoin;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,6 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
 
     @EntityGraph(attributePaths = {"memeCoin"})
     List<ChartData> findTop5ByOrderByVolumeDesc();
+
+    List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin);
 }

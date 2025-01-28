@@ -1,5 +1,6 @@
 package com.memesphere.collection.converter;
 
+import com.memesphere.chartdata.domain.ChartData;
 import com.memesphere.collection.domain.Collection;
 import com.memesphere.memecoin.domain.MemeCoin;
 import com.memesphere.collection.dto.response.CollectionPageResponse;
@@ -27,16 +28,17 @@ public class CollectionConverter {
 
     private static CollectionPreviewResponse toCollectionPreviewDTO(Collection collection) {
         MemeCoin memeCoin = collection.getMemeCoin();
+        ChartData chartData = memeCoin.getChartDataList().get(0);
 
         return CollectionPreviewResponse.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
-                .currentPrice(memeCoin.getChartData().getPrice())
-                .highPrice(memeCoin.getChartData().getHigh_price())
-                .lowPrice(memeCoin.getChartData().getLow_price())
-                .priceChange(memeCoin.getChartData().getPriceChange())
-                .priceChangeRate(memeCoin.getChartData().getPriceChangeRate())
+                .currentPrice(chartData.getPrice())
+                .highPrice(chartData.getHigh_price())
+                .lowPrice(chartData.getLow_price())
+                .priceChange(chartData.getPriceChange())
+                .priceChangeRate(chartData.getPriceChangeRate())
                 .build();
     }
 }

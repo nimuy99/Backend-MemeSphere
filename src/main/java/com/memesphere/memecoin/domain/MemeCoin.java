@@ -41,7 +41,7 @@ public class MemeCoin extends BaseEntity {
     private String description;
 
     @Column
-    private boolean CollectionActive;
+    private boolean collectionActive;
 
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
@@ -57,6 +57,7 @@ public class MemeCoin extends BaseEntity {
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
     private List<Chat> chatList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "memeCoin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ChartData chartData;
+    @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("recordedTime DESC")
+    private List<ChartData> chartDataList = new ArrayList<>();
 }

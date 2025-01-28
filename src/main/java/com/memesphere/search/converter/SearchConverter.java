@@ -1,5 +1,6 @@
 package com.memesphere.search.converter;
 
+import com.memesphere.chartdata.domain.ChartData;
 import com.memesphere.memecoin.domain.MemeCoin;
 import com.memesphere.search.enums.ViewType;
 import com.memesphere.search.dto.response.SearchGridPreviewResponse;
@@ -37,27 +38,31 @@ public class SearchConverter {
     }
 
     public static SearchGridPreviewResponse toSearchGridPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
+        ChartData chartData = memeCoin.getChartDataList().get(0);
+
         return SearchGridPreviewResponse.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
-                .currentPrice(memeCoin.getChartData().getPrice())
-                .highPrice(memeCoin.getChartData().getHigh_price())
-                .lowPrice(memeCoin.getChartData().getLow_price())
-                .priceChange(memeCoin.getChartData().getPriceChange())
-                .priceChangeRate(memeCoin.getChartData().getPriceChangeRate())
+                .currentPrice(chartData.getPrice())
+                .highPrice(chartData.getHigh_price())
+                .lowPrice(chartData.getLow_price())
+                .priceChange(chartData.getPriceChange())
+                .priceChangeRate(chartData.getPriceChangeRate())
                 .isCollected(isCollected)
                 .build();
     }
 
     public static SearchListPreviewResponse toSearchListPreviewDTO(MemeCoin memeCoin, boolean isCollected) {
+        ChartData chartData = memeCoin.getChartDataList().get(0);
+
         return SearchListPreviewResponse.builder()
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
-                .currentPrice(memeCoin.getChartData().getPrice())
-                .priceChange(memeCoin.getChartData().getPriceChangeRate())
-                .weightedAveragePrice(memeCoin.getChartData().getWeighted_average_price())
-                .volume(memeCoin.getChartData().getVolume())
+                .currentPrice(chartData.getPrice())
+                .priceChange(chartData.getPriceChangeRate())
+                .weightedAveragePrice(chartData.getWeighted_average_price())
+                .volume(chartData.getVolume())
                 .isCollected(isCollected)
                 .build();
     }

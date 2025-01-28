@@ -7,7 +7,7 @@ import com.memesphere.chat.domain.Chat;
 import com.memesphere.memecoin.domain.MemeCoin;
 import com.memesphere.chat.dto.request.ChatRequest;
 import com.memesphere.chat.dto.response.ChatResponse;
-import com.memesphere.memecoin.repository.MemeRepository;
+import com.memesphere.memecoin.repository.MemeCoinRepository;
 import com.memesphere.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final MemeRepository memeRepository;
+    private final MemeCoinRepository memeCoinRepository;
     private final ChatRepository chatRepository;
 
     public ChatResponse saveMessage(Long coin_id, ChatRequest chatRequest) {
 
-        MemeCoin memeCoin = memeRepository.findById(coin_id)
+        MemeCoin memeCoin = memeCoinRepository.findById(coin_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
         Chat chat = ChatConverter.toChat(memeCoin, chatRequest);
