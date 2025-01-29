@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Create application.yml  # 🛠 application.yml 자동 생성
+      - name: Create application.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
@@ -30,11 +30,13 @@ jobs:
           chmod +x gradlew
           ./gradlew bootJar
 
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
       - name: Build and push Docker image
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker build -t your-dockerhub-username/your-app:latest .
-          docker push your-dockerhub-username/your-app:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.MY_APP }}:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.MY_APP }}:latest
 
   deploy:
     needs: build
@@ -46,15 +48,17 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          MY_APP: ${{ secrets.MY_APP }}
         run: |
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
-            docker pull your-dockerhub-username/your-app:latest
-            docker stop my-app || true
-            docker rm my-app || true
-            docker run -d -p 8080:8080 --name my-app your-dockerhub-username/your-app:latest
+            docker pull $DOCKER_USERNAME/$MY_APP:latest
+            docker stop $MY_APP || true
+            docker rm $MY_APP || true
+            docker run -d -p 8080:8080 --name $MY_APP $DOCKER_USERNAME/$MY_APP:latest
           "
           
           rm -f private_key.pem  
