@@ -11,5 +11,4 @@ public class MemesphereApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MemesphereApplication.class, args);
 	}
-
 }

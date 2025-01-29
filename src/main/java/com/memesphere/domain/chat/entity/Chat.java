@@ -28,7 +28,6 @@ public class Chat extends BaseEntity {
     @Column
     private String message;
 
-
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
