@@ -24,6 +24,7 @@ public class ChatConverter {
                 .memeCoin(chat.getMemeCoin().getName())
                 .likes(chat.getChatLikeList().size())
                 .createdAt(chat.getCreatedAt())
+                .nickname(chat.getUser().getNickname())
                 .build();
     }
 }
