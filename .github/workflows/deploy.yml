@@ -35,8 +35,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.MY_APP }}:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.MY_APP }}:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ vars.MY_APP }}:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.MY_APP }}:latest
 
   deploy:
     needs: build
@@ -49,7 +49,7 @@ jobs:
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          MY_APP: ${{ secrets.MY_APP }}
+          MY_APP: ${{ vars.MY_APP }}
         run: |
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
