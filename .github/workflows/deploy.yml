@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          email: "cotak7@naver.com" # 특정 유저만 알림
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
