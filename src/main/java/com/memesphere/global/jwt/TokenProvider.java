@@ -1,10 +1,10 @@
 package com.memesphere.global.jwt;
 
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.repository.UserRepository;
+import com.memesphere.domain.user.service.UserServiceImpl;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
-import com.memesphere.user.domain.User;
-import com.memesphere.user.repository.UserRepository;
-import com.memesphere.user.service.UserServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

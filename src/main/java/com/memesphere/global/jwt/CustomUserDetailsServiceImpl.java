@@ -1,9 +1,9 @@
 package com.memesphere.global.jwt;
 
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
-import com.memesphere.user.domain.User;
-import com.memesphere.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

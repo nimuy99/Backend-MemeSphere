@@ -1,7 +1,7 @@
 package com.memesphere.global.jwt;
 
-import com.memesphere.user.domain.User;
-import com.memesphere.user.domain.UserRole;
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.entity.UserRole;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
