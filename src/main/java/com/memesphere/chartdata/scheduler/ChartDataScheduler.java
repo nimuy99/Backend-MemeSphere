@@ -16,6 +16,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.memesphere.chartdata.converter.ChartDataConverter.toChartData;
+
 @Component
 @RequiredArgsConstructor
 public class ChartDataScheduler {
@@ -33,17 +35,7 @@ public class ChartDataScheduler {
                 String symbol = memeCoin.getSymbol() + "USDT";
                 BinanceTickerResponse response = binanceQueryService.getTickerData(symbol);
 
-                ChartData chartData = ChartData.builder()
-                        .memeCoin(memeCoin)
-                        .recordedTime(LocalDateTime.now())
-                        .price(new BigDecimal(response.getLastPrice()))
-                        .priceChange(new BigDecimal(response.getPriceChange()))
-                        .priceChangeRate(new BigDecimal(response.getPriceChangePercent()))
-                        .weighted_average_price(new BigDecimal(response.getWeightedAvgPrice()))
-                        .volume(new BigDecimal(response.getVolume()))
-                        .low_price(new BigDecimal(response.getLowPrice()))
-                        .high_price(new BigDecimal(response.getHighPrice()))
-                        .build();
+                ChartData chartData = toChartData(memeCoin,response);
 
                 memeCoinQueryService.updateChartData(memeCoin.getId(), chartData);
 
