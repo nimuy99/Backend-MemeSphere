@@ -36,7 +36,7 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Column
+    @Setter
     private String password;
 
     @Setter
@@ -44,7 +44,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private SocialType socialType;
 
-    @Column
     private String wallet;
 
     @Setter
@@ -52,6 +51,12 @@ public class User extends BaseEntity {
 
     @Setter
     private String refreshToken;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+    @Column(length = 8)
+    private String birth;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default

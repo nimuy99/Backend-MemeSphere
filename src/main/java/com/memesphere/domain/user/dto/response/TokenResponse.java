@@ -14,7 +14,7 @@ import lombok.Builder;
 @Builder
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KakaoTokenResponse {
+public class TokenResponse {
 
     @JsonProperty("token_type")
     @Schema(description = "토큰 타입", example = "Bearer")
@@ -41,7 +41,7 @@ public class KakaoTokenResponse {
     private Integer refreshTokenExpiresIn;
 
     @JsonProperty("scope")
-    @Schema(description = "허가된 범위", example = "profile,account")
+    @Schema(description = "허가된 범위", example = "profile, account")
     private String scope;
 }
 
