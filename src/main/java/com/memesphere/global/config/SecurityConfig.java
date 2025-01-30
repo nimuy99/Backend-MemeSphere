@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 ,"/v3/api-docs/**").permitAll()
                         .requestMatchers("/notifications"
                                 ,"/push-notifications"
-                                ,"collection").authenticated()
+                                ,"collection").hasRole("USER")
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
