@@ -38,12 +38,15 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/login"
+                        .requestMatchers("/","/login"
                                 ,"/user/**"
                                 ,"/swagger-ui/**"
                                 ,"/swagger-resources/**"
                                 ,"/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/notifications"
+                                ,"/push-notifications"
+                                ,"collection").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
