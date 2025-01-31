@@ -3,7 +3,7 @@ package com.memesphere.domain.detail.service;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.detail.converter.DetailConverter;
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.detail.dto.response.DetailGetResponse;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
 import lombok.RequiredArgsConstructor;

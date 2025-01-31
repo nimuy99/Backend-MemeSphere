@@ -1,7 +1,7 @@
 package com.memesphere.domain.collection.controller;
 
 import com.memesphere.global.apipayload.ApiResponse;
-import com.memesphere.domain.collection.domain.Collection;
+import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
 import com.memesphere.domain.collection.service.CollectionQueryService;
 import com.memesphere.global.validation.annotation.CheckPage;

@@ -3,7 +3,7 @@ package com.memesphere.domain.user.service;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.user.converter.UserConverter;
-import com.memesphere.domain.user.domain.User;
+import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.dto.response.UserInfoResponse;
 import com.memesphere.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

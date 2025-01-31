@@ -2,7 +2,7 @@ package com.memesphere.domain.search.service;
 
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
 import com.memesphere.domain.search.enums.SortType;
 import com.memesphere.domain.search.enums.ViewType;

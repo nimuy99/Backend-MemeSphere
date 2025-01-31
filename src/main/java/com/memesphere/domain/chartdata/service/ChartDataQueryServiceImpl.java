@@ -1,8 +1,8 @@
 package com.memesphere.domain.chartdata.service;
 
-import com.memesphere.domain.chartdata.domain.ChartData;
+import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.chartdata.repository.ChartDataRepository;
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

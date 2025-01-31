@@ -1,7 +1,7 @@
 package com.memesphere.domain.dashboard.service;
 
 import com.memesphere.domain.dashboard.converter.DashboardConverter;
-import com.memesphere.domain.chartdata.domain.ChartData;
+import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.domain.chartdata.repository.ChartDataRepository;

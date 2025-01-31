@@ -1,6 +1,6 @@
 package com.memesphere.domain.search.service;
 
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.search.enums.SortType;
 import com.memesphere.domain.search.enums.ViewType;
 import org.springframework.data.domain.Page;

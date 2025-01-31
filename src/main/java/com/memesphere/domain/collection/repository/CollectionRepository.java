@@ -1,6 +1,6 @@
 package com.memesphere.domain.collection.repository;
 
-import com.memesphere.domain.collection.domain.Collection;
+import com.memesphere.domain.collection.entity.Collection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

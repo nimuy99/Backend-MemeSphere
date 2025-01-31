@@ -1,8 +1,8 @@
 package com.memesphere.domain.collection.converter;
 
-import com.memesphere.domain.chartdata.domain.ChartData;
-import com.memesphere.domain.collection.domain.Collection;
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.chartdata.entity.ChartData;
+import com.memesphere.domain.collection.entity.Collection;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
 import com.memesphere.domain.collection.dto.response.CollectionPreviewResponse;
 import org.springframework.data.domain.Page;

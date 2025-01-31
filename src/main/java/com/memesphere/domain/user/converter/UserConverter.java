@@ -1,7 +1,7 @@
 package com.memesphere.domain.user.converter;
 
-import com.memesphere.domain.user.domain.User;
-import com.memesphere.domain.user.domain.SocialType;
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.dto.response.KakaoTokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.domain.user.dto.response.UserInfoResponse;

@@ -1,7 +1,7 @@
 package com.memesphere.domain.search.converter;
 
-import com.memesphere.domain.chartdata.domain.ChartData;
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.chartdata.entity.ChartData;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.search.enums.ViewType;
 import com.memesphere.domain.search.dto.response.SearchGridPreviewResponse;
 import com.memesphere.domain.search.dto.response.SearchListPreviewResponse;

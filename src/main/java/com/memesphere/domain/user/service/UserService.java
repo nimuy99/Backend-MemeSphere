@@ -1,6 +1,6 @@
 package com.memesphere.domain.user.service;
 
-import com.memesphere.domain.user.domain.User;
+import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.dto.response.UserInfoResponse;
 
 public interface UserService {

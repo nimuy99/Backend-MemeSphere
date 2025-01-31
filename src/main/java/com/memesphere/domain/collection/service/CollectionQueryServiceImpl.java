@@ -1,6 +1,6 @@
 package com.memesphere.domain.collection.service;
 
-import com.memesphere.domain.collection.domain.Collection;
+import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.repository.CollectionRepository;
 import com.memesphere.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

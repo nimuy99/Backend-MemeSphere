@@ -1,8 +1,8 @@
 package com.memesphere.domain.chartdata.converter;
 
 import com.memesphere.binance.dto.response.BinanceTickerResponse;
-import com.memesphere.domain.chartdata.domain.ChartData;
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.chartdata.entity.ChartData;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

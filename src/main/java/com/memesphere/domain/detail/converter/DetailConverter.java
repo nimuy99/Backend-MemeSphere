@@ -1,6 +1,6 @@
 package com.memesphere.domain.detail.converter;
 
-import com.memesphere.domain.memecoin.domain.MemeCoin;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.detail.dto.response.DetailGetResponse;
 
 public class DetailConverter {
