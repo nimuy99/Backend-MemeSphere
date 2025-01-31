@@ -21,7 +21,6 @@ jobs:
 
       - name: Create application.yml
         run: |
-          mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
         shell: bash
 
@@ -54,6 +53,8 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
+          scp -i private_key.pem -o StrictHostKeyChecking=no src/main/resources/application.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/src/main/resources/application.yml
+
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
             docker stop $MY_APP || true
