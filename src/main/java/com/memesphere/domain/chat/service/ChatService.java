@@ -7,8 +7,8 @@ import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.chat.dto.request.ChatRequest;
 import com.memesphere.domain.chat.dto.response.ChatResponse;
-import com.memesphere.domain.chat.repository.ChatRepository;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
+import com.memesphere.domain.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

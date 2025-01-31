@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class SearchListPreviewResponse {
     @Schema(description = "밈코인 id", example = "1")
-    private Long coinId;
+    Long coinId;
     @Schema(description = "밈코인 name", example = "도지코인")
     String name;
     @Schema(description = "밈코인 symbol", example = "DOGE")
@@ -25,7 +25,7 @@ public class SearchListPreviewResponse {
     @Schema(description = "차트 데이터의 weighted average price", example = "10000")
     BigDecimal weightedAveragePrice;
     @Schema(description = "차트 데이터의 volume", example = "5")
-    Integer volume;
+    BigDecimal volume;
     @Schema(description = "차트 데이터의 price_change", example = "500")
     BigDecimal priceChange;
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")

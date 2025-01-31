@@ -1,16 +1,15 @@
 package com.memesphere.domain.search.service;
 
-import com.memesphere.domain.search.entity.SortType;
-import com.memesphere.domain.search.entity.ViewType;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
+import com.memesphere.domain.search.entity.SortType;
+import com.memesphere.domain.search.entity.ViewType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,15 +32,15 @@ public class SearchQueryServiceImpl implements SearchQueryService {
         };
 
         String sortField = switch (sortType) {
-            case PRICE_CHANGE -> "chartData.priceChange";
-            case VOLUME_24H -> "chartData.volume";
-            case PRICE -> "chartData.price";
+            case PRICE_CHANGE -> "priceChange";
+            case VOLUME_24H -> "volume";
+            case PRICE -> "price";
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         };
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortField));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<MemeCoin> searchPage = memeCoinRepository.findByNameContainingIgnoreCaseOrSymbolContainingIgnoreCaseOrKeywordsContainingIgnoreCase(searchWord, searchWord, searchWord, pageable);
+        Page<MemeCoin> searchPage = memeCoinRepository.findWithLatestChartDataSorted(searchWord, sortField, pageable);;
 
         return searchPage;
     }

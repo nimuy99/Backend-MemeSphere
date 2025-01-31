@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class SearchGridPreviewResponse {
     @Schema(description = "밈코인 id", example = "1")
-    private Long coinId;
+    Long coinId;
     @Schema(description = "밈코인 name", example = "도지코인")
     String name;
     @Schema(description = "밈코인 symbol", example = "DOGE")
