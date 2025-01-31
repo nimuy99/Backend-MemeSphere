@@ -57,7 +57,10 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
-          scp -i private_key.pem -o StrictHostKeyChecking=no $GITHUB_WORKSPACE/src/main/resources/application.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/src/main/resources/application.yml
+          # 디버깅 테스트
+          pwd
+          ls -l $(pwd)/src/main/resources/application.yml || echo "application.yml not found!"
+          scp -i private_key.pem -o StrictHostKeyChecking=no $(pwd)/src/main/resources/application.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/src/main/resources/application.yml
 
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
