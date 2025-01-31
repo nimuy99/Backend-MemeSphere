@@ -46,15 +46,19 @@ public class MemeCoin extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
+    @Builder.Default
     private List<String> keywords = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Collection> collectionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Notification> notificationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Chat> chatList = new ArrayList<>();
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, orphanRemoval = true)

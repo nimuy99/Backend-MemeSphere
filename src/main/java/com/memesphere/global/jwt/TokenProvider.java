@@ -1,6 +1,10 @@
 package com.memesphere.global.jwt;
 
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.domain.user.service.UserServiceImpl;
+import com.memesphere.global.apipayload.code.status.ErrorStatus;
+import com.memesphere.global.apipayload.exception.GeneralException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,25 +14,24 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
-    private static final String AUTHORITIES_KEY = "auth";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60; // access token은 24시간
     private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60 * 7; // refresh token은 1주일
 
     private Key key;
     private final UserServiceImpl userServiceImpl;
+    private final CustomUserDetailsServiceImpl customUserDetailsService;
+    private final UserRepository userRepository;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -67,17 +70,14 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
-    public String createAccessToken(String username, Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
+    public String createAccessToken(String username, Long loginId) {
         long now = (new Date()).getTime();
         Date validity = new Date(now + ACCESS_TOKEN_VALIDITY_SECONDS * 1000);
+        String role = getUserRole(loginId);
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim(AUTHORITIES_KEY, authorities)
+                .claim("role", role)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -94,6 +94,13 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
+    public String getUserRole(Long loginId) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return user.getUserRole().name();
+    }
+
     public String getTokenUserId(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
@@ -101,7 +108,8 @@ public class TokenProvider implements InitializingBean {
 
     public Authentication getAuthentication(String token) {
         log.info("Getting authentication for token user ID: {}", getTokenUserId(token));
-        UserDetails userDetails = (UserDetails) userServiceImpl.getUserInfo(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(getLoginId(token));
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

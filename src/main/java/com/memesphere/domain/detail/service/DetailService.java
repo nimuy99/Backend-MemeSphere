@@ -1,8 +1,8 @@
 package com.memesphere.domain.detail.service;
 
+import com.memesphere.domain.detail.converter.DetailConverter;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
-import com.memesphere.domain.detail.converter.DetailConverter;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.detail.dto.response.DetailGetResponse;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DetailService {
 
-    private final
-    MemeCoinRepository memeCoinRepository;
+    private final MemeCoinRepository memeCoinRepository;
 
     @Transactional
     public DetailGetResponse getDetail(Long meme_id) {

@@ -2,7 +2,7 @@ package com.memesphere.domain.search.converter;
 
 import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
-import com.memesphere.domain.search.enums.ViewType;
+import com.memesphere.domain.search.entity.ViewType;
 import com.memesphere.domain.search.dto.response.SearchGridPreviewResponse;
 import com.memesphere.domain.search.dto.response.SearchListPreviewResponse;
 import com.memesphere.domain.search.dto.response.SearchPageResponse;
@@ -41,6 +41,7 @@ public class SearchConverter {
         ChartData chartData = memeCoin.getChartDataList().get(0);
 
         return SearchGridPreviewResponse.builder()
+                .coinId(memeCoin.getId())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())
@@ -57,6 +58,7 @@ public class SearchConverter {
         ChartData chartData = memeCoin.getChartDataList().get(0);
 
         return SearchListPreviewResponse.builder()
+                .coinId(memeCoin.getId())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .currentPrice(chartData.getPrice())

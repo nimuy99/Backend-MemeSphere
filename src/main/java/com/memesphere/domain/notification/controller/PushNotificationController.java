@@ -1,7 +1,7 @@
 package com.memesphere.domain.notification.controller;
 
-import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.notification.dto.NotificationDTO;
+import com.memesphere.global.apipayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

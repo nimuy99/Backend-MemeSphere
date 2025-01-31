@@ -2,9 +2,11 @@ package com.memesphere.domain.chat.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Builder
 public class ChatResponse {
 
@@ -17,8 +19,8 @@ public class ChatResponse {
     @Schema(description = "관련 밈코인", example = "도지코인")
     private String memeCoin;
 
-//    @Schema(description = "작성자 닉네임")
-//    private String nickname;
+    @Schema(description = "작성자 닉네임", example="김ㅇㅇ")
+    private String nickname;
 
     @Schema(description = "좋아요 수", example = "17")
     private int likes;

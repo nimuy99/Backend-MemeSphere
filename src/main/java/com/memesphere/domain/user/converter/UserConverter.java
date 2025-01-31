@@ -1,38 +1,51 @@
 package com.memesphere.domain.user.converter;
 
-import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.dto.request.SignUpRequest;
 import com.memesphere.domain.user.entity.SocialType;
-import com.memesphere.domain.user.dto.response.KakaoTokenResponse;
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.dto.response.TokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
-import com.memesphere.domain.user.dto.response.UserInfoResponse;
+import com.memesphere.domain.user.entity.UserRole;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.UUID;
 
 public class UserConverter {
 
-    public static User createUser(KakaoUserInfoResponse userInfo) {
+    // 카카오 로그인 유저
+    public static User toKakaoUser(KakaoUserInfoResponse kakaoUserInfoResponse) {
         return User.builder()
-                .loginId(userInfo.getId())
-                .nickname(userInfo.getKakaoUserInfo().getNickname())
-                .email(userInfo.getKakaoUserInfo().getEmail())
+                .loginId(kakaoUserInfoResponse.getId())
+                .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
+                .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
                 .socialType(SocialType.KAKAO)
+                .userRole(UserRole.USER)
                 .build();
     }
 
-    public static User updateUser(KakaoUserInfoResponse userInfo, KakaoTokenResponse kakaoTokenResponse) {
+    public static User toUpdatedKakaoUser(KakaoUserInfoResponse kakaoUserInfoResponse, TokenResponse tokenResponse) {
         return User.builder()
-                .loginId(userInfo.getId())
-                .nickname(userInfo.getKakaoUserInfo().getNickname())
-                .email(userInfo.getKakaoUserInfo().getEmail())
+                .loginId(kakaoUserInfoResponse.getId())
+                .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
+                .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
                 .socialType(SocialType.KAKAO)
-                .accessToken(kakaoTokenResponse.getAccessToken())
-                .refreshToken(kakaoTokenResponse.getRefreshToken())
+                .userRole(UserRole.USER)
+                .accessToken(tokenResponse.getAccessToken())
+                .refreshToken(tokenResponse.getRefreshToken())
                 .build();
     }
 
-    public static UserInfoResponse toUserInfo(User user) {
-        return UserInfoResponse.builder()
-                .loginId(user.getLoginId())
-                .nickname(user.getNickname())
+    // 일반 로그인 유저
+    public static User toAuthUser(SignUpRequest signUpRequest, PasswordEncoder passwordEncoder) {
+        return User.builder()
+                .loginId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE)
+                .nickname(signUpRequest.getNickname())
+                .email(signUpRequest.getEmail())
+                .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .socialType(SocialType.GENERAL)
+                .userRole(UserRole.USER)
                 .build();
     }
+
 }
 

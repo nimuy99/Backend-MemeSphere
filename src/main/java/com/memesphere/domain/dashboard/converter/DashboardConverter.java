@@ -1,8 +1,8 @@
 package com.memesphere.domain.dashboard.converter;
 
 import com.memesphere.domain.chartdata.entity.ChartData;
-import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendResponse;
 
@@ -44,6 +44,4 @@ public class DashboardConverter {
                 .changeRate(null) // todo: string할건지 float형 할건지 결정
                 .build();
     }
-
-    // ** 차트 응답 형식 ** //
 }

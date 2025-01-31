@@ -28,7 +28,6 @@ public class Chat extends BaseEntity {
     @Column
     private String message;
 
-
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
@@ -38,5 +37,6 @@ public class Chat extends BaseEntity {
     private MemeCoin memeCoin;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<ChatLike> chatLikeList = new ArrayList<>();
 }

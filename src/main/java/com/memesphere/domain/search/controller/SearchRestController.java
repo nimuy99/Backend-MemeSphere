@@ -2,8 +2,8 @@ package com.memesphere.domain.search.controller;
 
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
-import com.memesphere.domain.search.enums.SortType;
-import com.memesphere.domain.search.enums.ViewType;
+import com.memesphere.domain.search.entity.SortType;
+import com.memesphere.domain.search.entity.ViewType;
 import com.memesphere.domain.search.dto.response.SearchPageResponse;
 import com.memesphere.domain.collection.service.CollectionQueryService;
 import com.memesphere.domain.search.service.SearchQueryService;
