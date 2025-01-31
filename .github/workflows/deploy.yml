@@ -29,8 +29,10 @@ jobs:
 
       - name: Ensure application.yml exists before Docker build
         run: |
-          ls -l src/main/resources/application.yml || echo "application.yml not found!"
-          cp src/main/resources/application.yml .
+          ls -l src/main/resources/application.yml 
+          echo "Checking application.yml content:"
+          cat src/main/resources/application.yml || echo "application.yml is empty!"
+        shell: bash
 
       - name: Build with Gradle
         run: |
