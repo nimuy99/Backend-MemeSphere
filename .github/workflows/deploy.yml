@@ -25,12 +25,6 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" | tee src/main/resources/application.yml
         shell: bash
 
-      - name: Upload application.yml as Artifact  # application.yml 저장
-        uses: actions/upload-artifact@v4
-        with:
-          name: application-yml
-          path: src/main/resources/application.yml
-
       - name: Build with Gradle
         run: |
           chmod +x gradlew
@@ -49,12 +43,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download application.yml Artifact  # 저장한 application.yml 복원
-        uses: actions/download-artifact@v4
-        with:
-          name: application-yml
-          path: src/main/resources
-
       - name: Deploy to EC2
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
@@ -66,14 +54,12 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
 
-          # EC2 내부에 application.yml 저장
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
-            mkdir -p /home/$EC2_USERNAME/.config/$MY_APP
-            chmod 700 /home/$EC2_USERNAME/.config/$MY_APP
+            sudo mkdir -p /home/$EC2_USERNAME/.config/$MY_APP
+            sudo chmod 700 /home/$EC2_USERNAME/.config/$MY_APP
+            echo '${{ secrets.APPLICATION_YML }}' | sudo tee /home/$EC2_USERNAME/.config/$MY_APP/application.yml > /dev/null
+            sudo chmod 600 /home/$EC2_USERNAME/.config/$MY_APP/application.yml
           "
-
-          # EC2에 application.yml 업로드
-          scp -i private_key.pem -o StrictHostKeyChecking=no src/main/resources/application.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/.config/$MY_APP/application.yml
 
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
