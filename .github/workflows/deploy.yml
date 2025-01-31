@@ -23,10 +23,9 @@ jobs:
         run: |  
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" | tee src/main/resources/application.yml
+          ls -l src/main/resources/application.yml 
+          cat src/main/resources/application.yml || echo "application.yml is empty!"
         shell: bash
-
-      - name: Check if application.yml exists
-        run: ls -l src/main/resources/application.yml || echo "application.yml not found!"
 
       - name: Build with Gradle
         run: |
