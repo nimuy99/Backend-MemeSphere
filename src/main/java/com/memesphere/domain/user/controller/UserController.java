@@ -2,9 +2,11 @@ package com.memesphere.domain.user.controller;
 
 import com.memesphere.domain.user.dto.request.SignInRequest;
 import com.memesphere.domain.user.dto.request.SignUpRequest;
+import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
 import com.memesphere.domain.user.dto.response.TokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.domain.user.service.AuthServiceImpl;
+import com.memesphere.domain.user.service.GoogleServiceImpl;
 import com.memesphere.domain.user.service.KakaoServiceImpl;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
@@ -23,14 +25,25 @@ import java.io.IOException;
 public class UserController {
 
     private final KakaoServiceImpl kakaoServiceImpl;
+    private final GoogleServiceImpl googleServiceImpl;
     private final AuthServiceImpl authServiceImpl;
 
     @PostMapping("/login/oauth2/kakao")
     @Operation(summary = "카카오 로그인/회원가입 API")
-    public ApiResponse<LoginResponse> callback(@RequestParam("code") String code) throws IOException {
+    public ApiResponse<LoginResponse> kakaoLogin(@RequestParam("code") String code) throws IOException {
         TokenResponse kakaoTokenResponse = kakaoServiceImpl.getAccessTokenFromKakao(code);
         KakaoUserInfoResponse kakaoUserInfoResponse = kakaoServiceImpl.getUserInfo(kakaoTokenResponse.getAccessToken());
         LoginResponse loginResponse = kakaoServiceImpl.handleUserLogin(kakaoUserInfoResponse);
+
+        return ApiResponse.onSuccess(loginResponse);
+    }
+
+    @PostMapping("/login/oauth2/google")
+    @Operation(summary = "구글 로그인/회원가입 API")
+    public ApiResponse<LoginResponse> googleLogin(@RequestParam("code") String code) throws IOException {
+        TokenResponse googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code);
+        GoogleUserInfoResponse googleUserInfoResponse = googleServiceImpl.getUserInfo(googleTokenResponse.getAccessToken());
+        LoginResponse loginResponse = googleServiceImpl.handleUserLogin(googleUserInfoResponse);
 
         return ApiResponse.onSuccess(loginResponse);
     }

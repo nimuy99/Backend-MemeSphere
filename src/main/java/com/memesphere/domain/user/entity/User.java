@@ -39,10 +39,10 @@ public class User extends BaseEntity {
     @Setter
     private String password;
 
-    @Setter
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SocialType socialType;
+    @Column(length = 8)
+    private String birth;
+
+    private String profileImage;
 
     private String wallet;
 
@@ -52,11 +52,14 @@ public class User extends BaseEntity {
     @Setter
     private String refreshToken;
 
+
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SocialType socialType;
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    @Column(length = 8)
-    private String birth;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
