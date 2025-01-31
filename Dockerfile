@@ -21,7 +21,6 @@ COPY --from=builder /app/build/libs/*.jar app.jar
 
 # 필요한 리소스 파일 복사
 COPY src/main/resources/application.yml /app/config/application.yml
-COPY src/main/resources/memecoin-storage/memecoin.json src/main/resources/memecoin-storage/memecoin.json
 
 EXPOSE 8080
 
