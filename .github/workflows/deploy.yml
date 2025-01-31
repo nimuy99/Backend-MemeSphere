@@ -58,7 +58,9 @@ jobs:
             docker pull $DOCKER_USERNAME/$MY_APP:latest
             docker stop $MY_APP || true
             docker rm $MY_APP || true
-            docker run -d -p 8080:8080 --name $MY_APP $DOCKER_USERNAME/$MY_APP:latest
+            docker run -d -p 8080:8080 --name $MY_APP \
+              -v /home/ubuntu/src/main/resources/application.yml:/app/src/main/resources/application.yml:ro \
+              $DOCKER_USERNAME/$MY_APP:latest
           "
           
           rm -f private_key.pem  
