@@ -26,7 +26,7 @@ jobs:
         shell: bash
 
       - name: Upload application.yml as Artifact  # application.yml 저장
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: application-yml
           path: src/main/resources/application.yml
@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Download application.yml Artifact  # 저장한 application.yml 복원
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: application-yml
           path: src/main/resources
