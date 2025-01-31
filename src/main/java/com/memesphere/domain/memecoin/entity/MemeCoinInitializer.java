@@ -1,8 +1,7 @@
-package com.memesphere.domain.memecoin;
+package com.memesphere.domain.memecoin.entity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
