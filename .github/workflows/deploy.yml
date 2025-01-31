@@ -20,12 +20,16 @@ jobs:
           cache: 'gradle'
 
       - name: Create application.yml
-        run: |  
+        run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" | tee src/main/resources/application.yml
-          ls -l src/main/resources/application.yml 
-          cat src/main/resources/application.yml || echo "application.yml is empty!"
         shell: bash
+
+      - name: Upload application.yml as Artifact  # application.yml 저장
+        uses: actions/upload-artifact@v3
+        with:
+          name: application-yml
+          path: src/main/resources/application.yml
 
       - name: Build with Gradle
         run: |
@@ -45,22 +49,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download application.yml Artifact  # 저장한 application.yml 복원
+        uses: actions/download-artifact@v3
+        with:
+          name: application-yml
+          path: src/main/resources
+
       - name: Deploy to EC2
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          APPLICATION_YML: ${{ secrets.APPLICATION_YML }}
           MY_APP: ${{ vars.MY_APP }}
         run: |
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
           
-          # 디버깅 테스트
-          pwd
-          ls -l $(pwd)/src/main/resources/application.yml || echo "application.yml not found!"
-          scp -i private_key.pem -o StrictHostKeyChecking=no $(pwd)/src/main/resources/application.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/src/main/resources/application.yml
-
+          scp -i private_key.pem -o StrictHostKeyChecking=no src/main/resources/application.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/src/main/resources/application.yml
+          
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
             docker stop $MY_APP || true
