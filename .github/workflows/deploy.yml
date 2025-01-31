@@ -20,10 +20,13 @@ jobs:
           cache: 'gradle'
 
       - name: Create application.yml
-        run: |
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+        run: |  
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" | tee src/main/resources/application.yml
         shell: bash
+
+      - name: Check if application.yml exists
+        run: ls -l src/main/resources/application.yml || echo "application.yml not found!"
 
       - name: Build with Gradle
         run: |
