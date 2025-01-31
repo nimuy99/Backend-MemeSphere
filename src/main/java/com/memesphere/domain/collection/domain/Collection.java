@@ -1,4 +1,4 @@
-package com.memesphere.chat.domain;
+package com.memesphere.domain.collection.domain;
 
 import com.memesphere.domain.memecoin.domain.MemeCoin;
 import com.memesphere.global.domain.BaseEntity;
@@ -8,26 +8,18 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
-@Builder
 @DynamicUpdate
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Chat extends BaseEntity {
+public class Collection extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="chat_id")
+    @Column(name="collect_id")
     private Long id;
-
-    @Column
-    private String message;
-
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -37,6 +29,7 @@ public class Chat extends BaseEntity {
     @JoinColumn(name="coin_id")
     private MemeCoin memeCoin;
 
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
-    private List<ChatLike> chatLikeList = new ArrayList<>();
+    public Long getMemeCoinId() {
+        return memeCoin.getId();
+    }
 }

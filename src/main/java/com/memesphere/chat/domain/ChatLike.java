@@ -1,7 +1,7 @@
 package com.memesphere.chat.domain;
 
 import com.memesphere.global.domain.BaseEntity;
-import com.memesphere.user.domain.User;
+import com.memesphere.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;

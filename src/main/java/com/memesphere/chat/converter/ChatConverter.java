@@ -1,7 +1,7 @@
 package com.memesphere.chat.converter;
 
 import com.memesphere.chat.domain.Chat;
-import com.memesphere.memecoin.domain.MemeCoin;
+import com.memesphere.domain.memecoin.domain.MemeCoin;
 import com.memesphere.chat.dto.request.ChatRequest;
 import com.memesphere.chat.dto.response.ChatResponse;
 
