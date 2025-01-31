@@ -54,13 +54,15 @@ jobs:
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
 
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST << 'EOF'
             sudo mkdir -p /home/$EC2_USERNAME/.config/$MY_APP
             sudo chmod 700 /home/$EC2_USERNAME/.config/$MY_APP
-            echo '${{ secrets.APPLICATION_YML }}' | sudo tee /home/$EC2_USERNAME/.config/$MY_APP/application.yml > /dev/null
+            cat <<EOT | sudo tee /home/$EC2_USERNAME/.config/$MY_APP/application.yml > /dev/null
+          ${{ secrets.APPLICATION_YML }}
+          EOT
             sudo chmod 600 /home/$EC2_USERNAME/.config/$MY_APP/application.yml
-          "
-
+          EOF
+  
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
             docker stop $MY_APP || true
@@ -68,6 +70,6 @@ jobs:
             docker run -d -p 8080:8080 --name $MY_APP \
               -e SPRING_CONFIG_LOCATION=file:/home/$EC2_USERNAME/.config/$MY_APP/application.yml \
               $DOCKER_USERNAME/$MY_APP:latest
-          "
+            "
 
           rm -f private_key.pem
