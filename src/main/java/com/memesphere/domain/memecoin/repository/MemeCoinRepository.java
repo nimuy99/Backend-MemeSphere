@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
+import java.util.Optional;
+
 public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
     @Query("SELECT m FROM MemeCoin m " +
             "JOIN m.chartDataList c " +
@@ -28,4 +30,9 @@ public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
     @EntityGraph(attributePaths = {"chartData"})
     @NonNull
     Page<MemeCoin> findAll(@NonNull Pageable pageable);
+
+    @EntityGraph(attributePaths = {"chartData"})
+    Page<MemeCoin> findByNameContainingIgnoreCaseOrSymbolContainingIgnoreCaseOrKeywordsContainingIgnoreCase(String name, String symbol, String keyword, Pageable pageable);
+
+    Optional<MemeCoin> findByName(String name);
 }
