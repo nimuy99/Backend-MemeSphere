@@ -25,7 +25,10 @@ public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
             @Param("sortField") String sortField,
             Pageable pageable);
 
-    @EntityGraph(attributePaths = {"chartData"})
+    @Query("SELECT m FROM MemeCoin m " +
+            "JOIN m.chartDataList c " +
+            "WHERE c.recordedTime = " +
+            "(SELECT MAX(c2.recordedTime) FROM ChartData c2 WHERE c2.memeCoin = m)")
     @NonNull
-    Page<MemeCoin> findAll(@NonNull Pageable pageable);
+    Page<MemeCoin> findAllLatestChartData(@NonNull Pageable pageable);
 }

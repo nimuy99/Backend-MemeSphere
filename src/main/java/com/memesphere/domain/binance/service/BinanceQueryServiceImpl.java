@@ -1,6 +1,6 @@
-package com.memesphere.binance.service;
+package com.memesphere.domain.binance.service;
 
-import com.memesphere.binance.dto.response.BinanceTickerResponse;
+import com.memesphere.domain.binance.dto.response.BinanceTickerResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

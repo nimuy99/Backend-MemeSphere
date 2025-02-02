@@ -48,15 +48,17 @@ public class DashboardController {
                     
                     **응답 형식**:
                     ```
+                    - "LocalDateTime": 기록된 시간 (확인용, 코인 아이디 1을 기준으로 함)
                     - "trendList": 등록된 밈코인의 트렌드 순위 리스트(5위 까지)
                     - "coinId": 밈코인 아이디
                     - "image": 밈코인 이미지
                     - "name": 밈코인 이름
                     - "symbol": 밈코인 심볼
+                    - "volume": 밈코인 거래량(확인용)
                     - "price": 밈코인 현재가
                     - "priceChange": 가격 변화량
                     - "changeAbsolute": 가격 변화량(절대값)
-                    - "changeDirection": 밈코인 상승(up)/하락(down)/유지(= 변화량 0일 때, -) 방향
+                    - "changeDirection": 밈코인 상승(up, 0 이상)/하락(down)
                     - "changeRate": 가격 변화율
                     ```""")
     public ApiResponse<DashboardTrendListResponse> getTrendList() {
@@ -67,11 +69,12 @@ public class DashboardController {
     @Operation(summary = "차트 조회 API",
             description = """
                     밈스피어에 등록된 밈코인의 차트 데이터를 보기 방식과 정렬 기준에 따라 보여줍니다. \n
-
+                    검색 결과 조회 api(/search) 참고 \n
+                    
                     **요청 형식**:
                     ```
-                    - "viewType": 보기 방식 (GRID / LIST)
-                    - "sortType": 정렬 기준 (MKT_CAP / VOLUME_24H / PRICE)
+                    - "viewType": 보기 방식 (GRID(default) / LIST)
+                    - "sortType": 정렬 기준 (PRICE_CHANGE(default) / VOLUME_24H / PRICE)
                     - "page": 페이지 번호
                     ```
                     
@@ -97,7 +100,7 @@ public class DashboardController {
                     ```""")
     public ApiResponse<SearchPageResponse> getChartList(// TODO: userID 변경 -> 로그인한 유저
                                                         @RequestParam(name = "viewType", defaultValue = "GRID") ViewType viewType,
-                                                        @RequestParam(name = "sortType", defaultValue = "MKT_CAP") SortType sortType,
+                                                        @RequestParam(name = "sortType", defaultValue = "PRICE_CHANGE") SortType sortType,
                                                         @CheckPage @RequestParam(name = "page") Integer page) {
         Integer pageNumber = page - 1;
         // TODO: userID 변경 -> 로그인한 유저

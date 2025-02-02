@@ -22,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,7 +38,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     @Override
     public DashboardOverviewResponse getOverview() {
         // 등록된 모든 밈코인의 총 거래량
-        Long totalVolume = chartDataRepository.findTotalVolume();
+        BigDecimal totalVolume = chartDataRepository.findTotalVolume();
 
         // 등록된 모든 밈코인 수
         Long totalCoin = memeCoinRepository.count();
@@ -48,9 +50,12 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     @Override
     public DashboardTrendListResponse getTrendList() {
         // 거래량 top5 밈코인-차트데이터
-        List<ChartData> dataList = chartDataRepository.findTop5ByOrderByVolumeDesc();
+        List<ChartData> dataList = chartDataRepository.findTop5OrderByVolumeDesc();
 
-        return DashboardConverter.toTrendList(dataList);
+        // 코인 아이디 1 기준 기록 시간
+        LocalDateTime recordedTime = chartDataRepository.findRecordedTimeByCoinId1();
+
+        return DashboardConverter.toTrendList(recordedTime, dataList);
     }
 
     // ** 차트 ** //
@@ -59,9 +64,6 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         // TODO: 유저 받아와서 예외처리
         List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(userId);
 
-        // viewType --> GRID(9 items per page), LIST(20 items per page)
-        // sortType --> MKT_CAP, VOLUME_24H, PRICE
-
         int pageSize = switch (viewType) {
             case GRID -> 9;
             case LIST -> 20;
@@ -69,14 +71,14 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         };
 
         String sortField = switch (sortType) {
-            case PRICE_CHANGE -> "chartData.priceChange";
-            case VOLUME_24H -> "chartData.volume";
-            case PRICE -> "chartData.price";
+            case PRICE_CHANGE -> "c.priceChange";
+            case VOLUME_24H -> "c.volume";
+            case PRICE -> "c.price";
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         };
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortField));
-        Page<MemeCoin> coinPage = memeCoinRepository.findAll(pageable);
+        Page<MemeCoin> coinPage = memeCoinRepository.findAllLatestChartData(pageable);
 
         // null 체크 후 예외 처리}
         return SearchConverter.toSearchPageDTO(coinPage, viewType, userCollectionIds);
