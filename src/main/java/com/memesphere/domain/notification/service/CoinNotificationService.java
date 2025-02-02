@@ -1,8 +1,8 @@
-package com.memesphere.notification.service;
+package com.memesphere.domain.notification.service;
 
-import com.memesphere.notification.dto.request.NotificationRequest;
-import com.memesphere.notification.dto.response.NotificationListResponse;
-import com.memesphere.notification.dto.response.NotificationResponse;
+import com.memesphere.domain.notification.dto.request.NotificationRequest;
+import com.memesphere.domain.notification.dto.response.NotificationListResponse;
+import com.memesphere.domain.notification.dto.response.NotificationResponse;
 
 public interface CoinNotificationService {
     NotificationListResponse findNotificationList();

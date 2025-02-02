@@ -1,10 +1,10 @@
-package com.memesphere.notification.converter;
+package com.memesphere.domain.notification.converter;
 
-import com.memesphere.memecoin.domain.MemeCoin;
-import com.memesphere.notification.domain.Notification;
-import com.memesphere.notification.dto.request.NotificationRequest;
-import com.memesphere.notification.dto.response.NotificationListResponse;
-import com.memesphere.notification.dto.response.NotificationResponse;
+import com.memesphere.domain.memecoin.entity.MemeCoin;
+import com.memesphere.domain.notification.dto.request.NotificationRequest;
+import com.memesphere.domain.notification.dto.response.NotificationListResponse;
+import com.memesphere.domain.notification.dto.response.NotificationResponse;
+import com.memesphere.domain.notification.entity.Notification;
 
 import java.util.List;
 

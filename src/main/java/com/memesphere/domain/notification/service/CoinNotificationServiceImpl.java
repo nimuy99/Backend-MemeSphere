@@ -1,15 +1,15 @@
-package com.memesphere.notification.service;
+package com.memesphere.domain.notification.service;
 
+import com.memesphere.domain.memecoin.entity.MemeCoin;
+import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
+import com.memesphere.domain.notification.entity.Notification;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
-import com.memesphere.memecoin.domain.MemeCoin;
-import com.memesphere.memecoin.repository.MemeRepository;
-import com.memesphere.notification.converter.NotificationConverter;
-import com.memesphere.notification.domain.Notification;
-import com.memesphere.notification.dto.request.NotificationRequest;
-import com.memesphere.notification.dto.response.NotificationListResponse;
-import com.memesphere.notification.dto.response.NotificationResponse;
-import com.memesphere.notification.repository.NotificationRepository;
+import com.memesphere.domain.notification.converter.NotificationConverter;
+import com.memesphere.domain.notification.dto.request.NotificationRequest;
+import com.memesphere.domain.notification.dto.response.NotificationListResponse;
+import com.memesphere.domain.notification.dto.response.NotificationResponse;
+import com.memesphere.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CoinNotificationServiceImpl implements CoinNotificationService {
 
-    private final MemeRepository memeRepository;
+    private final MemeCoinRepository memeCoinRepository;
     private final NotificationRepository notificationRepository;
 
     @Override
@@ -30,7 +30,7 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
 
         for (Notification notification : notifications) {
 
-            MemeCoin memeCoin = memeRepository.findByName(notification.getMemeCoin().getName())
+            MemeCoin memeCoin = memeCoinRepository.findByName(notification.getMemeCoin().getName())
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
             NotificationResponse notificationResponse = NotificationConverter.toNotificationCreateResponse(notification, memeCoin);
@@ -45,7 +45,7 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
     // 알림 등록 API
     @Override
     public NotificationResponse addNotification(NotificationRequest notificationRequest) {
-        MemeCoin memeCoin = memeRepository.findByName(notificationRequest.getName())
+        MemeCoin memeCoin = memeCoinRepository.findByName(notificationRequest.getName())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));;
 
         Notification notification = NotificationConverter.toNotification(notificationRequest, memeCoin);

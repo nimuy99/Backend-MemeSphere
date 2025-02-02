@@ -1,4 +1,4 @@
-package com.memesphere.notification.dto.response;
+package com.memesphere.domain.notification.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

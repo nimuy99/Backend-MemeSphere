@@ -1,4 +1,4 @@
-package com.memesphere.notification.dto.request;
+package com.memesphere.domain.notification.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -6,7 +6,10 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NotificationRequest {
+public class NotificationResponse {
+
+    @Schema(description = "알림 아이디", example = "1")
+    private Long notificationId;
 
     @Schema(description = "코인 이름", example = "DOGE")
     private String name;
@@ -22,4 +25,7 @@ public class NotificationRequest {
 
     @Schema(description = "상승 또는 하락", example = "True")
     private Boolean isRising;
+
+    @Schema(description = "알림 켜기/끄기", example = "True")
+    private Boolean isOn;
 }

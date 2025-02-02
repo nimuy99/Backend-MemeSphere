@@ -1,6 +1,6 @@
-package com.memesphere.notification.repository;
+package com.memesphere.domain.notification.repository;
 
-import com.memesphere.notification.domain.Notification;
+import com.memesphere.domain.notification.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
