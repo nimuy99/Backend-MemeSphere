@@ -8,8 +8,14 @@ import com.memesphere.domain.user.service.AuthServiceImpl;
 import com.memesphere.domain.user.service.KakaoServiceImpl;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
+import com.memesphere.global.apipayload.code.status.ErrorStatus;
+import com.memesphere.global.apipayload.exception.GeneralException;
+import com.memesphere.global.jwt.JwtAuthenticationFilter;
+import com.memesphere.global.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +30,7 @@ public class UserController {
 
     private final KakaoServiceImpl kakaoServiceImpl;
     private final AuthServiceImpl authServiceImpl;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @PostMapping("/login/oauth2/kakao")
     @Operation(summary = "카카오 로그인/회원가입 API")
@@ -35,16 +42,16 @@ public class UserController {
         return ApiResponse.onSuccess(loginResponse);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     @Operation(summary = "일반 회원가입 API")
     public ApiResponse<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         authServiceImpl.handleUserRegistration(signUpRequest);
         return ApiResponse.onSuccess(null);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     @Operation(summary = "일반 로그인 API")
-    public ApiResponse<LoginResponse> login(@Valid @RequestBody SignInRequest signInRequest) {
+    public ApiResponse<LoginResponse> signIn(@Valid @RequestBody SignInRequest signInRequest) {
         LoginResponse loginResponse = authServiceImpl.handleUserLogin(signInRequest);
         return ApiResponse.onSuccess(loginResponse);
     }
