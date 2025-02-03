@@ -43,9 +43,9 @@ public class SecurityConfig {
                                 ,"/swagger-ui/**"
                                 ,"/swagger-resources/**"
                                 ,"/v3/api-docs/**").permitAll()
-                        .requestMatchers("/notifications"
-                                ,"/push-notifications"
-                                ,"collection").hasRole("USER")
+                        .requestMatchers("/notifications/**"
+                                ,"/push-notifications/**"
+                                ,"/collection").hasRole("USER")
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

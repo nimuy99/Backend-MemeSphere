@@ -5,6 +5,7 @@ import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.domain.user.service.UserServiceImpl;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
+import com.memesphere.global.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -31,6 +32,7 @@ public class TokenProvider implements InitializingBean {
     private Key key;
     private final CustomUserDetailsServiceImpl customUserDetailsService;
     private final UserRepository userRepository;
+    private final RedisService redisService;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -103,6 +105,10 @@ public class TokenProvider implements InitializingBean {
     public String getTokenUserId(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
+    }
+
+    public Long getExpirationTime(String token) {
+        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
     }
 
     public Authentication getAuthentication(String token) {

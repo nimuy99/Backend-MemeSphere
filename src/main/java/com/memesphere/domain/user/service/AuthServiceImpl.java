@@ -64,6 +64,19 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
+    public void handleUserLogout(String token) {
+        User existingUser = userRepository.findByAccessToken(token).orElse(null);
+
+        if (existingUser != null) {
+
+            redisService.deleteValue(existingUser.getEmail());
+            redisService.setValue(token, "logout", tokenProvider.getExpirationTime(token));
+
+        } else {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+    }
+
     public void checkPassword(User user, String password) {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_MATCH);
