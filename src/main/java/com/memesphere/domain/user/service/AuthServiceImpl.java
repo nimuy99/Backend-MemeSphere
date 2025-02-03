@@ -9,6 +9,8 @@ import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.domain.user.dto.request.SignInRequest;
 import com.memesphere.domain.user.dto.request.SignUpRequest;
+import com.memesphere.global.redis.RedisService;
+import io.lettuce.core.RedisClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final UserServiceImpl userServiceImpl;
     private final TokenProvider tokenProvider;
+    private final RedisService redisService;
 
     public void handleUserRegistration(SignUpRequest signUpRequest) {
         User existingUser = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
@@ -51,7 +54,10 @@ public class AuthServiceImpl implements AuthService{
 
             existingUser.setAccessToken(accessToken);
             existingUser.setRefreshToken(refreshToken);
+
             userRepository.save(existingUser);
+            redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
+
             return new LoginResponse(accessToken, refreshToken);
         } else {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);

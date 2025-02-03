@@ -29,7 +29,6 @@ public class TokenProvider implements InitializingBean {
     private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60 * 7; // refresh token은 1주일
 
     private Key key;
-    private final UserServiceImpl userServiceImpl;
     private final CustomUserDetailsServiceImpl customUserDetailsService;
     private final UserRepository userRepository;
 

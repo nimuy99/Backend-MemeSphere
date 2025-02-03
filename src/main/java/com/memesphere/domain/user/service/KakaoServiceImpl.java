@@ -8,6 +8,7 @@ import com.memesphere.domain.user.dto.response.TokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.domain.user.repository.UserRepository;
+import com.memesphere.global.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ public class KakaoServiceImpl implements KakaoService {
     private final TokenProvider tokenProvider;
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
+    private final RedisService redisService;
 
     @Value("${security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -93,7 +95,9 @@ public class KakaoServiceImpl implements KakaoService {
 
             existingUser.setAccessToken(accessToken);
             existingUser.setRefreshToken(refreshToken);
+
             userRepository.save(existingUser);
+            redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
 
             return new LoginResponse(accessToken, refreshToken);
         } else {
