@@ -55,4 +55,18 @@ public class UserController {
         LoginResponse loginResponse = authServiceImpl.handleUserLogin(signInRequest);
         return ApiResponse.onSuccess(loginResponse);
     }
+
+    @PostMapping("/sign-out")
+    @Operation(summary = "일반/카카오/구글 로그아웃 API", security = @SecurityRequirement(name = "JWT Authentication"))
+    public ApiResponse<?> signOut(HttpServletRequest request) {
+        String refreshToken = jwtAuthenticationFilter.resolveToken(request);
+        String accessToken = jwtAuthenticationFilter.resolveToken(request);
+
+        if(refreshToken==null || accessToken==null){
+            throw new GeneralException(ErrorStatus.TOKEN_NOT_FOUND);
+        }
+
+        authServiceImpl.handleUserLogout(accessToken, refreshToken);
+        return ApiResponse.onSuccess("로그아웃이 성공적으로 처리되었습니다.");
+    }
 }
