@@ -10,10 +10,10 @@ import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.domain.user.dto.request.SignInRequest;
 import com.memesphere.domain.user.dto.request.SignUpRequest;
 import com.memesphere.global.redis.RedisService;
-import io.lettuce.core.RedisClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 
 @Service
@@ -75,6 +75,27 @@ public class AuthServiceImpl implements AuthService{
         } else {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
+    }
+
+    public LoginResponse reissueAccessToken(String refreshToken) {
+        User existingUser = userRepository.findByRefreshToken(refreshToken).orElse(null);
+
+        if (existingUser == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+
+        String email = existingUser.getEmail();
+        String redisRefreshToken = redisService.getValue(email);
+
+        if (StringUtils.isEmpty(refreshToken) || StringUtils.isEmpty(redisRefreshToken) || !redisRefreshToken.equals(refreshToken)) {
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+
+        return tokenProvider.reissue(existingUser, refreshToken);
     }
 
     public void checkPassword(User user, String password) {

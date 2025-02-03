@@ -8,6 +8,8 @@ import com.memesphere.domain.user.entity.User;
 public interface AuthService {
     void handleUserRegistration(SignUpRequest signUpRequest);
     LoginResponse handleUserLogin(SignInRequest signInRequest);
+    void handleUserLogout(String token);
+    LoginResponse reissueAccessToken(String refreshToken);
     void checkPassword(User user, String password);
     boolean checkNicknameDuplicate(String nickname);
 }

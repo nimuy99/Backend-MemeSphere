@@ -1,8 +1,9 @@
 package com.memesphere.global.jwt;
 
+import com.memesphere.domain.user.converter.UserConverter;
+import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.repository.UserRepository;
-import com.memesphere.domain.user.service.UserServiceImpl;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.redis.RedisService;
@@ -71,25 +72,25 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
-    public String createAccessToken(String username, Long loginId) {
+    public String createAccessToken(String email, Long loginId) {
         long now = (new Date()).getTime();
         Date validity = new Date(now + ACCESS_TOKEN_VALIDITY_SECONDS * 1000);
         String role = getUserRole(loginId);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .claim("role", role)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
     }
 
-    public String createRefreshToken(String username) {
+    public String createRefreshToken(String email) {
         long now = (new Date()).getTime();
         Date validity = new Date(now + REFRESH_TOKEN_VALIDITY_SECONDS * 1000);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -118,7 +119,7 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public boolean validateAccessToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -135,5 +136,14 @@ public class TokenProvider implements InitializingBean {
             log.info("JWT 토큰이 잘못되었습니다.");
             throw new RuntimeException("JWT 토큰이 잘못되었습니다.", e);
         }
+    }
+
+    public LoginResponse reissue(User user, String refreshToken) {
+        String accessToken = createAccessToken(user.getEmail(), user.getLoginId());
+        if(getExpirationTime(refreshToken) <= getExpirationTime(accessToken)) {
+            refreshToken = createRefreshToken(user.getEmail());
+        }
+
+        return UserConverter.toLoginResponse(accessToken, refreshToken);
     }
 }

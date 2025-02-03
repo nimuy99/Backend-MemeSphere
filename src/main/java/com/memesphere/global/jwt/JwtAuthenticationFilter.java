@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = resolveToken(servletRequest);
 
-            if (StringUtils.hasText(jwt) && tokenProvider.validateAccessToken(jwt)) {
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 
                 // JWT에서 사용자의 ID를 추출해서 Authentication 객체생성
                 Authentication authentication = this.tokenProvider.getAuthentication(jwt);

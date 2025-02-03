@@ -1,5 +1,6 @@
 package com.memesphere.domain.user.controller;
 
+import com.memesphere.domain.user.dto.request.ReissueRequest;
 import com.memesphere.domain.user.dto.request.SignInRequest;
 import com.memesphere.domain.user.dto.request.SignUpRequest;
 import com.memesphere.domain.user.dto.response.TokenResponse;
@@ -63,5 +64,13 @@ public class UserController {
         authServiceImpl.handleUserLogout(token);
 
         return ApiResponse.onSuccess("로그아웃이 완료되었습니다.");
+    }
+
+    @PostMapping("/reissue")
+    @Operation(summary = "리프레시 토큰으로 액세스 토큰 재발급 API")
+    public ApiResponse<LoginResponse> reissueAccessToken(@RequestBody ReissueRequest reissueRequest) {
+        LoginResponse loginResponse = authServiceImpl.reissueAccessToken(reissueRequest.getRefreshToken());
+
+        return ApiResponse.onSuccess(loginResponse);
     }
 }
