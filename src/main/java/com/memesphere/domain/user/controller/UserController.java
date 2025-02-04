@@ -1,5 +1,6 @@
 package com.memesphere.domain.user.controller;
 
+import com.memesphere.domain.user.dto.request.NicknameRequest;
 import com.memesphere.domain.user.dto.request.SignInRequest;
 import com.memesphere.domain.user.dto.request.SignUpRequest;
 import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
@@ -10,6 +11,7 @@ import com.memesphere.domain.user.service.GoogleServiceImpl;
 import com.memesphere.domain.user.service.KakaoServiceImpl;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
+import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -60,5 +62,17 @@ public class UserController {
     public ApiResponse<LoginResponse> login(@Valid @RequestBody SignInRequest signInRequest) {
         LoginResponse loginResponse = authServiceImpl.handleUserLogin(signInRequest);
         return ApiResponse.onSuccess(loginResponse);
+    }
+
+    @PostMapping("/signup/nickname/validate")
+    @Operation(summary = "닉네임 중복 확인 API")
+    public ApiResponse<?> isNicknameValidate(@RequestBody NicknameRequest nicknameRequest) {
+        boolean isDuplicate = authServiceImpl.checkNicknameDuplicate(nicknameRequest.getNickname());
+
+        if (isDuplicate) {
+            return ApiResponse.onSuccess("이미 사용 중인 닉네임입니다.");
+        } else {
+            return ApiResponse.onSuccess("사용 가능한 닉네임입니다.");
+        }
     }
 }
