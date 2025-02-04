@@ -52,9 +52,8 @@ public class AuthServiceImpl implements AuthService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.setAccessToken(accessToken);
-            existingUser.setRefreshToken(refreshToken);
-
+            existingUser.saveAccessToken(accessToken);
+            existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
             redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
 
