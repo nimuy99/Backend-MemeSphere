@@ -77,7 +77,6 @@ public class KakaoServiceImpl implements KakaoService {
             userServiceImpl.save(newUser);
         } else {
             User updatedUser = UserConverter.toUpdatedKakaoUser(kakaoUserInfoResponse, tokenResponse); // 기존 유저 업데이트
-            existingUser.setSocialType(SocialType.KAKAO);
             userServiceImpl.save(updatedUser);
         }
     }
@@ -91,8 +90,8 @@ public class KakaoServiceImpl implements KakaoService {
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.setAccessToken(accessToken);
-            existingUser.setRefreshToken(refreshToken);
+            existingUser.saveAccessToken(accessToken);
+            existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
 
             return new LoginResponse(accessToken, refreshToken);
@@ -103,8 +102,8 @@ public class KakaoServiceImpl implements KakaoService {
             accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
-            newUser.setAccessToken(accessToken);
-            newUser.setRefreshToken(refreshToken);
+            newUser.saveAccessToken(accessToken);
+            newUser.saveRefreshToken(refreshToken);
             userRepository.save(newUser);
 
             return new LoginResponse(accessToken, refreshToken);
