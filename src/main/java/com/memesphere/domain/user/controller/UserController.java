@@ -18,12 +18,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@Slf4j
 @Tag(name="회원", description = "회원 관련  API")
 @RestController
 @RequestMapping("/user")

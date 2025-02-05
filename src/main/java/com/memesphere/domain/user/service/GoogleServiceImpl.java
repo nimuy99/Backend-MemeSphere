@@ -2,13 +2,10 @@ package com.memesphere.domain.user.service;
 
 import com.memesphere.domain.user.converter.UserConverter;
 import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
-import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.domain.user.dto.response.TokenResponse;
-import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.repository.UserRepository;
-import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

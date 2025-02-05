@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService{
 
         if (!tokenProvider.validateToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
-        }
+        } // validateToken이 false 반환할 경우
 
         String email = existingUser.getEmail();
         String redisRefreshToken = redisService.getValue(email);

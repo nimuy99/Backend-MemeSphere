@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Date;
@@ -122,6 +123,11 @@ public class TokenProvider implements InitializingBean {
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
+
+            if (redisService.checkExistsValue(token)) {
+                return false;
+            }
+
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -138,11 +144,18 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
+    @Transactional
     public LoginResponse reissue(User user, String refreshToken) {
         String accessToken = createAccessToken(user.getEmail(), user.getLoginId());
+        user.saveAccessToken(accessToken);
+
+
         if(getExpirationTime(refreshToken) <= getExpirationTime(accessToken)) {
             refreshToken = createRefreshToken(user.getEmail());
+            user.saveRefreshToken(refreshToken);
         }
+
+        userRepository.save(user);
 
         return UserConverter.toLoginResponse(accessToken, refreshToken);
     }
