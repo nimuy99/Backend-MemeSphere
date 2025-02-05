@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Component
@@ -19,14 +20,26 @@ public class MemeCoinInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (memeCoinRepository.count() == 0) {
-            String filePath = "src/main/resources/memecoin-storage/memecoin.json";
+            // JAR 내부 classpath에서 JSON 파일 로드
+            try (InputStream inputStream = getClass().getClassLoader()
+                    .getResourceAsStream("memecoin-storage/memecoin.json")) {
 
-            List<MemeCoin> memeCoins = objectMapper.readValue(
-                    new File(filePath),
-                    new TypeReference<List<MemeCoin>>() {}
-            );
+                if (inputStream == null) {
+                    throw new IOException("'memecoin-storage/memecoin.json' 파일을 찾을 수 없습니다.");
+                }
 
-            memeCoinRepository.saveAll(memeCoins);
+                // JSON 파일을 Java 객체(List<MemeCoin>)로 변환
+                List<MemeCoin> memeCoins = objectMapper.readValue(
+                        inputStream,
+                        new TypeReference<List<MemeCoin>>() {}
+                );
+
+                // DB에 저장
+                memeCoinRepository.saveAll(memeCoins);
+
+            } catch (IOException e) {
+                throw new RuntimeException("JSON 파일 로드 중 오류 발생: " + e.getMessage(), e);
+            }
         }
     }
 }
