@@ -8,9 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
     Page<Collection> findAllByUserId(Long userId, Pageable pageable);
     List<Collection> findAllByUserId(Long userId);
-    Boolean existsByUserAndMemeCoin(User user, MemeCoin memeCoin);
+    Optional<Collection> findByUserAndMemeCoin(User user, MemeCoin memeCoin);
 }

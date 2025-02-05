@@ -24,6 +24,7 @@ public enum ErrorStatus implements BaseCode {
     MEMECOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMECOIN NOT FOUND", "밈코인을 찾을 수 없습니다."),
 
     // 콜렉션 에러
+    COLLECTION_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECTION NOT FOUND", "콜렉션을 찾을 수 없습니다."),
     COLLECTION_ALREADY_EXISTS(HttpStatus.NOT_FOUND, "COLLECTION ALREADY EXIST", "콜렉션에 해당 밈코인을 이미 등록했습니다."),
 
     // ChartData load 에러

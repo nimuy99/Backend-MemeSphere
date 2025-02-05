@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CollectionCommandServiceImpl {
+public class CollectionCommandServiceImpl implements CollectionCommandService {
     private final CollectionRepository collectionRepository;
     private final UserRepository userRepository;
     private final MemeCoinRepository coinRepository;
@@ -26,7 +26,7 @@ public class CollectionCommandServiceImpl {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
         // 이미 등록한 콜렉션의 경우
-        if (collectionRepository.existsByUserAndMemeCoin(user, coin)) {
+        if (collectionRepository.findByUserAndMemeCoin(user, coin).isPresent()) {
             throw new GeneralException(ErrorStatus.COLLECTION_ALREADY_EXISTS);
         }
 
@@ -35,6 +35,23 @@ public class CollectionCommandServiceImpl {
         collectionRepository.save(collection);
 
         return "[coinId] " + coinId + "등록 완료.";
+    }
+
+    @Override
+    public String removeCollectCoin(String email, Long coinId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        MemeCoin coin = coinRepository.findById(coinId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
+
+        // 이미 삭제한 콜렉션의 경우
+        Collection collection = collectionRepository.findByUserAndMemeCoin(user, coin)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COLLECTION_NOT_FOUND));
+
+        collectionRepository.delete(collection);
+
+        return "[coinId] " + coinId + "삭제 완료.";
     }
 
 }

@@ -1,6 +1,6 @@
 package com.memesphere.domain.collection.controller;
 
-import com.memesphere.domain.collection.service.CollectionCommandServiceImpl;
+import com.memesphere.domain.collection.service.CollectionCommandService;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
@@ -22,7 +22,7 @@ import com.memesphere.domain.collection.converter.CollectionConverter;
 //@RequestMapping("/collection")
 public class CollectionRestController {
     private final CollectionQueryService collectionQueryService;
-    private final CollectionCommandServiceImpl collectionCommandService;
+    private final CollectionCommandService collectionCommandService;
     private final TokenProvider tokenProvider;
 
     @GetMapping("/collection")
@@ -44,12 +44,21 @@ public class CollectionRestController {
                 description = "코인 Id를 입력하면 사용자의 콜렉션에 등록")
     public ApiResponse<String> postCollectCoin (HttpServletRequest request, @PathVariable Long coinId) {
 
-        String token = request.getHeader("Authorization");
-
-        String jwtToken = token.substring(7);
-        String email = tokenProvider.getLoginId(jwtToken);
+        String token = request.getHeader("Authorization").substring(7);
+        String email = tokenProvider.getLoginId(token);
 
         return ApiResponse.onSuccess(collectionCommandService.addCollectCoin(email, coinId));
+    }
+
+    @DeleteMapping("/collection/{coinId}")
+    @Operation(summary = "밈코인 콜렉션 삭제 API",
+            description = "코인 Id를 입력하면 사용자의 콜렉션에서 삭제")
+    public ApiResponse<String> deleteCollectCoin (HttpServletRequest request, @PathVariable Long coinId) {
+
+        String token = request.getHeader("Authorization").substring(7);
+        String email = tokenProvider.getLoginId(token);
+
+        return ApiResponse.onSuccess(collectionCommandService.removeCollectCoin(email, coinId));
     }
 
 }
