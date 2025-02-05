@@ -64,8 +64,6 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     // ** 차트 ** //
     @Override
     public SearchPageResponse getChartPage(String email, ViewType viewType, SortType sortType, Integer pageNumber) {
-        // TODO: 유저 받아와서 예외처리
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
         List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(user.getId());
