@@ -107,10 +107,10 @@ public class DashboardController {
                                                         @CheckPage @RequestParam(name = "page") Integer page) {
         Integer pageNumber = page - 1;
 
-        // TODO: userID 변경 -> 로그인한 유저
-        String token = request.getHeader("Authorization");
-        Long userId = Long.parseLong(tokenProvider.getLoginId(token));
+        String token = request.getHeader("Authorization").substring(7);
+        String email = tokenProvider.getLoginId(token);
 
-        return ApiResponse.onSuccess(dashboardQueryService.getChartPage(userId, viewType, sortType, pageNumber));
+
+        return ApiResponse.onSuccess(dashboardQueryService.getChartPage(email, viewType, sortType, pageNumber));
     }
 }

@@ -34,7 +34,7 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
         Collection collection = new Collection(user, coin);
         collectionRepository.save(collection);
 
-        return "[coinId] " + coinId + "등록 완료.";
+        return "[coinId] " + coinId + " 등록 완료.";
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
 
         collectionRepository.delete(collection);
 
-        return "[coinId] " + coinId + "삭제 완료.";
+        return "[coinId] " + coinId + " 삭제 완료.";
     }
 
 }

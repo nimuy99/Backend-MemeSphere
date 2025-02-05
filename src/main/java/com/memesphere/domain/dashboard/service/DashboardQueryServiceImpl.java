@@ -6,6 +6,8 @@ import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
 import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.domain.chartdata.repository.ChartDataRepository;
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
@@ -30,6 +32,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DashboardQueryServiceImpl implements DashboardQueryService {
+    private final UserRepository userRepository;
     private final MemeCoinRepository memeCoinRepository;
     private final ChartDataRepository chartDataRepository;
     private final CollectionQueryService collectionQueryService;
@@ -60,9 +63,12 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 
     // ** 차트 ** //
     @Override
-    public SearchPageResponse getChartPage(Long userId, ViewType viewType, SortType sortType, Integer pageNumber) {
+    public SearchPageResponse getChartPage(String email, ViewType viewType, SortType sortType, Integer pageNumber) {
         // TODO: 유저 받아와서 예외처리
-        List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(userId);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(user.getId());
 
         int pageSize = switch (viewType) {
             case GRID -> 9;
