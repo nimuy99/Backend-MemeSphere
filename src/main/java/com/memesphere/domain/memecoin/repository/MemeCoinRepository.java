@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
+import java.util.Optional;
+
 public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
     @Query("SELECT m FROM MemeCoin m " +
             "JOIN m.chartDataList c " +
@@ -29,6 +31,5 @@ public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
             "JOIN m.chartDataList c " +
             "WHERE c.recordedTime = " +
             "(SELECT MAX(c2.recordedTime) FROM ChartData c2 WHERE c2.memeCoin = m)")
-    @NonNull
-    Page<MemeCoin> findAllLatestChartData(@NonNull Pageable pageable);
+    Page<MemeCoin> findAllLatestChartData(Pageable pageable);
 }
