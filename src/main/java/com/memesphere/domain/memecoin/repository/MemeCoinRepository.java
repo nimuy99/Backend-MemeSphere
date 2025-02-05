@@ -31,5 +31,7 @@ public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
             "JOIN m.chartDataList c " +
             "WHERE c.recordedTime = " +
             "(SELECT MAX(c2.recordedTime) FROM ChartData c2 WHERE c2.memeCoin = m)")
-    Page<MemeCoin> findAllLatestChartData(Pageable pageable);
+    Page<MemeCoin> findAllLatestChartData( Pageable pageable);
+
+    Optional<MemeCoin> findByName(String name);
 }

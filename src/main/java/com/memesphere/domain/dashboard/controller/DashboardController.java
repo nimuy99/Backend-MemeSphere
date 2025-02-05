@@ -4,12 +4,14 @@ import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
 import com.memesphere.domain.dashboard.service.DashboardQueryService;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
+import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.global.validation.annotation.CheckPage;
 import com.memesphere.domain.search.dto.response.SearchPageResponse;
 import com.memesphere.domain.search.entity.SortType;
 import com.memesphere.domain.search.entity.ViewType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DashboardController {
     private final DashboardQueryService dashboardQueryService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/overview")
     @Operation(summary = "밈코인 총 거래량 및 총 개수 조회 API",
@@ -98,14 +101,15 @@ public class DashboardController {
                     - "isFirst": 첫 페이지인지(true) / 아닌지(false)
                     - "isLast": 마지막 페이지인지(true) / 아닌지(false)
                     ```""")
-    public ApiResponse<SearchPageResponse> getChartList(// TODO: userID 변경 -> 로그인한 유저
+    public ApiResponse<SearchPageResponse> getChartList(HttpServletRequest request,
                                                         @RequestParam(name = "viewType", defaultValue = "GRID") ViewType viewType,
                                                         @RequestParam(name = "sortType", defaultValue = "PRICE_CHANGE") SortType sortType,
                                                         @CheckPage @RequestParam(name = "page") Integer page) {
         Integer pageNumber = page - 1;
+
         // TODO: userID 변경 -> 로그인한 유저
-//        Long userId = user.getId();
-        Long userId = 1L;
+        String token = request.getHeader("Authorization");
+        Long userId = Long.parseLong(tokenProvider.getLoginId(token));
 
         return ApiResponse.onSuccess(dashboardQueryService.getChartPage(userId, viewType, sortType, pageNumber));
     }

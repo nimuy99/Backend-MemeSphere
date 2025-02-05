@@ -29,6 +29,11 @@ public class Collection extends BaseEntity {
     @JoinColumn(name="coin_id")
     private MemeCoin memeCoin;
 
+    public Collection(User user, MemeCoin memeCoin) {
+        this.user = user;
+        this.memeCoin = memeCoin;
+    }
+
     public Long getMemeCoinId() {
         return memeCoin.getId();
     }
