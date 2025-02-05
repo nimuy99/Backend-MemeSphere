@@ -1,7 +1,7 @@
 package com.memesphere.domain.chartdata.scheduler;
 
-import com.memesphere.binance.dto.response.BinanceTickerResponse;
-import com.memesphere.binance.service.BinanceQueryService;
+import com.memesphere.domain.binance.dto.response.BinanceTickerResponse;
+import com.memesphere.domain.binance.service.BinanceQueryService;
 import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;

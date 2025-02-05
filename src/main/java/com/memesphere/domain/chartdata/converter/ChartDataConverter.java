@@ -1,6 +1,6 @@
 package com.memesphere.domain.chartdata.converter;
 
-import com.memesphere.binance.dto.response.BinanceTickerResponse;
+import com.memesphere.domain.binance.dto.response.BinanceTickerResponse;
 import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 

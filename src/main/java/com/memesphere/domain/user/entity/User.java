@@ -36,27 +36,25 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Setter
     private String password;
 
-    @Setter
+    @Column(length = 8)
+    private String birth;
+
+    private String profileImage;
+
+    private String wallet;
+
+    private String accessToken;
+
+    private String refreshToken;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
 
-    private String wallet;
-
-    @Setter
-    private String accessToken;
-
-    @Setter
-    private String refreshToken;
-
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    @Column(length = 8)
-    private String birth;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
@@ -73,4 +71,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatLike> chatLikeList = new ArrayList<>();
+
+    public void saveAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void saveRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
