@@ -53,6 +53,7 @@ public class AuthServiceImpl implements AuthService{
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
             userRepository.save(existingUser);
+            // 로그인 시 refreshToken을 redis에 저장
             redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
 
             return new LoginResponse(accessToken, refreshToken);
@@ -65,6 +66,9 @@ public class AuthServiceImpl implements AuthService{
 
         if (existingUser != null) {
 
+            /*
+            로그아웃 시 refreshToken을 redis에서 삭제하고 accessToken을 redis에 저장
+            */
             redisService.deleteValue(existingUser.getEmail());
             redisService.setValue(token, "logout", tokenProvider.getExpirationTime(token));
 
@@ -79,7 +83,9 @@ public class AuthServiceImpl implements AuthService{
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
 
-        // validateToken이 false 반환할 경우
+        /*
+        validateToken이 false 반환할 경우(로그인 시 refreshToken은 redis에 저장됨. . redis에 없으면 TOKEN_INVALID)
+         */
         if (!tokenProvider.validateToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
         }

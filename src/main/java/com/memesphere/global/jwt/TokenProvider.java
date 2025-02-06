@@ -123,6 +123,10 @@ public class TokenProvider implements InitializingBean {
         try {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
 
+            /*
+            accessToken 유효 검사: accessToken이 redis에 있으면 로그아웃 상태임. return false
+            refreshToken 유효 검사: refreshToken이 redis에 있으면 로그인 상태임. return false의 경우 TOKEN_INVALID
+             */
             if (redisService.checkExistsValue(token)) {
                 return false;
             }
