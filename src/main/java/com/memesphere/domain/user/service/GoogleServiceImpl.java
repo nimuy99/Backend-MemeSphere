@@ -106,8 +106,6 @@ public class GoogleServiceImpl implements GoogleService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.saveAccessToken(accessToken);
-            existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
 
             return new LoginResponse(accessToken, refreshToken);
@@ -118,8 +116,6 @@ public class GoogleServiceImpl implements GoogleService{
             accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
-            newUser.saveAccessToken(accessToken);
-            newUser.saveRefreshToken(refreshToken);
             userRepository.save(newUser);
 
             return new LoginResponse(accessToken, refreshToken);

@@ -12,12 +12,14 @@ import com.memesphere.domain.user.service.GoogleServiceImpl;
 import com.memesphere.domain.user.service.KakaoServiceImpl;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
+import com.memesphere.global.jwt.CustomUserDetails;
 import com.memesphere.global.jwt.JwtAuthenticationFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -71,17 +73,17 @@ public class UserController {
 
     @PostMapping("/sign-out")
     @Operation(summary = "일반/카카오/구글 로그아웃 API")
-    public ApiResponse<?> signOut(HttpServletRequest request) {
+    public ApiResponse<?> signOut(HttpServletRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String token = jwtAuthenticationFilter.resolveToken(request);
-        authServiceImpl.handleUserLogout(token);
+        authServiceImpl.handleUserLogout(token, customUserDetails.getUser());
 
         return ApiResponse.onSuccess("로그아웃이 완료되었습니다.");
     }
 
     @PostMapping("/reissue")
     @Operation(summary = "리프레시 토큰으로 액세스 토큰 재발급 API")
-    public ApiResponse<LoginResponse> reissueAccessToken(@RequestBody ReissueRequest reissueRequest) {
-        LoginResponse loginResponse = authServiceImpl.reissueAccessToken(reissueRequest.getRefreshToken());
+    public ApiResponse<LoginResponse> reissueAccessToken(@RequestBody ReissueRequest reissueRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        LoginResponse loginResponse = authServiceImpl.reissueAccessToken(reissueRequest.getRefreshToken(), customUserDetails.getUser());
 
         return ApiResponse.onSuccess(loginResponse);
     }

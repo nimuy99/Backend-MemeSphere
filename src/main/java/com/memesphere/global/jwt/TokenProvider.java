@@ -1,6 +1,5 @@
 package com.memesphere.global.jwt;
 
-import com.memesphere.domain.user.converter.UserConverter;
 import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.repository.UserRepository;
@@ -147,16 +146,14 @@ public class TokenProvider implements InitializingBean {
     @Transactional
     public LoginResponse reissue(User user, String refreshToken) {
         String accessToken = createAccessToken(user.getEmail(), user.getLoginId());
-        user.saveAccessToken(accessToken);
-
 
         if(getExpirationTime(refreshToken) <= getExpirationTime(accessToken)) {
             refreshToken = createRefreshToken(user.getEmail());
-            user.saveRefreshToken(refreshToken);
         }
 
-        userRepository.save(user);
-
-        return UserConverter.toLoginResponse(accessToken, refreshToken);
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

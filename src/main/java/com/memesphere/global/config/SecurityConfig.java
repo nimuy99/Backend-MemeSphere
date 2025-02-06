@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 ,"/swagger-ui/**"
                                 ,"/swagger-resources/**"
                                 ,"/v3/api-docs/**").permitAll()
-                        .requestMatchers("/notifications/**"
+                        .requestMatchers("/notification/**"
                                 ,"/push-notifications/**"
                                 ,"/collection").hasRole("USER")
                         .anyRequest().permitAll()

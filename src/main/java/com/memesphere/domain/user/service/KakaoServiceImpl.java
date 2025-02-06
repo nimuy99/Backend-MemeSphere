@@ -91,8 +91,6 @@ public class KakaoServiceImpl implements KakaoService {
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.saveAccessToken(accessToken);
-            existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
             redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
 
@@ -104,8 +102,6 @@ public class KakaoServiceImpl implements KakaoService {
             accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
-            newUser.saveAccessToken(accessToken);
-            newUser.saveRefreshToken(refreshToken);
             userRepository.save(newUser);
 
             return new LoginResponse(accessToken, refreshToken);

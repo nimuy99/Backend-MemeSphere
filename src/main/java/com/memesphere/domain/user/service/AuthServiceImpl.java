@@ -52,8 +52,6 @@ public class AuthServiceImpl implements AuthService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.saveAccessToken(accessToken);
-            existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
             redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
 
@@ -63,8 +61,7 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    public void handleUserLogout(String token) {
-        User existingUser = userRepository.findByAccessToken(token).orElse(null);
+    public void handleUserLogout(String token, User existingUser) {
 
         if (existingUser != null) {
 
@@ -76,16 +73,16 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
-    public LoginResponse reissueAccessToken(String refreshToken) {
-        User existingUser = userRepository.findByRefreshToken(refreshToken).orElse(null);
+    public LoginResponse reissueAccessToken(String refreshToken, User existingUser) {
 
         if (existingUser == null) {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
 
+        // validateToken이 false 반환할 경우
         if (!tokenProvider.validateToken(refreshToken)) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
-        } // validateToken이 false 반환할 경우
+        }
 
         String email = existingUser.getEmail();
         String redisRefreshToken = redisService.getValue(email);

@@ -45,10 +45,6 @@ public class User extends BaseEntity {
 
     private String wallet;
 
-    private String accessToken;
-
-    private String refreshToken;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
@@ -71,12 +67,4 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatLike> chatLikeList = new ArrayList<>();
-
-    public void saveAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void saveRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }
