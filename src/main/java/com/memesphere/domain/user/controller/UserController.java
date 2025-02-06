@@ -85,7 +85,7 @@ public class UserController {
     @PostMapping("/reissue")
     @Operation(summary = "리프레시 토큰으로 액세스 토큰 재발급 API")
     public ApiResponse<LoginResponse> reissueAccessToken(@RequestBody ReissueRequest reissueRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (customUserDetails == null) {
+        if (customUserDetails.getUser() == null) {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
 
