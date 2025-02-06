@@ -5,13 +5,16 @@ import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
 import com.memesphere.domain.collection.service.CollectionQueryService;
+import com.memesphere.global.jwt.CustomUserDetails;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.global.validation.annotation.CheckPage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import com.memesphere.domain.collection.converter.CollectionConverter;
@@ -42,23 +45,23 @@ public class CollectionRestController {
     @PostMapping("/collection/{coinId}")
     @Operation(summary = "밈코인 콜렉션 등록 API",
                 description = "코인 Id를 입력하면 사용자의 콜렉션에 등록")
-    public ApiResponse<String> postCollectCoin (HttpServletRequest request, @PathVariable Long coinId) {
+    public ApiResponse<String> postCollectCoin (@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                @PathVariable Long coinId) {
 
-        String token = request.getHeader("Authorization").substring(7);
-        String email = tokenProvider.getLoginId(token);
+        Long userId = customUserDetails.getUser().getId();
 
-        return ApiResponse.onSuccess(collectionCommandService.addCollectCoin(email, coinId));
+        return ApiResponse.onSuccess(collectionCommandService.addCollectCoin(userId, coinId));
     }
 
     @DeleteMapping("/collection/{coinId}")
     @Operation(summary = "밈코인 콜렉션 삭제 API",
             description = "코인 Id를 입력하면 사용자의 콜렉션에서 삭제")
-    public ApiResponse<String> deleteCollectCoin (HttpServletRequest request, @PathVariable Long coinId) {
+    public ApiResponse<String> deleteCollectCoin (@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                  @PathVariable Long coinId) {
 
-        String token = request.getHeader("Authorization").substring(7);
-        String email = tokenProvider.getLoginId(token);
+        Long userId = customUserDetails.getUser().getId();
 
-        return ApiResponse.onSuccess(collectionCommandService.removeCollectCoin(email, coinId));
+        return ApiResponse.onSuccess(collectionCommandService.removeCollectCoin(userId, coinId));
     }
 
 }

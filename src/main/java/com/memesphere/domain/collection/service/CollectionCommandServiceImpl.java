@@ -18,8 +18,8 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
     private final UserRepository userRepository;
     private final MemeCoinRepository coinRepository;
 
-    public String addCollectCoin(String email, Long coinId) {
-        User user = userRepository.findByEmail(email)
+    public String addCollectCoin(Long userId, Long coinId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         MemeCoin coin = coinRepository.findById(coinId)
@@ -38,8 +38,8 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
     }
 
     @Override
-    public String removeCollectCoin(String email, Long coinId) {
-        User user = userRepository.findByEmail(email)
+    public String removeCollectCoin(Long userId, Long coinId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         MemeCoin coin = coinRepository.findById(coinId)

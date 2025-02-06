@@ -14,5 +14,5 @@ public interface DashboardQueryService {
     DashboardTrendListResponse getTrendList();
 
     // ** 차트 ** //
-    SearchPageResponse getChartPage(String email, ViewType viewType, SortType sortType, Integer pageNumber);
+    SearchPageResponse getChartPage(Long userId, ViewType viewType, SortType sortType, Integer pageNumber);
 }

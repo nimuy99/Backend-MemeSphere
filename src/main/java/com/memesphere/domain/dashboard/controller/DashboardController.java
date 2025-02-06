@@ -4,19 +4,19 @@ import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
 import com.memesphere.domain.dashboard.service.DashboardQueryService;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
+import com.memesphere.global.jwt.CustomUserDetails;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.global.validation.annotation.CheckPage;
 import com.memesphere.domain.search.dto.response.SearchPageResponse;
 import com.memesphere.domain.search.entity.SortType;
 import com.memesphere.domain.search.entity.ViewType;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name="대시보드", description = "대시보드 관련  API")
 @RestController
@@ -101,16 +101,15 @@ public class DashboardController {
                     - "isFirst": 첫 페이지인지(true) / 아닌지(false)
                     - "isLast": 마지막 페이지인지(true) / 아닌지(false)
                     ```""")
-    public ApiResponse<SearchPageResponse> getChartList(HttpServletRequest request,
+    public ApiResponse<SearchPageResponse> getChartList(@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                         @RequestParam(name = "viewType", defaultValue = "GRID") ViewType viewType,
                                                         @RequestParam(name = "sortType", defaultValue = "PRICE_CHANGE") SortType sortType,
                                                         @CheckPage @RequestParam(name = "page") Integer page) {
         Integer pageNumber = page - 1;
 
-        String token = request.getHeader("Authorization").substring(7);
-        String email = tokenProvider.getLoginId(token);
+        Long userId = customUserDetails.getUser().getId();
 
 
-        return ApiResponse.onSuccess(dashboardQueryService.getChartPage(email, viewType, sortType, pageNumber));
+        return ApiResponse.onSuccess(dashboardQueryService.getChartPage(userId, viewType, sortType, pageNumber));
     }
 }
