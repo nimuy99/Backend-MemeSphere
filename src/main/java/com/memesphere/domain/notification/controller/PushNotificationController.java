@@ -1,20 +1,35 @@
 package com.memesphere.domain.notification.controller;
 
+import com.memesphere.domain.notification.service.CoinNotificationService;
+import com.memesphere.domain.notification.service.PushNotificationService;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.notification.dto.response.NotificationListResponse;
+import com.memesphere.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Tag(name="푸시 알림", description = "푸시 알림 관련 API")
 @RestController
 @RequestMapping("/push-notifications")
 @RequiredArgsConstructor
 public class PushNotificationController {
+
+    private final PushNotificationService pushNotificationService;
+
+    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE) //서버가 클라이언트에게 이벤트 스트림을 전송한다는 것을 명시
+    public ApiResponse<SseEmitter> subscribe(@Parameter(hidden = true) @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                    @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+
+        SseEmitter sseEmitter = pushNotificationService.subscribe(customUserDetails.getUser().getId(), lastEventId);
+        return ApiResponse.onSuccess(sseEmitter);
+    }
+
     @GetMapping
     @Operation(summary = "푸시 알림 조회 API",
             description = """
