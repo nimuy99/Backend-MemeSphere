@@ -1,5 +1,6 @@
 package com.memesphere.domain.collection.service;
 
+import com.memesphere.domain.collection.converter.CollectionConverter;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.repository.CollectionRepository;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
@@ -31,7 +32,7 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
         }
 
         // 새로운 컬렉션 저장
-        Collection collection = new Collection(user, coin);
+        Collection collection = CollectionConverter.toCollection(user, coin);
         collectionRepository.save(collection);
 
         return "[coinId] " + coinId + " 등록 완료.";

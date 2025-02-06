@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
+@Builder
 @DynamicUpdate
 @DynamicInsert
 @AllArgsConstructor
@@ -28,11 +29,6 @@ public class Collection extends BaseEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="coin_id")
     private MemeCoin memeCoin;
-
-    public Collection(User user, MemeCoin memeCoin) {
-        this.user = user;
-        this.memeCoin = memeCoin;
-    }
 
     public Long getMemeCoinId() {
         return memeCoin.getId();
