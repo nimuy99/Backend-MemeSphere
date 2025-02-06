@@ -12,6 +12,8 @@ import com.memesphere.domain.user.service.GoogleServiceImpl;
 import com.memesphere.domain.user.service.KakaoServiceImpl;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
+import com.memesphere.global.apipayload.code.status.ErrorStatus;
+import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.CustomUserDetails;
 import com.memesphere.global.jwt.JwtAuthenticationFilter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,6 +85,10 @@ public class UserController {
     @PostMapping("/reissue")
     @Operation(summary = "리프레시 토큰으로 액세스 토큰 재발급 API")
     public ApiResponse<LoginResponse> reissueAccessToken(@RequestBody ReissueRequest reissueRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
         LoginResponse loginResponse = authServiceImpl.reissueAccessToken(reissueRequest.getRefreshToken(), customUserDetails.getUser());
 
         return ApiResponse.onSuccess(loginResponse);
