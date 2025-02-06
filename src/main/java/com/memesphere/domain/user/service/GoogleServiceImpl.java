@@ -106,9 +106,11 @@ public class GoogleServiceImpl implements GoogleService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
+            String nickname = existingUser.getNickname();
+
             userRepository.save(existingUser);
 
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         } else {
             User newUser = UserConverter.toGoogleUser(googleUserInfoResponse);
             newUser = userRepository.save(newUser);
@@ -116,9 +118,11 @@ public class GoogleServiceImpl implements GoogleService{
             accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
+            String nickname = newUser.getNickname();
+
             userRepository.save(newUser);
 
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         }
     }
 }

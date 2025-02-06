@@ -52,11 +52,13 @@ public class AuthServiceImpl implements AuthService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
+            String nickname = existingUser.getNickname();
+
             userRepository.save(existingUser);
             // 로그인 시 refreshToken을 redis에 저장
             redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
 
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         } else {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
