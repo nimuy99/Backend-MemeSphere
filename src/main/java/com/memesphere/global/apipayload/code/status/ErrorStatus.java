@@ -33,7 +33,12 @@ public enum ErrorStatus implements BaseCode {
     NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "NICKNAME ALREADY EXIST ", "이미 사용 중인 닉네임입니다."),
     REDIS_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS KEY NOT FOUND", "요청한 키가 Redis에 존재하지 않습니다."),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "TOKEN NOT FOUND", "토큰을 찾을 수 없습니다."),
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰이 유효하지 않습니다.");
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰이 유효하지 않습니다."),
+    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "NICKNAME ALREADY EXIST ", "이미 사용 중인 닉네임입니다."),
+
+    // 이미지 에러
+    EMPTY_FILE_EXCEPTION(HttpStatus.BAD_REQUEST, "EMPTY_FILE", "이미지가 빈 파일입니다."),
+    INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
