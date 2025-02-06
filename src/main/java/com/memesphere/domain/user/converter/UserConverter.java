@@ -31,8 +31,6 @@ public class UserConverter {
                 .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
                 .socialType(SocialType.KAKAO)
                 .userRole(UserRole.USER)
-                //.accessToken(tokenResponse.getAccessToken())
-                //.refreshToken(tokenResponse.getRefreshToken())
                 .build();
     }
 
@@ -54,8 +52,6 @@ public class UserConverter {
                 .nickname(googleUserInfoResponse.getName())
                 .email(googleUserInfoResponse.getEmail())
                 .profileImage(googleUserInfoResponse.getPicture())
-                //.accessToken(tokenResponse.getAccessToken())
-                //.refreshToken(tokenResponse.getRefreshToken())
                 .socialType(SocialType.GOOGLE)
                 .userRole(UserRole.USER)
                 .build();
