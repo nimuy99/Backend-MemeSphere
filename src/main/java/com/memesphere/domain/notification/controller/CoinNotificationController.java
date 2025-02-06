@@ -1,9 +1,11 @@
 package com.memesphere.domain.notification.controller;
 
 
-import com.memesphere.domain.notification.dto.NotificationDTO;
-import com.memesphere.domain.notification.service.CoinNotificationService;
 import com.memesphere.global.apipayload.ApiResponse;
+import com.memesphere.domain.notification.dto.request.NotificationRequest;
+import com.memesphere.domain.notification.dto.response.NotificationListResponse;
+import com.memesphere.domain.notification.dto.response.NotificationResponse;
+import com.memesphere.domain.notification.service.CoinNotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name="알림", description = "알림 관련 API")
 @RestController
-@RequestMapping("/notifications")
+@RequestMapping("/notification")
 @RequiredArgsConstructor
 public class CoinNotificationController {
 
     final private CoinNotificationService coinNotificationService;
 
-    @GetMapping
-    @Operation(summary = "등록한 알림 조회 API",
+    @GetMapping("/list")
+    @Operation(summary = "등록한 알림 리스트 조회 API",
             description = """
                     사용자가 등록해 놓은 알림 리스트를 보여줍니다. \n
                     
@@ -35,11 +37,11 @@ public class CoinNotificationController {
                     - "is_rising": 상승(true) 또는 하락(false)
                     - "is_on": 알림 on(true) 또는 off(false)
                     ```""")
-    public ApiResponse<NotificationDTO.NotificationListResponse> getNotificationList() {
+    public ApiResponse<NotificationListResponse> getNotificationList() {
         return ApiResponse.onSuccess(coinNotificationService.findNotificationList());
     }
 
-    @PostMapping
+    @PostMapping("/enroll")
     @Operation(summary = "알림 등록 API",
             description = """
                     사용자가 직접 필드를 입력하여 알림을 등록합니다. \n
@@ -63,7 +65,7 @@ public class CoinNotificationController {
                     - "is_rising": 상승(true) 또는 하락(false)
                     - "is_on": 알림 on(true) 또는 off(false)
                     ```""")
-    public ApiResponse<NotificationDTO.NoticeForm> postNotification(@RequestBody NotificationDTO.NotificationRequest request) {
+    public ApiResponse<NotificationResponse> postNotification(@RequestBody NotificationRequest request) {
         return ApiResponse.onSuccess(coinNotificationService.addNotification(request));
     }
 
@@ -81,7 +83,7 @@ public class CoinNotificationController {
                     ```
                     알림 등록 API 응답 형식과 동일
                     ```""")
-    public ApiResponse<NotificationDTO.NoticeForm> updateNotificationStatus(@PathVariable("notification-id") Long id) {
+    public ApiResponse<NotificationResponse> updateNotificationStatus(@PathVariable("notification-id") Long id) {
         return ApiResponse.onSuccess(coinNotificationService.modifyNotification(id));
     }
 
@@ -99,7 +101,7 @@ public class CoinNotificationController {
                     ```
                     등록한 알림 조회 API 응답 형식과 동일
                     ```""")
-    public ApiResponse<NotificationDTO.NotificationListResponse> deleteNotification(@PathVariable("notification-id") Long id) {
+    public ApiResponse<NotificationListResponse> deleteNotification(@PathVariable("notification-id") Long id) {
         return ApiResponse.onSuccess(coinNotificationService.removeNotification(id));
     }
 }

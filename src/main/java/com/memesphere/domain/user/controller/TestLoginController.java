@@ -7,13 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @org.springframework.stereotype.Controller
 public class TestLoginController {
 
-    @Value("${testLoginUrl}")
-    private String testLoginUrl;
+    @Value("${testKakaoLoginUrl}")
+    private String testKakaoLoginUrl;
+
+    @Value("${testGoogleLoginUrl}")
+    private String testGoogleLoginUrl;
 
     @GetMapping("/login")
     public String login(Model model) {
 
-        model.addAttribute("testLoginUrl", testLoginUrl);
+        model.addAttribute("testKakaoLoginUrl", testKakaoLoginUrl);
+        model.addAttribute("testGoogleLoginUrl", testGoogleLoginUrl);
         return "login";
     }
 }

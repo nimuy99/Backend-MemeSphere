@@ -1,4 +1,4 @@
-package com.memesphere.binance.dto.response;
+package com.memesphere.domain.binance.dto.response;
 
 import lombok.Data;
 
