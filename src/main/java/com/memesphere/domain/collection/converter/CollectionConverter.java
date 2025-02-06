@@ -5,12 +5,19 @@ import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
 import com.memesphere.domain.collection.dto.response.CollectionPreviewResponse;
+import com.memesphere.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CollectionConverter {
+
+    public static Collection toCollection(User user, MemeCoin coin) {
+        return Collection.builder()
+                .user(user).memeCoin(coin).build();
+    }
+
     public static CollectionPageResponse toCollectionPageDTO(Page<Collection> collectionPage) {
         List<CollectionPreviewResponse> collectionItems = collectionPage.getContent().stream()
                 .map(collection -> toCollectionPreviewDTO(collection))

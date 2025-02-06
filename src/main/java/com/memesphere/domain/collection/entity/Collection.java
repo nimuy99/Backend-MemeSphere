@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
+@Builder
 @DynamicUpdate
 @DynamicInsert
 @AllArgsConstructor
