@@ -57,8 +57,9 @@ public class ImageService {
     private String getFileExtension(String filename) {
         int lastDotIndex = filename.lastIndexOf(".");
 
+        // 확장자 없을 시 예외 발생
         if (lastDotIndex == -1) {
-            throw new GeneralException(ErrorStatus.INVALID_FILE_EXTENTION);  // 확장자가 없으면 예외 발생
+            throw new GeneralException(ErrorStatus.INVALID_FILE_EXTENTION);
         }
 
         return filename.substring(lastDotIndex + 1).toLowerCase();
