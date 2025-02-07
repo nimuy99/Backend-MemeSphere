@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -64,9 +65,11 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     // ** 차트 ** //
     @Override
     public SearchPageResponse getChartPage(Long userId, ViewType viewType, SortType sortType, Integer pageNumber) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(user.getId());
+
+        // 로그인 x -> 콜렉션 빈 리스트
+        // 로그인 o -> 콜렉션 유저가 등록한 id 리스트
+        List<Long> userCollectionIds = (userId != null) ?
+                collectionQueryService.getUserCollectionIds(userId) : Collections.emptyList();
 
         int pageSize = switch (viewType) {
             case GRID -> 9;

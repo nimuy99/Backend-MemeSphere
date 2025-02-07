@@ -28,6 +28,10 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
     @Transactional(readOnly = true)
     @Override
     public List<Long> getUserCollectionIds(Long userId) {
+        if (userId == null) {
+
+        }
+
         return collectionRepository.findAllByUserId(userId).stream()
                 .map(Collection::getMemeCoinId)
                 .collect(Collectors.toList());

@@ -2,6 +2,7 @@ package com.memesphere.domain.dashboard.controller;
 
 import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
 import com.memesphere.domain.dashboard.service.DashboardQueryService;
+import com.memesphere.domain.user.entity.User;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.global.jwt.CustomUserDetails;
@@ -13,7 +14,6 @@ import com.memesphere.domain.search.entity.ViewType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -107,9 +107,10 @@ public class DashboardController {
                                                         @CheckPage @RequestParam(name = "page") Integer page) {
         Integer pageNumber = page - 1;
 
-        Long userId = customUserDetails.getUser().getId();
-
-
+        // 로그인 여부 처리
+        // 로그인 x -> null
+        // 로그인 o -> 유저 id
+        Long userId = customUserDetails == null ? null : customUserDetails.getUser().getId();
         return ApiResponse.onSuccess(dashboardQueryService.getChartPage(userId, viewType, sortType, pageNumber));
     }
 }
