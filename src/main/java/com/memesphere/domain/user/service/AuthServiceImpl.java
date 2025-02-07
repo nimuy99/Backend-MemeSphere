@@ -49,10 +49,12 @@ public class AuthServiceImpl implements AuthService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
+            String nickname = existingUser.getNickname();
+
             existingUser.saveAccessToken(accessToken);
             existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         } else {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }

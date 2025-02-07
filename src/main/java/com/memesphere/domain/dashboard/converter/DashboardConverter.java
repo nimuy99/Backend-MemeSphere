@@ -6,12 +6,14 @@ import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendResponse;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DashboardConverter {
     // ** 총 거래량 및 총 개수 응답 형식 ** //
-    public static DashboardOverviewResponse toOverView(Long totalVolume, Long totalCoin) {
+    public static DashboardOverviewResponse toOverView(BigDecimal totalVolume, Long totalCoin) {
         return DashboardOverviewResponse.builder()
                 .totalVolume(totalVolume)
                 .totalCoin(totalCoin)
@@ -19,12 +21,13 @@ public class DashboardConverter {
     }
 
     // ** 트렌드 응답 형식 ** //
-    public static DashboardTrendListResponse toTrendList(List<ChartData> dataList) {
+    public static DashboardTrendListResponse toTrendList(LocalDateTime recordedTime, List<ChartData> dataList) {
         List<DashboardTrendResponse> trendList = dataList.stream()
                 .map(data -> toTrend(data))
                 .collect(Collectors.toList());
 
         return DashboardTrendListResponse.builder()
+                .timestamp(recordedTime)
                 .trendList(trendList)
                 .build();
     }
@@ -37,11 +40,12 @@ public class DashboardConverter {
                 .image(memeCoin.getImage())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
-                .price(data.getPrice().intValue()) // todo: 외부 api 응답 형식 보고 엔티티 자료형 변경
-                .priceChange(data.getPriceChange().intValue())
-                .changeAbsolute(Math.abs(data.getPriceChange().intValue()))
-                .changeDirection(data.getPriceChange().intValue() > 0? "up" : "down")
-                .changeRate(null) // todo: string할건지 float형 할건지 결정
+                .volume(data.getVolume())
+                .price(data.getPrice())
+                .priceChange(data.getPriceChange())
+                .changeAbsolute(data.getPriceChange().abs())
+                .changeDirection(data.getPriceChangeRate().compareTo(BigDecimal.ZERO) < 0 ? "down" : "up")
+                .changeRate(data.getPriceChangeRate())
                 .build();
     }
 }
