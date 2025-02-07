@@ -110,7 +110,7 @@ public class DashboardController {
         // 로그인 여부 처리
         // 로그인 x -> null
         // 로그인 o -> 유저 id
-        Long userId = customUserDetails == null ? null : customUserDetails.getUser().getId();
+        Long userId = (customUserDetails == null) ? null : customUserDetails.getUser().getId();
         return ApiResponse.onSuccess(dashboardQueryService.getChartPage(userId, viewType, sortType, pageNumber));
     }
 }

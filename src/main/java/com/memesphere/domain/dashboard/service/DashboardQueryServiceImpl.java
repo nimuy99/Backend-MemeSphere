@@ -68,8 +68,8 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 
         // 로그인 x -> 콜렉션 빈 리스트
         // 로그인 o -> 콜렉션 유저가 등록한 id 리스트
-        List<Long> userCollectionIds = (userId != null) ?
-                collectionQueryService.getUserCollectionIds(userId) : Collections.emptyList();
+        List<Long> userCollectionIds = (userId == null) ?
+                Collections.emptyList() : collectionQueryService.getUserCollectionIds(userId);
 
         int pageSize = switch (viewType) {
             case GRID -> 9;
