@@ -1,19 +1,19 @@
 package com.memesphere.domain.image.service;
 
-import com.amazonaws.SdkClientException;
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.memesphere.domain.image.converter.ImageConverter;
+import com.memesphere.domain.image.dto.response.PresignedUrlResponse;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.net.URL;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,58 +23,64 @@ public class ImageService {
     private String bucket;
 
     private final AmazonS3 amazonS3;
-    private String defaultUrl = "https://s3.amazonaws.com/";
 
-    // S3에 파일을 업로드
-    public String uploadFile(MultipartFile file) throws IOException {
-        if(file.isEmpty()){
-            throw new GeneralException(ErrorStatus.EMPTY_FILE_EXCEPTION);
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png");
+
+    public PresignedUrlResponse uploadFile(String extension) throws IOException {
+
+        // 확장자 검사
+        validateImageFileExtension(extension);
+        String fileName = generateFileName(extension);
+
+        try {
+            URL presignedUrl = generatePresignedUrl(fileName, extension); // presigned URL 생성
+            String s3BaseUrl = "https://umc-meme.s3.ap-northeast-2.amazonaws.com/";
+            String imageUrl = s3BaseUrl + fileName; // 전체 URL 생성
+
+            return ImageConverter.toPresignedUrlDto(presignedUrl, imageUrl);
+
+        }  catch (Exception e) {
+            throw new GeneralException(ErrorStatus.FILE_UPLOAD_FAILED);
         }
+    }
 
-        validateImageFileExtension(file.getOriginalFilename());
+    //Presigned URL 생성
+    public URL generatePresignedUrl(String fileName, String extension) {
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += 1000 * 60 * 10; // 10분 후 만료
+        expiration.setTime(expTimeMillis);
 
-        String fileName=generateFileName(file);
-        try{
-            amazonS3.putObject(bucket, fileName,file.getInputStream(),getObjectMetadata(file));
-            return defaultUrl+fileName;
-        } catch(SdkClientException e){
-            throw new IOException("error uploading file", e);
-        }
+        String contentType = getContentType(extension);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucket, fileName)
+                        .withMethod(HttpMethod.PUT)
+                        .withExpiration(expiration)
+                        .withContentType(contentType);
+
+        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
+
+    }
+
+    //확장자에 따라 content type 결정
+    private String getContentType(String extension) {
+        return switch (extension) {
+            case "jpg", "jpeg" -> "image/jpeg";
+            case "png" -> "image/png";
+            default -> throw new GeneralException(ErrorStatus.INVALID_FILE_EXTENTION);
+        };
     }
 
     // 파일 확장자 유효성 검사
-    private void validateImageFileExtension(String filename) {
-        String extension = getFileExtension(filename);
-
-        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png");
-
-        if (!allowedExtensions.contains(extension)) {
+    private void validateImageFileExtension(String extension) {
+        if (extension == null || extension.isEmpty() || !ALLOWED_EXTENSIONS.contains(extension)) {
             throw new GeneralException(ErrorStatus.INVALID_FILE_EXTENTION);
         }
     }
 
-    // 파일 확장자 추출
-    private String getFileExtension(String filename) {
-        int lastDotIndex = filename.lastIndexOf(".");
-
-        // 확장자 없을 시 예외 발생
-        if (lastDotIndex == -1) {
-            throw new GeneralException(ErrorStatus.INVALID_FILE_EXTENTION);
-        }
-
-        return filename.substring(lastDotIndex + 1).toLowerCase();
-    }
-
-    // MultipartFile의 사이즈와 타입을 S3에 전달하기 위한 메타데이터 생성
-    private ObjectMetadata getObjectMetadata(MultipartFile file){
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
-        return objectMetadata;
-    }
-
-    // filename 설정 (UUID 이용)
-    private String generateFileName(MultipartFile file){
-        return UUID.randomUUID().toString() + "-"+file.getOriginalFilename();
+    // 파일명 설정
+    private String generateFileName(String extension) {
+        return UUID.randomUUID().toString() + "." + extension;
     }
 }
