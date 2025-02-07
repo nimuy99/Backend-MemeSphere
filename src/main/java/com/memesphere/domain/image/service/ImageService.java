@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -26,7 +25,7 @@ public class ImageService {
 
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png");
 
-    public PresignedUrlResponse uploadFile(String extension) throws IOException {
+    public PresignedUrlResponse uploadFile(String extension) {
 
         // 확장자 검사
         validateImageFileExtension(extension);
@@ -81,6 +80,6 @@ public class ImageService {
 
     // 파일명 설정
     private String generateFileName(String extension) {
-        return UUID.randomUUID().toString() + "." + extension;
+        return UUID.randomUUID() + "." + extension;
     }
 }

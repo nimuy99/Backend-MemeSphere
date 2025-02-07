@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @Builder
 public class PresignedUrlResponse {
-    @Schema(description = "Presigned URL", example = "https://s3.bucket.com/...") // 예제 추가
+    @Schema(description = "Presigned URL", example = "https://s3.bucket.com/...")
     private String presignedUrl;
 
     @Schema(description = "Image URL", example = "https://umc..jpg")
