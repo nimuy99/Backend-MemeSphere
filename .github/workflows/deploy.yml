@@ -55,7 +55,10 @@ jobs:
         run: |
           echo "$EC2_SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
-
+          
+          # EC2로 docker-compose.yml 복사
+          scp -i private_key.pem docker-compose.yml $EC2_USERNAME@$EC2_HOST:/home/$EC2_USERNAME/docker-compose.yml
+          
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
             
