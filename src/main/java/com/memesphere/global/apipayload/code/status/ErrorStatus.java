@@ -38,7 +38,7 @@ public enum ErrorStatus implements BaseCode {
 
     // 이미지 에러
     INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다."),
-    FILE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST,"FILE UPLOAD FAILED","이미지 업로드를 실패했습니다.");
+    PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

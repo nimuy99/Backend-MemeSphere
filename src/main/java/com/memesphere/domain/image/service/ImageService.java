@@ -39,7 +39,7 @@ public class ImageService {
             return ImageConverter.toPresignedUrlDto(presignedUrl, imageUrl);
 
         }  catch (Exception e) {
-            throw new GeneralException(ErrorStatus.FILE_UPLOAD_FAILED);
+            throw new GeneralException(ErrorStatus.PRESIGNED_URL_FAILED);
         }
     }
 
