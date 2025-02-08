@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/s3")
+@RequestMapping("/image")
 @RestController
 @RequiredArgsConstructor
 public class ImageController {
