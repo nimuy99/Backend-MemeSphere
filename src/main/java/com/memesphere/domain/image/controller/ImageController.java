@@ -3,6 +3,7 @@ package com.memesphere.domain.image.controller;
 import com.memesphere.domain.image.dto.response.PresignedUrlResponse;
 import com.memesphere.domain.image.dto.request.ImageExtensionRequest;
 import com.memesphere.domain.image.service.ImageService;
+import com.memesphere.domain.image.service.ProfileService;
 import com.memesphere.global.apipayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController {
 
     private final ImageService imageService;
+    private final ProfileService profileService;
 
     @PostMapping(value = "/upload", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -30,4 +32,16 @@ public class ImageController {
 
         return ApiResponse.onSuccess(url);
     }
+
+    //프로필 이미지 조회 Api
+    @GetMapping("/profile/{user_id}")
+    @Operation(summary = "프로필 이미지 조회 API",
+            description = "회원가입한 유저의 프로필 이미지를 반환합니다.")
+    public ApiResponse<String> getProfile(@PathVariable("user_id") Long user_id) {
+        String profileImage = profileService.getProfileImage(user_id);
+
+        // null이거나 ""이면 result를 null로 반환
+        return ApiResponse.onSuccess((profileImage == null || profileImage.isEmpty()) ? "null" : profileImage);
+    }
+
 }
