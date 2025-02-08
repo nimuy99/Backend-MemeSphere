@@ -45,6 +45,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository  # ✅ 리포지토리 체크아웃 추가
+        uses: actions/checkout@v4
+
+      - name: Debug - Check if docker-compose.yml exists  # ✅ 파일 존재 확인
+        run: ls -l docker-compose.yml || echo "docker-compose.yml not found!"
+
       - name: Deploy to EC2
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
