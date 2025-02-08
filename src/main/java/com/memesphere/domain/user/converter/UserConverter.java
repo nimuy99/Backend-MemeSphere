@@ -70,6 +70,7 @@ public class UserConverter {
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .socialType(SocialType.GENERAL)
                 .userRole(UserRole.USER)
+                .profileImage(signUpRequest.getProfileImage())
                 .build();
     }
 

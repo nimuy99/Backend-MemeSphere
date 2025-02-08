@@ -29,4 +29,8 @@ public class SignUpRequest {
     @NotEmpty
     @Schema(description = "사용자 생년월일", example = "20001010")
     String birth;
+
+    @NotEmpty
+    @Schema(description = "프로필 이미지", example = "http://umc..jpg")
+    String profileImage;
 }
