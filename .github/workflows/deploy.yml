@@ -58,10 +58,11 @@ jobs:
 
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "
             docker pull $DOCKER_USERNAME/$MY_APP:latest
-            docker stop $MY_APP || true
-            docker rm $MY_APP || true
-            docker run -d -p 8080:8080 --name $MY_APP \
-              $DOCKER_USERNAME/$MY_APP:latest
+            
+            docker-compose down || true
+        
+            docker-compose up -d --remove-orphans
+            docker image prune -f
           "
 
           rm -f private_key.pem
