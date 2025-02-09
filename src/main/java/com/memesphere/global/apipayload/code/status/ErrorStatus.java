@@ -37,8 +37,8 @@ public enum ErrorStatus implements BaseCode {
     NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "NICKNAME ALREADY EXIST ", "이미 사용 중인 닉네임입니다."),
 
     // 이미지 에러
-    EMPTY_FILE_EXCEPTION(HttpStatus.BAD_REQUEST, "EMPTY_FILE", "이미지가 빈 파일입니다."),
-    INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다.");
+    INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다."),
+    PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
