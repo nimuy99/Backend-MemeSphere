@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = resolveToken(servletRequest);
 
-            if (StringUtils.hasText(jwt) && tokenProvider.validateAccessToken(jwt)) {
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 
                 // JWT에서 사용자의 ID를 추출해서 Authentication 객체생성
                 Authentication authentication = this.tokenProvider.getAuthentication(jwt);
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().write("{\"error\": \"Error processing request - " + ex.getMessage() + "\"}");
     }
 
-    private String resolveToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && StringUtils.startsWithIgnoreCase(bearerToken,
                 "Bearer ")) {

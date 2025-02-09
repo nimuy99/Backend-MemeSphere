@@ -9,9 +9,11 @@ import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.domain.user.dto.request.SignInRequest;
 import com.memesphere.domain.user.dto.request.SignUpRequest;
+import com.memesphere.global.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 
 @Service
@@ -22,6 +24,7 @@ public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final UserServiceImpl userServiceImpl;
     private final TokenProvider tokenProvider;
+    private final RedisService redisService;
 
     public void handleUserRegistration(SignUpRequest signUpRequest) {
         User existingUser = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
@@ -51,13 +54,52 @@ public class AuthServiceImpl implements AuthService{
 
             String nickname = existingUser.getNickname();
 
-            existingUser.saveAccessToken(accessToken);
-            existingUser.saveRefreshToken(refreshToken);
             userRepository.save(existingUser);
+            // 로그인 시 refreshToken을 redis에 저장
+            redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
+
             return new LoginResponse(accessToken, refreshToken, nickname);
         } else {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
+    }
+
+    public void handleUserLogout(String token, User existingUser) {
+
+        if (existingUser != null) {
+
+            /*
+            로그아웃 시 refreshToken을 redis에서 삭제하고 accessToken을 redis에 저장
+            */
+            redisService.deleteValue(existingUser.getEmail());
+            redisService.setValue(token, "logout", tokenProvider.getExpirationTime(token));
+
+        } else {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+    }
+
+    public LoginResponse reissueAccessToken(String refreshToken, User existingUser) {
+
+        if (existingUser == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
+        /*
+        validateToken이 false 반환할 경우(로그인 시 refreshToken은 redis에 저장됨. . redis에 없으면 TOKEN_INVALID)
+         */
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+
+        String email = existingUser.getEmail();
+        String redisRefreshToken = redisService.getValue(email);
+
+        if (StringUtils.isEmpty(refreshToken) || StringUtils.isEmpty(redisRefreshToken) || !redisRefreshToken.equals(refreshToken)) {
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+
+        return tokenProvider.reissue(existingUser, refreshToken);
     }
 
     public void checkPassword(User user, String password) {
