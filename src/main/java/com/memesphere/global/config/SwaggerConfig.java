@@ -34,7 +34,7 @@ public class SwaggerConfig {
                         .bearerFormat("JWT"));
 
         return new OpenAPI()
-                .addServersItem(new Server().url("/"))
+                .addServersItem(new Server().url("https://15.164.103.195.nip.io"))  // 기본 URL을 nip.io 도메인으로 설정
                 .info(info)
                 .addSecurityItem(securityRequirement)
                 .components(components);
