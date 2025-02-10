@@ -1,16 +1,21 @@
 package com.memesphere.domain.chat.converter;
 
+import com.memesphere.domain.chat.dto.response.ChatListResponse;
 import com.memesphere.domain.chat.entity.Chat;
+import com.memesphere.domain.chat.entity.ChatLike;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.chat.dto.request.ChatRequest;
 import com.memesphere.domain.chat.dto.response.ChatResponse;
+import com.memesphere.domain.user.entity.User;
+
+import java.util.List;
 
 public class ChatConverter {
 
-    public static Chat toChat(MemeCoin memeCoin, ChatRequest chatRequest) {
+    public static Chat toChat(MemeCoin memeCoin, ChatRequest chatRequest, User user) {
 
         return Chat.builder()
-//                .user(user)
+                .user(user)
                 .memeCoin(memeCoin)
                 .message(chatRequest.getMessage())
                 .build();
@@ -25,6 +30,19 @@ public class ChatConverter {
                 .likes(chat.getChatLikeList().size())
                 .createdAt(chat.getCreatedAt())
                 .nickname(chat.getUser().getNickname())
+                .build();
+    }
+
+    public static ChatListResponse toChatListResponse(List<ChatResponse> chatResponses) {
+        return ChatListResponse.builder()
+                .chats(chatResponses)
+                .build();
+    }
+
+    public static ChatLike toChatLike(Chat chat, User user) {
+        return ChatLike.builder()
+                .user(user)
+                .chat(chat)
                 .build();
     }
 }
