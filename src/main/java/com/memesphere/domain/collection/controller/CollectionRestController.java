@@ -5,6 +5,8 @@ import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
 import com.memesphere.domain.collection.service.CollectionQueryService;
+import com.memesphere.global.apipayload.code.status.ErrorStatus;
+import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.CustomUserDetails;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.global.validation.annotation.CheckPage;
@@ -22,7 +24,6 @@ import com.memesphere.domain.collection.converter.CollectionConverter;
 @Tag(name="콜렉션", description = "콜렉션 관련  API")
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/collection")
 public class CollectionRestController {
     private final CollectionQueryService collectionQueryService;
     private final CollectionCommandService collectionCommandService;
@@ -31,12 +32,14 @@ public class CollectionRestController {
     @GetMapping("/collection")
     @Operation(summary = "사용자의 밈코인 콜렉션 모음 조회 API")
     public ApiResponse<CollectionPageResponse> getCollectionList (
-//            @AuthenticationPrincipal User user, // 현재 로그인한 사용자 (아직 구현 x)
+            @AuthenticationPrincipal CustomUserDetails userDetails, // 현재 로그인한 사용자
             @CheckPage @RequestParam(name = "page") Integer page // 페이지 번호
     ) {
         Integer pageNumber = page - 1;
-//        Long userId = user.getId();
-        Long userId = 1L;
+        Long userId = (userDetails == null) ? null : userDetails.getUser().getId();
+
+        // 유저를 찾지 못하면(로그인을 안 했으면) 콜렉션 접근 못하도록 에러 처리
+        if (userId == null) throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
 
         Page<Collection> collectionPage = collectionQueryService.getCollectionPage(userId, pageNumber);
         return ApiResponse.onSuccess(CollectionConverter.toCollectionPageDTO(collectionPage));
