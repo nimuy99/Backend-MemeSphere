@@ -15,9 +15,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "실시간 채팅", description = "실시간 채팅 관련 API")
 @RestController
@@ -34,7 +32,7 @@ public class ChatController {
         return chatService.saveMessage(coin_id, chatRequest);
     }
 
-    @GetMapping("/chat/list/{coin_id}")
+    @GetMapping("/chat/{coin_id}/list/")
     @Operation(summary = "코인별 채팅 전체 메시지 조회 API",
             description = "특정 코인의 채팅방의 전체 메시지를 보여줍니다.")
     public ApiResponse<ChatListResponse> getChatList(@PathVariable("coin_id") Long coin_id) {
@@ -44,7 +42,7 @@ public class ChatController {
     }
 
     //최신 댓글 조회 Api
-    @GetMapping("/chat/latest/{coin_id}")
+    @GetMapping("/chat/{coin_id}/latest/")
     @Operation(summary = "코인별 최신 댓글 조회 API",
             description = "특정 코인에 대한 최신 댓글을 반환합니다. 요청 시 최신 댓글 하나만 가져옵니다.")
     public ApiResponse<ChatResponse> getLatestMessages(
@@ -54,5 +52,17 @@ public class ChatController {
         ChatResponse latestMessage = chatService.getLatestMessages(coin_id);
 
         return ApiResponse.onSuccess(latestMessage);
+    }
+
+    @PostMapping("/chat/{coin_id}/like")
+    @Operation(summary = "채팅 좋아요 관련 API",
+            description = "채팅에서 하트를 클릭 시 하트가 채워지고, 좋아요 누른 사람의 숫자에 반영됩니다.")
+    public ApiResponse<String> postChatLike(@PathVariable("coin_id") Long coin_id,
+                                            @RequestParam(value = "chat_id", required = true) Long chat_id,
+                                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        Long userId = customUserDetails.getUser().getId();
+
+        return ApiResponse.onSuccess(chatService.postChatLike(chat_id, userId));
     }
 }
