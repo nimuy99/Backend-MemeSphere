@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class NotificationRequest {
 
-    @Schema(description = "코인 이름", example = "DOGE")
+    @Schema(description = "코인 이름", example = "Dogecoin")
     private String name;
 
     @Schema(description = "코인 심볼", example = "DOGE/USDT")

@@ -24,7 +24,7 @@ public class ChartDataScheduler {
     private final BinanceQueryService binanceQueryService;
     private final MemeCoinQueryService memeCoinQueryService;
 
-    @Scheduled(fixedRate = 600000) // 10분 간격 실행
+    @Scheduled(cron = "0 0/10 * * * ?") // 0, 10, 20, 30, 40, 50분에 실행
     @Transactional
     public void updateChartData() {
         List<MemeCoin> memeCoins = memeCoinRepository.findAll();

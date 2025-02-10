@@ -3,12 +3,11 @@ package com.memesphere.domain.memecoin.repository;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
@@ -27,12 +26,15 @@ public interface MemeCoinRepository extends JpaRepository<MemeCoin, Long> {
             @Param("sortField") String sortField,
             Pageable pageable);
 
-    @EntityGraph(attributePaths = {"chartData"})
-    @NonNull
-    Page<MemeCoin> findAll(@NonNull Pageable pageable);
-
-    @EntityGraph(attributePaths = {"chartData"})
-    Page<MemeCoin> findByNameContainingIgnoreCaseOrSymbolContainingIgnoreCaseOrKeywordsContainingIgnoreCase(String name, String symbol, String keyword, Pageable pageable);
+    @Query("SELECT m FROM MemeCoin m " +
+            "JOIN m.chartDataList c " +
+            "WHERE c.recordedTime = " +
+            "(SELECT MAX(c2.recordedTime) FROM ChartData c2 WHERE c2.memeCoin = m)")
+    Page<MemeCoin> findAllLatestChartData( Pageable pageable);
 
     Optional<MemeCoin> findByName(String name);
+
+    @Query("SELECT m FROM MemeCoin m " +
+            "WHERE m.trendRank IS NOT NULL ORDER BY m.trendRank ASC")
+    List<MemeCoin> findTop5OrderByRank();
 }

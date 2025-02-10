@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Builder
 public class DashboardTrendResponse {
@@ -19,18 +21,24 @@ public class DashboardTrendResponse {
     @Schema(description = "심볼", example = "DOGE")
     private String symbol;
 
-    @Schema(description = "현재가", example = "524")
-    private Integer price;
+    @Schema(description = "거래량", example = "468216298627.20")
+    private BigDecimal volume;
 
-    @Schema(description = "가격 변화량", example = "-142")
-    private Integer priceChange;
+    @Schema(description = "현재가", example = "0.20")
+    private BigDecimal price;
 
-    @Schema(description = "변화량 절대값", example = "142")
-    private Integer changeAbsolute;
+    @Schema(description = "가격 변화량", example = "-0.03")
+    private BigDecimal priceChange;
 
-    @Schema(description = "변화 방향", example = "down")
-    private String changeDirection;
+    @Schema(description = "가격 변화량 절대값", example = "0.03")
+    private BigDecimal priceChangeAbsolute;
 
-    @Schema(description = "변화율", example = "+20.3")
-    private Float changeRate;
+    @Schema(description = "가격 변화 방향", example = "down")
+    private String priceChangeDirection;
+
+    @Schema(description = "가격 변화율", example = "-6.35")
+    private BigDecimal priceChangeRate;
+
+    @Schema(description = "순위 변화 방향", example = "down")
+    private String rankChangeDirection;
 }

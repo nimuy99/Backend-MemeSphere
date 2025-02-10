@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@Schema(title = "로그인 요청 DTO")
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignInRequest {

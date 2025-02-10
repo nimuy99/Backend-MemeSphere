@@ -22,7 +22,6 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    // TODO: @AuthenticationPrincipal로 사용자 이름 받아오기
     @MessageMapping("/chat/{coin_id}")
     @SendTo("/sub/{coin_id}")
     public ChatResponse chat(@DestinationVariable("coin_id") Long coin_id,

@@ -23,14 +23,29 @@ public enum ErrorStatus implements BaseCode {
     // 밈코인 에러
     MEMECOIN_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMECOIN NOT FOUND", "밈코인을 찾을 수 없습니다."),
 
+    // 콜렉션 에러
+    COLLECTION_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECTION NOT FOUND", "콜렉션을 찾을 수 없습니다."),
+    COLLECTION_ALREADY_EXISTS(HttpStatus.NOT_FOUND, "COLLECTION ALREADY EXIST", "콜렉션에 해당 밈코인을 이미 등록했습니다."),
+
     // ChartData load 에러
     CANNOT_LOAD_CHARTDATA(HttpStatus.BAD_REQUEST, "CANNOT LOAD CHARTDATA", "ChartData를 Binance에서 로드할 수 없습니다."),
+
+    // notification 에러
+    CANNOT_CHECK_VOLATILITY(HttpStatus.NOT_FOUND, "CANNOT CHECK VOLATILITY", "변동성을 확인할 수 없습니다."),
+    CANNOT_PUSH_NOTIFICATION(HttpStatus.BAD_REQUEST, "CANNOT PUSH NOTIFICATION", "알림 전송을 실패했습니다."),
 
     // 유저 로그인 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER NOT FOUND", "유저를 찾을 수 없습니다."),
     PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "PASSWORD NOT MATCH", "비밀번호가 틀렸습니다."),
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER ALREADY EXIST ", "이미 존재하는 회원입니다."),
-    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "NICKNAME ALREADY EXIST ", "이미 사용 중인 닉네임입니다.");
+    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "NICKNAME ALREADY EXIST ", "이미 사용 중인 닉네임입니다."),
+    REDIS_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS KEY NOT FOUND", "요청한 키가 Redis에 존재하지 않습니다."),
+    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "TOKEN NOT FOUND", "토큰을 찾을 수 없습니다."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰이 유효하지 않습니다."),
+
+    // 이미지 에러
+    INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다."),
+    PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
