@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  spring:
+    image: nimuy99/memesphere
+    container_name: memesphere
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
