@@ -24,29 +24,8 @@ public class UserConverter {
                 .build();
     }
 
-    public static User toUpdatedKakaoUser(KakaoUserInfoResponse kakaoUserInfoResponse, TokenResponse tokenResponse) {
-        return User.builder()
-                .loginId(kakaoUserInfoResponse.getId())
-                .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
-                .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
-                .socialType(SocialType.KAKAO)
-                .userRole(UserRole.USER)
-                .build();
-    }
-
     // 구글 로그인 유저
     public static User toGoogleUser(GoogleUserInfoResponse googleUserInfoResponse) {
-        return User.builder()
-                .loginId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE)
-                .nickname(googleUserInfoResponse.getName())
-                .email(googleUserInfoResponse.getEmail())
-                .profileImage(googleUserInfoResponse.getPicture())
-                .socialType(SocialType.GOOGLE)
-                .userRole(UserRole.USER)
-                .build();
-    }
-
-    public static User toUpdatedGoogleUser(GoogleUserInfoResponse googleUserInfoResponse, TokenResponse tokenResponse) {
         return User.builder()
                 .loginId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE)
                 .nickname(googleUserInfoResponse.getName())

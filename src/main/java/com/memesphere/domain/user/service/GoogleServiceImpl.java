@@ -84,19 +84,6 @@ public class GoogleServiceImpl implements GoogleService{
         }
     }
 
-    public void handleUserRegistration(GoogleUserInfoResponse googleUserInfoResponse, TokenResponse tokenResponse) {
-        String email = googleUserInfoResponse.getEmail();
-        User existingUser = userRepository.findByEmail(email).orElse(null);
-
-        if (existingUser == null) {
-            User newUser = UserConverter.toGoogleUser(googleUserInfoResponse);
-            userServiceImpl.save(newUser);
-        } else {
-            User updatedUser = UserConverter.toUpdatedGoogleUser(googleUserInfoResponse, tokenResponse);
-            userServiceImpl.save(updatedUser);
-        }
-    }
-
     public LoginResponse handleUserLogin(GoogleUserInfoResponse googleUserInfoResponse) {
         User existingUser = userRepository.findByEmail(googleUserInfoResponse.getEmail()).orElse(null);
         String accessToken;

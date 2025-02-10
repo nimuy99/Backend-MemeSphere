@@ -69,19 +69,6 @@ public class KakaoServiceImpl implements KakaoService {
         }
     }
 
-    public void handleUserRegistration(KakaoUserInfoResponse kakaoUserInfoResponse, TokenResponse tokenResponse) {
-        Long loginId = kakaoUserInfoResponse.getId();
-        User existingUser = userServiceImpl.findByLoginId(loginId);
-
-        if (existingUser == null) { // 유저가 존재하지 않으면 회원가입 처리
-            User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse); // 신규 유저 생성
-            userServiceImpl.save(newUser);
-        } else {
-            User updatedUser = UserConverter.toUpdatedKakaoUser(kakaoUserInfoResponse, tokenResponse); // 기존 유저 업데이트
-            userServiceImpl.save(updatedUser);
-        }
-    }
-
     public LoginResponse handleUserLogin(KakaoUserInfoResponse kakaoUserInfoResponse) {
         User existingUser = userServiceImpl.findByLoginId(kakaoUserInfoResponse.getId());
         String accessToken;
