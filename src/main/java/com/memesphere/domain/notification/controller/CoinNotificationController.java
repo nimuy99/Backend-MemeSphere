@@ -102,6 +102,7 @@ public class CoinNotificationController {
                     등록한 알림 조회 API 응답 형식과 동일
                     ```""")
     public ApiResponse<NotificationListResponse> deleteNotification(@PathVariable("notification-id") Long id) {
-        return ApiResponse.onSuccess(coinNotificationService.removeNotification(id));
+        coinNotificationService.removeNotification(id);
+        return ApiResponse.onSuccess(coinNotificationService.findNotificationList());
     }
 }

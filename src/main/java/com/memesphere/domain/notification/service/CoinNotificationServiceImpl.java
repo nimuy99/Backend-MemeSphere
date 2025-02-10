@@ -46,7 +46,7 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
     @Override
     public NotificationResponse addNotification(NotificationRequest notificationRequest) {
         MemeCoin memeCoin = memeCoinRepository.findByName(notificationRequest.getName())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));;
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
         Notification notification = NotificationConverter.toNotification(notificationRequest, memeCoin);
         notificationRepository.save(notification);
@@ -63,6 +63,12 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
 
     @Override
     public NotificationListResponse removeNotification(Long notificationId) {
+
+        MemeCoin memeCoin = memeCoinRepository.findById(notificationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
+
+        notificationRepository.deleteById(notificationId);
+
         return null;
     }
 }

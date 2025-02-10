@@ -36,27 +36,21 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Setter
     private String password;
 
-    @Setter
+    @Column(length = 8)
+    private String birth;
+
+    private String profileImage;
+
+    private String wallet;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SocialType socialType;
 
-    private String wallet;
-
-    @Setter
-    private String accessToken;
-
-    @Setter
-    private String refreshToken;
-
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    @Column(length = 8)
-    private String birth;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
