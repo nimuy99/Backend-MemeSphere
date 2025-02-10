@@ -2,12 +2,12 @@ package com.memesphere.domain.user.service;
 
 import com.memesphere.domain.user.converter.UserConverter;
 import com.memesphere.domain.user.entity.User;
-import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.domain.user.dto.response.TokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.global.jwt.TokenProvider;
 import com.memesphere.domain.user.repository.UserRepository;
+import com.memesphere.global.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +24,7 @@ public class KakaoServiceImpl implements KakaoService {
     private final TokenProvider tokenProvider;
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
+    private final RedisService redisService;
 
     @Value("${security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
@@ -90,11 +91,12 @@ public class KakaoServiceImpl implements KakaoService {
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.saveAccessToken(accessToken);
-            existingUser.saveRefreshToken(refreshToken);
-            userRepository.save(existingUser);
+            String nickname = existingUser.getNickname();
 
-            return new LoginResponse(accessToken, refreshToken);
+            userRepository.save(existingUser);
+            redisService.setValue(existingUser.getEmail(), refreshToken, 1000 * 60 * 60 * 24 * 7L);
+
+            return new LoginResponse(accessToken, refreshToken, nickname);
         } else {
             User newUser = UserConverter.toKakaoUser(kakaoUserInfoResponse);
             newUser = userRepository.save(newUser);
@@ -102,11 +104,11 @@ public class KakaoServiceImpl implements KakaoService {
             accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
-            newUser.saveAccessToken(accessToken);
-            newUser.saveRefreshToken(refreshToken);
+            String nickname = newUser.getNickname();
+
             userRepository.save(newUser);
 
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         }
     }
 }

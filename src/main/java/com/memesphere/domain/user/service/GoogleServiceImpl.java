@@ -2,13 +2,10 @@ package com.memesphere.domain.user.service;
 
 import com.memesphere.domain.user.converter.UserConverter;
 import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
-import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.domain.user.dto.response.TokenResponse;
-import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.repository.UserRepository;
-import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -109,11 +106,11 @@ public class GoogleServiceImpl implements GoogleService{
             accessToken = tokenProvider.createAccessToken(existingUser.getEmail(), existingUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(existingUser.getEmail());
 
-            existingUser.saveAccessToken(accessToken);
-            existingUser.saveRefreshToken(refreshToken);
+            String nickname = existingUser.getNickname();
+
             userRepository.save(existingUser);
 
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         } else {
             User newUser = UserConverter.toGoogleUser(googleUserInfoResponse);
             newUser = userRepository.save(newUser);
@@ -121,11 +118,11 @@ public class GoogleServiceImpl implements GoogleService{
             accessToken = tokenProvider.createAccessToken(newUser.getEmail(), newUser.getLoginId());
             String refreshToken = tokenProvider.createRefreshToken(newUser.getEmail());
 
-            newUser.saveAccessToken(accessToken);
-            newUser.saveRefreshToken(refreshToken);
+            String nickname = newUser.getNickname();
+
             userRepository.save(newUser);
 
-            return new LoginResponse(accessToken, refreshToken);
+            return new LoginResponse(accessToken, refreshToken, nickname);
         }
     }
 }

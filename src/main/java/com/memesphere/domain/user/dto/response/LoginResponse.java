@@ -6,6 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 @ToString
 public class LoginResponse {
 
@@ -14,4 +15,7 @@ public class LoginResponse {
 
     @Schema(description = "리프레시 토큰", example = "dklksdfsdklkfds8326v5cf5d5d6s6flk9876542316468645")
     private String refreshToken;
+
+    @Schema(description = "닉네임", example = "홍길동")
+    private String nickName;
 }

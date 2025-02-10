@@ -6,6 +6,8 @@ import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
 import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.domain.chartdata.repository.ChartDataRepository;
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
@@ -22,12 +24,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DashboardQueryServiceImpl implements DashboardQueryService {
+    private final UserRepository userRepository;
     private final MemeCoinRepository memeCoinRepository;
     private final ChartDataRepository chartDataRepository;
     private final CollectionQueryService collectionQueryService;
@@ -36,7 +42,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     @Override
     public DashboardOverviewResponse getOverview() {
         // 등록된 모든 밈코인의 총 거래량
-        Long totalVolume = chartDataRepository.findTotalVolume();
+        BigDecimal totalVolume = chartDataRepository.findTotalVolume();
 
         // 등록된 모든 밈코인 수
         Long totalCoin = memeCoinRepository.count();
@@ -48,19 +54,22 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     @Override
     public DashboardTrendListResponse getTrendList() {
         // 거래량 top5 밈코인-차트데이터
-        List<ChartData> dataList = chartDataRepository.findTop5ByOrderByVolumeDesc();
+        List<ChartData> dataList = chartDataRepository.findTop5OrderByVolumeDesc();
 
-        return DashboardConverter.toTrendList(dataList);
+        // 코인 아이디 1 기준 기록 시간
+        LocalDateTime recordedTime = chartDataRepository.findRecordedTimeByCoinId1();
+
+        return DashboardConverter.toTrendList(recordedTime, dataList);
     }
 
     // ** 차트 ** //
     @Override
     public SearchPageResponse getChartPage(Long userId, ViewType viewType, SortType sortType, Integer pageNumber) {
-        // TODO: 유저 받아와서 예외처리
-        List<Long> userCollectionIds = collectionQueryService.getUserCollectionIds(userId);
 
-        // viewType --> GRID(9 items per page), LIST(20 items per page)
-        // sortType --> MKT_CAP, VOLUME_24H, PRICE
+        // 로그인 x -> 콜렉션 빈 리스트
+        // 로그인 o -> 콜렉션 유저가 등록한 id 리스트
+        List<Long> userCollectionIds = (userId == null) ?
+                Collections.emptyList() : collectionQueryService.getUserCollectionIds(userId);
 
         int pageSize = switch (viewType) {
             case GRID -> 9;
@@ -69,14 +78,14 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         };
 
         String sortField = switch (sortType) {
-            case PRICE_CHANGE -> "chartData.priceChange";
-            case VOLUME_24H -> "chartData.volume";
-            case PRICE -> "chartData.price";
+            case PRICE_CHANGE -> "c.priceChange";
+            case VOLUME_24H -> "c.volume";
+            case PRICE -> "c.price";
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_SORT_TYPE);
         };
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortField));
-        Page<MemeCoin> coinPage = memeCoinRepository.findAll(pageable);
+        Page<MemeCoin> coinPage = memeCoinRepository.findAllLatestChartData(pageable);
 
         // null 체크 후 예외 처리}
         return SearchConverter.toSearchPageDTO(coinPage, viewType, userCollectionIds);

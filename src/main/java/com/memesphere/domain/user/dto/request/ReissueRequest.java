@@ -9,16 +9,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@Schema(title = "로그인 요청 DTO")
+@Schema(title = "액세스 토큰 재발급 요청 DTO")
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignInRequest {
+public class ReissueRequest {
 
     @NotEmpty
-    @Schema(description = "이메일", example = "memesphere@meme.com")
-    private String email;
-
-    @NotEmpty
-    @Schema(description = "비밀번호", example = "meme123")
-    private String password;
+    @Schema(description = "리프레시 토큰", example = "dklksdfsdklkfds8326v5cf5d5d6s6flk9876542316468645")
+    private String refreshToken;
 }
