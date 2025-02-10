@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,7 @@ public class MemeCoin extends BaseEntity {
     @Builder.Default
     private List<ChartData> chartDataList = new ArrayList<>();
 
+    @Transactional
     public void updateRank(Integer trendRank) {
         this.trendRank = trendRank;
     }

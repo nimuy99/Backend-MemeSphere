@@ -29,16 +29,15 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class DashboardQueryServiceImpl implements DashboardQueryService {
-    private final UserRepository userRepository;
     private final MemeCoinRepository memeCoinRepository;
     private final ChartDataRepository chartDataRepository;
     private final CollectionQueryService collectionQueryService;
 
     // ** 총 거래량 및 총 개수 ** //
     @Override
+    @Transactional(readOnly = true)
     public DashboardOverviewResponse getOverview() {
         // 등록된 모든 밈코인의 총 거래량
         BigDecimal totalVolume = chartDataRepository.findTotalVolume();
@@ -51,6 +50,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 
     // ** 트렌드 ** //
     @Override
+    @Transactional
     public DashboardTrendListResponse getTrendList() {
         // 이전에 기록된 top5 밈코인
         List<MemeCoin> prevCoinList = memeCoinRepository.findTop5OrderByRank();
@@ -68,6 +68,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 
     // ** 차트 ** //
     @Override
+    @Transactional(readOnly = true)
     public SearchPageResponse getChartPage(Long userId, ViewType viewType, SortType sortType, Integer pageNumber) {
 
         // 로그인 x -> 콜렉션 빈 리스트
