@@ -1,6 +1,11 @@
 package com.memesphere.global.jwt;
 
-import com.memesphere.user.service.UserServiceImpl;
+import com.memesphere.domain.user.dto.response.LoginResponse;
+import com.memesphere.domain.user.entity.User;
+import com.memesphere.domain.user.repository.UserRepository;
+import com.memesphere.global.apipayload.code.status.ErrorStatus;
+import com.memesphere.global.apipayload.exception.GeneralException;
+import com.memesphere.global.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,25 +15,25 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class TokenProvider implements InitializingBean {
 
-    private static final String AUTHORITIES_KEY = "auth";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60; // access token은 24시간
     private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60 * 7; // refresh token은 1주일
 
     private Key key;
-    private final UserServiceImpl userServiceImpl;
+    private final CustomUserDetailsServiceImpl customUserDetailsService;
+    private final UserRepository userRepository;
+    private final RedisService redisService;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -67,31 +72,35 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
-    public String createAccessToken(String username, Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
+    public String createAccessToken(String email, Long loginId) {
         long now = (new Date()).getTime();
         Date validity = new Date(now + ACCESS_TOKEN_VALIDITY_SECONDS * 1000);
+        String role = getUserRole(loginId);
 
         return Jwts.builder()
-                .setSubject(username)
-                .claim(AUTHORITIES_KEY, authorities)
+                .setSubject(email)
+                .claim("role", role)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
     }
 
-    public String createRefreshToken(String username) {
+    public String createRefreshToken(String email) {
         long now = (new Date()).getTime();
         Date validity = new Date(now + REFRESH_TOKEN_VALIDITY_SECONDS * 1000);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    public String getUserRole(Long loginId) {
+        User user = userRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return user.getUserRole().name();
     }
 
     public String getTokenUserId(String token) {
@@ -99,15 +108,29 @@ public class TokenProvider implements InitializingBean {
         return claims.getSubject();
     }
 
+    public Long getExpirationTime(String token) {
+        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
+    }
+
     public Authentication getAuthentication(String token) {
         log.info("Getting authentication for token user ID: {}", getTokenUserId(token));
-        UserDetails userDetails = (UserDetails) userServiceImpl.getUserInfo(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(getLoginId(token));
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public boolean validateAccessToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
+
+            /*
+            accessToken 유효 검사: accessToken이 redis에 있으면 로그아웃 상태임. return false
+            refreshToken 유효 검사: refreshToken이 redis에 있으면 로그인 상태임. return false의 경우 TOKEN_INVALID
+             */
+            if (redisService.checkExistsValue(token)) {
+                return false;
+            }
+
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -122,5 +145,19 @@ public class TokenProvider implements InitializingBean {
             log.info("JWT 토큰이 잘못되었습니다.");
             throw new RuntimeException("JWT 토큰이 잘못되었습니다.", e);
         }
+    }
+
+    @Transactional
+    public LoginResponse reissue(User user, String refreshToken) {
+        String accessToken = createAccessToken(user.getEmail(), user.getLoginId());
+
+        if(getExpirationTime(refreshToken) <= getExpirationTime(accessToken)) {
+            refreshToken = createRefreshToken(user.getEmail());
+        }
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }
