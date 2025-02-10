@@ -4,7 +4,6 @@ import com.memesphere.domain.user.dto.request.SignUpRequest;
 import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
 import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.entity.User;
-import com.memesphere.domain.user.dto.response.TokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.domain.user.entity.UserRole;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,18 +16,9 @@ public class UserConverter {
     public static User toKakaoUser(KakaoUserInfoResponse kakaoUserInfoResponse) {
         return User.builder()
                 .loginId(kakaoUserInfoResponse.getId())
-                .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
-                .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
-                .socialType(SocialType.KAKAO)
-                .userRole(UserRole.USER)
-                .build();
-    }
-
-    public static User toUpdatedKakaoUser(KakaoUserInfoResponse kakaoUserInfoResponse, TokenResponse tokenResponse) {
-        return User.builder()
-                .loginId(kakaoUserInfoResponse.getId())
-                .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
-                .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
+                .nickname(kakaoUserInfoResponse.getKakaoAccount().getProfile().nickName)
+                .email(kakaoUserInfoResponse.getKakaoAccount().email)
+                .profileImage(kakaoUserInfoResponse.getKakaoAccount().getProfile().profileImageUrl)
                 .socialType(SocialType.KAKAO)
                 .userRole(UserRole.USER)
                 .build();
@@ -36,17 +26,6 @@ public class UserConverter {
 
     // 구글 로그인 유저
     public static User toGoogleUser(GoogleUserInfoResponse googleUserInfoResponse) {
-        return User.builder()
-                .loginId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE)
-                .nickname(googleUserInfoResponse.getName())
-                .email(googleUserInfoResponse.getEmail())
-                .profileImage(googleUserInfoResponse.getPicture())
-                .socialType(SocialType.GOOGLE)
-                .userRole(UserRole.USER)
-                .build();
-    }
-
-    public static User toUpdatedGoogleUser(GoogleUserInfoResponse googleUserInfoResponse, TokenResponse tokenResponse) {
         return User.builder()
                 .loginId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE)
                 .nickname(googleUserInfoResponse.getName())
