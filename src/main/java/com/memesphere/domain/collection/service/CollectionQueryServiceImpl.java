@@ -9,13 +9,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CollectionQueryServiceImpl implements CollectionQueryService {
-    private final UserRepository userRepository;
     private final CollectionRepository collectionRepository;
 
     @Transactional(readOnly = true)
@@ -28,6 +28,8 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
     @Transactional(readOnly = true)
     @Override
     public List<Long> getUserCollectionIds(Long userId) {
+        if (userId == null) return Collections.emptyList();
+
         return collectionRepository.findAllByUserId(userId).stream()
                 .map(Collection::getMemeCoinId)
                 .collect(Collectors.toList());
