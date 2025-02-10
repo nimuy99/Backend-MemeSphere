@@ -28,9 +28,4 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
     LocalDateTime findRecordedTimeByCoinId1();
 
     List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin);
-
-    @Query("SELECT c.priceChangeRate FROM ChartData c" +
-            " WHERE c.memeCoin = :memeCoin " +
-            "ORDER BY c.createdAt DESC")
-    List<ChartData> findByMemeCoinByCreatedAtDesc(@Param("memeCoin") MemeCoin memeCoin, Pageable pageable);
 }
