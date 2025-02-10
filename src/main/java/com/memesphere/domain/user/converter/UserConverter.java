@@ -17,8 +17,9 @@ public class UserConverter {
     public static User toKakaoUser(KakaoUserInfoResponse kakaoUserInfoResponse) {
         return User.builder()
                 .loginId(kakaoUserInfoResponse.getId())
-                .nickname(kakaoUserInfoResponse.getKakaoUserInfo().getNickname())
-                .email(kakaoUserInfoResponse.getKakaoUserInfo().getEmail())
+                .nickname(kakaoUserInfoResponse.getKakaoAccount().getProfile().nickName)
+                .email(kakaoUserInfoResponse.getKakaoAccount().email)
+                .profileImage(kakaoUserInfoResponse.getKakaoAccount().getProfile().profileImageUrl)
                 .socialType(SocialType.KAKAO)
                 .userRole(UserRole.USER)
                 .build();
