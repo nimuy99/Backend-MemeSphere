@@ -60,9 +60,10 @@ public class DashboardController {
                     - "volume": 밈코인 거래량(확인용)
                     - "price": 밈코인 현재가
                     - "priceChange": 가격 변화량
-                    - "changeAbsolute": 가격 변화량(절대값)
-                    - "changeDirection": 밈코인 상승(up, 0 이상)/하락(down)
-                    - "changeRate": 가격 변화율
+                    - "priceChangeAbsolute": 가격 변화량(절대값)
+                    - "priceChangeDirection": 밈코인 상승(up, 0 이상)/하락(down)
+                    - "priceChangeRate": 가격 변화율
+                    - "rankChangeDirection": 순위 상승(up, 0 이상)/하락(down)
                     ```""")
     public ApiResponse<DashboardTrendListResponse> getTrendList() {
         return ApiResponse.onSuccess(dashboardQueryService.getTrendList());

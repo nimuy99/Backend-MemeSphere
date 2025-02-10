@@ -4,7 +4,6 @@ import com.memesphere.domain.user.dto.request.SignUpRequest;
 import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
 import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.entity.User;
-import com.memesphere.domain.user.dto.response.TokenResponse;
 import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
 import com.memesphere.domain.user.entity.UserRole;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,6 +45,7 @@ public class UserConverter {
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .socialType(SocialType.GENERAL)
                 .userRole(UserRole.USER)
+                .profileImage(signUpRequest.getProfileImage())
                 .build();
     }
 

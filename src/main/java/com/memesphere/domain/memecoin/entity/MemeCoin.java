@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,9 @@ public class MemeCoin extends BaseEntity {
     @Column
     private boolean collectionActive;
 
+    @Column
+    private Integer trendRank;
+
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
@@ -63,5 +67,11 @@ public class MemeCoin extends BaseEntity {
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("recordedTime DESC")
+    @Builder.Default
     private List<ChartData> chartDataList = new ArrayList<>();
+
+    @Transactional
+    public void updateRank(Integer trendRank) {
+        this.trendRank = trendRank;
+    }
 }
