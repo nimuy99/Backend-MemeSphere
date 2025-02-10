@@ -1,6 +1,7 @@
 package com.memesphere.domain.notification.service;
 
 import com.memesphere.domain.chartdata.entity.ChartData;
+import com.memesphere.domain.chartdata.repository.ChartDataRepository;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.notification.converter.NotificationConverter;
 import com.memesphere.domain.notification.entity.Notification;
@@ -11,9 +12,13 @@ import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.awt.print.Pageable;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,34 +28,35 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class PushNotificationServiceImpl implements PushNotificationService {
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
+    private final ChartDataRepository chartDataRepository;
 
     // 연결 지속 시간 설정 : 한시간
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
     @Override
-    public SseEmitter subscribe(Long UserId, String lastEventId) {
+    public SseEmitter subscribe(Long userId, String lastEventId) {
 
         // 고유한 아이디 생성
-        String emitterId = UserId + "_" + System.currentTimeMillis(); // 사용자 id + 현재 시간을 밀리초 단위의 long값
+        String emitterId = userId + "_" + System.currentTimeMillis(); // 사용자 id + 현재 시간을 밀리초 단위의 long값
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
 
         // 클라이언트가 SSE 연결을 종료하면 실행됨
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
-
         // 지정된 시간이 지나거나 클라이언트가 요청을 안하면 실행됨
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
         // 최초 연결 더미데이터가 없으면 503 에러가 나므로 더미 데이터 생성
-        sendToClient(emitter, emitterId, "EventStream Created. [userId=" + UserId + "]");
+        sendToClient(emitter, emitterId, "EventStream Created. [userId=" + userId + "]");
 
         if (!lastEventId.isEmpty()) {
-            Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByUserId(emitterId);
+            Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByUserId(String.valueOf(userId));
             events.entrySet().stream()
                     .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                     .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
@@ -71,6 +77,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         List<Notification> filteredNotifications = notifications.stream()
                 .filter(notification -> isVolatilityExceeded(notification))
                 .collect(Collectors.toList());
+        System.out.println("알림:"+filteredNotifications.size());
 
         if (filteredNotifications.isEmpty()) {
             return; // 기준을 충족하는 변동성이 없으면 전송하지 않음
@@ -88,10 +95,14 @@ public class PushNotificationServiceImpl implements PushNotificationService {
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
         try {
-            emitter.send(SseEmitter.event()
-                    .id(emitterId)
-                    .data(data));
+            if (emitter != null) {
+                System.out.println("-------");
+                emitter.send(SseEmitter.event()
+                        .id(emitterId)
+                        .data(data));
+            }
         } catch (IOException exception) {
+            log.error("SSE 연결 오류: {}", exception.getMessage());
             emitterRepository.deleteById(emitterId);
             throw new GeneralException(ErrorStatus.CANNOT_PUSH_NOTIFICATION);
         }
@@ -108,46 +119,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             throw new GeneralException(ErrorStatus.CANNOT_LOAD_CHARTDATA);
         }
 
-        // 최신 가격 가져오기
-        Optional<ChartData> latestDataOpt = chartDataList.stream()
-                .max(Comparator.comparing(ChartData::getPrice));
-
-        if (latestDataOpt.isEmpty()) {
-            throw new GeneralException(ErrorStatus.CANNOT_LOAD_CHARTDATA);  // 최신 데이터가 존재하지 않을 경우
-        }
-
-        BigDecimal latestPrice = latestDataOpt.get().getPrice();
-
-        // 기준 시간 내 가장 오래된 가격 가져오기
-        Optional<ChartData> oldestDataOpt = chartDataList.stream()
-                .filter(data -> data.getCreatedAt().isAfter(LocalDateTime.now().minusMinutes(notification.getStTime())))
-                .min(Comparator.comparing(ChartData::getPrice));
-
-        if (oldestDataOpt.isEmpty()) {
-            throw new GeneralException(ErrorStatus.CANNOT_LOAD_CHARTDATA);
-        }
-
-        BigDecimal oldestPrice = oldestDataOpt.get().getPrice();
-
-        if (oldestPrice == null || latestPrice == null) {
-            throw new GeneralException(ErrorStatus.CANNOT_CHECK_VOLATILITY);
-        }
-
-        // 변동성 계산
-        BigDecimal priceDiff = latestPrice.subtract(oldestPrice);
-        BigDecimal volatility = priceDiff
-                .divide(oldestPrice, 4, BigDecimal.ROUND_HALF_UP) // 나눗셈 수행(소수점 4자리 반올림)
-                .multiply(new BigDecimal("100")); // 백분율 변환
-        boolean isIncrease = volatility.compareTo(BigDecimal.ZERO) > 0; // 상승 여부 확인 (True: 상승, False: 하락)
-
-        return volatility.abs().intValue() > notification.getVolatility();
-//        if (volatility.abs() > notification.getVolatility()) {
-//            if (notification.getIsRising() & isIncrease) {
-//
-//            } else if (!(notification.getIsRising()) & isIncrease)) {
-//
-//            }
-//        }
+        return true;
     }
 
 }

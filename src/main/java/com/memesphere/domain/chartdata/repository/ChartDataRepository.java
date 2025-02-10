@@ -5,7 +5,9 @@ import com.memesphere.domain.memecoin.entity.MemeCoin;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,4 +28,9 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
     LocalDateTime findRecordedTimeByCoinId1();
 
     List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin);
+
+    @Query("SELECT c.priceChangeRate FROM ChartData c" +
+            " WHERE c.memeCoin = :memeCoin " +
+            "ORDER BY c.createdAt DESC")
+    List<ChartData> findByMemeCoinByCreatedAtDesc(@Param("memeCoin") MemeCoin memeCoin, Pageable pageable);
 }
