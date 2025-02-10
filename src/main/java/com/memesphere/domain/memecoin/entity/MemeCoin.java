@@ -43,6 +43,9 @@ public class MemeCoin extends BaseEntity {
     @Column
     private boolean collectionActive;
 
+    @Column
+    private Integer trendRank;
+
     @ElementCollection
     @CollectionTable(name = "CoinKeywords", joinColumns = @JoinColumn(name = "coin_id"))
     @Column(name = "keyword")
@@ -63,5 +66,10 @@ public class MemeCoin extends BaseEntity {
 
     @OneToMany(mappedBy = "memeCoin", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("recordedTime DESC")
+    @Builder.Default
     private List<ChartData> chartDataList = new ArrayList<>();
+
+    public void updateRank(Integer trendRank) {
+        this.trendRank = trendRank;
+    }
 }

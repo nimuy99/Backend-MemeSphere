@@ -1,12 +1,11 @@
 package com.memesphere.domain.dashboard.service;
 
+import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.collection.service.CollectionQueryService;
 import com.memesphere.domain.dashboard.converter.DashboardConverter;
 import com.memesphere.domain.dashboard.dto.response.DashboardOverviewResponse;
-import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.dashboard.dto.response.DashboardTrendListResponse;
 import com.memesphere.domain.chartdata.repository.ChartDataRepository;
-import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
@@ -30,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class DashboardQueryServiceImpl implements DashboardQueryService {
     private final UserRepository userRepository;
@@ -53,13 +52,18 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     // ** 트렌드 ** //
     @Override
     public DashboardTrendListResponse getTrendList() {
-        // 거래량 top5 밈코인-차트데이터
+        // 이전에 기록된 top5 밈코인
+        List<MemeCoin> prevCoinList = memeCoinRepository.findTop5OrderByRank();
+
+        // 최신 거래량 top5 밈코인-차트데이터
         List<ChartData> dataList = chartDataRepository.findTop5OrderByVolumeDesc();
 
         // 코인 아이디 1 기준 기록 시간
         LocalDateTime recordedTime = chartDataRepository.findRecordedTimeByCoinId1();
 
-        return DashboardConverter.toTrendList(recordedTime, dataList);
+        DashboardTrendListResponse trendList = DashboardConverter.toTrendList(recordedTime, dataList, prevCoinList);
+        memeCoinRepository.saveAll(prevCoinList); // 순위 업데이트
+        return trendList;
     }
 
     // ** 차트 ** //
@@ -87,7 +91,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortField));
         Page<MemeCoin> coinPage = memeCoinRepository.findAllLatestChartData(pageable);
 
-        // null 체크 후 예외 처리}
+        // null 체크 후 예외 처리
         return SearchConverter.toSearchPageDTO(coinPage, viewType, userCollectionIds);
     }
 }
