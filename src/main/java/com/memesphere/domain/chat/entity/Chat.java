@@ -25,7 +25,7 @@ public class Chat extends BaseEntity {
     @Column(name="chat_id")
     private Long id;
 
-    @Column
+    @Column(columnDefinition = "varchar(500)", nullable = false)
     private String message;
 
     @ManyToOne(fetch=FetchType.LAZY)

@@ -5,17 +5,19 @@ import com.memesphere.domain.notification.dto.request.NotificationRequest;
 import com.memesphere.domain.notification.dto.response.NotificationListResponse;
 import com.memesphere.domain.notification.dto.response.NotificationResponse;
 import com.memesphere.domain.notification.entity.Notification;
+import com.memesphere.domain.user.entity.User;
 
 import java.util.List;
 
 public class NotificationConverter {
 
-    public static Notification toNotification(NotificationRequest notificationRequest, MemeCoin memeCoin) {
+    public static Notification toNotification(NotificationRequest notificationRequest, MemeCoin memeCoin, User user) {
         return Notification.builder()
                 .memeCoin(memeCoin)
                 .volatility(notificationRequest.getVolatility())
                 .stTime(notificationRequest.getStTime())
                 .isRising(notificationRequest.getIsRising())
+                .user(user)
                 .build();
     }
 

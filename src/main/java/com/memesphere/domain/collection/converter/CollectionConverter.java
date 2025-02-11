@@ -38,6 +38,7 @@ public class CollectionConverter {
         ChartData chartData = memeCoin.getChartDataList().get(0);
 
         return CollectionPreviewResponse.builder()
+                .coinId(memeCoin.getId())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .image(memeCoin.getImage())

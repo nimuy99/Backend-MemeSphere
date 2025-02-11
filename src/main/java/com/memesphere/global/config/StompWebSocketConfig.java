@@ -1,9 +1,7 @@
 package com.memesphere.global.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -19,11 +17,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:8080")
-                .withSockJS();  // ws, wss 대신 http, https를 통해 웹 소켓 연결하도록 함
-        registry.addEndpoint("/connection")
-                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws")  //socket 연결 url: ws://localhost:8008/ws
+                .setAllowedOrigins("*")
+                .withSockJS();
     }
 
     /*
@@ -33,14 +29,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
         //sub 으로 시작되는 요청을 구독한 모든 사용자들에게 메시지를 broadcast한다.
-        registry.enableSimpleBroker("/sub");
+        registry.enableSimpleBroker("/sub"); // 구독 url
         //pub로 시작되는 메시지는 message-handling method로 라우팅된다.
         //클라이언트가 서버로 전송하는 메세지의 경로 앞에 /pub 붙임
-        registry.setApplicationDestinationPrefixes("/pub");
+        registry.setApplicationDestinationPrefixes("/pub");  // prefix 정의
     }
-
-//    @Bean
-//    public WebSocketHandler webSocketHandler() {
-//        return new WebSocketHandler();
-//    }
 }
