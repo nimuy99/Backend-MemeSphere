@@ -55,9 +55,11 @@ public class UserController {
         TokenResponse googleTokenResponse = null;
         String origin = request.getHeader("Origin");
 
-        if(origin.equals("http://localhost:3000") || origin.equals("http://localhost:8080")){
+        if (origin.equals("http://localhost:3000")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "http://localhost:3000/user/login/oauth2/google");
+        } else if (origin.equals("http://localhost:8080")) {
             googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "http://localhost:8080/user/login/oauth2/google");
-        } else if(origin.equals("https://15.164.103.195.nip.io")){
+        } else if (origin.equals("https://15.164.103.195.nip.io")) {
             googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "https://15.164.103.195.nip.io/user/login/oauth2/google");
         }
 
