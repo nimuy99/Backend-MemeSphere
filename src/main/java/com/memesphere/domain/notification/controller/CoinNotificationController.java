@@ -83,7 +83,7 @@ public class CoinNotificationController {
                     ```
                     알림 등록 API 응답 형식과 동일
                     ```""")
-    public ApiResponse<NotificationResponse> updateNotificationStatus(@PathVariable("notification-id") Long id) {
+    public ApiResponse<String> updateNotificationStatus(@PathVariable("notification-id") Long id) {
         return ApiResponse.onSuccess(coinNotificationService.modifyNotification(id));
     }
 

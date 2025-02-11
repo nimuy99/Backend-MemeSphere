@@ -57,8 +57,20 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
     }
 
     @Override
-    public NotificationResponse modifyNotification(Long notificationId) {
-        return null;
+    public String modifyNotification(Long notificationId) {
+
+        Notification existingNotification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NOTIFICATION_NOT_FOUND));
+
+        if (existingNotification.getIsOn()) { // 알림이 켜져있는 경우
+            existingNotification.updateIsOn(false);
+            notificationRepository.save(existingNotification);
+            return "알림을 껐습니다.";
+        } else { // 알림이 꺼져있는 경우
+            existingNotification.updateIsOn(true);
+            notificationRepository.save(existingNotification);
+            return "알림을 켰습니다.";
+        }
     }
 
     @Override

@@ -33,6 +33,7 @@ public enum ErrorStatus implements BaseCode {
     // notification 에러
     CANNOT_CHECK_VOLATILITY(HttpStatus.NOT_FOUND, "CANNOT CHECK VOLATILITY", "변동성을 확인할 수 없습니다."),
     CANNOT_PUSH_NOTIFICATION(HttpStatus.BAD_REQUEST, "CANNOT PUSH NOTIFICATION", "알림 전송을 실패했습니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_NOT_FOUND", "알림을 찾을 수 없습니다."),
 
     // 유저 로그인 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER NOT FOUND", "유저를 찾을 수 없습니다."),

@@ -7,6 +7,6 @@ import com.memesphere.domain.notification.dto.response.NotificationResponse;
 public interface CoinNotificationService {
     NotificationListResponse findNotificationList();
     NotificationResponse addNotification(NotificationRequest notificationRequest);
-    NotificationResponse modifyNotification(Long notificationId);
+    String modifyNotification(Long notificationId);
     NotificationListResponse removeNotification(Long notificationId);
 }

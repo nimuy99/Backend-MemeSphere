@@ -14,18 +14,16 @@ import com.memesphere.global.apipayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -55,6 +53,8 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         // 최초 연결 더미데이터가 없으면 503 에러가 나므로 더미 데이터 생성
         sendToClient(emitter, emitterId, "EventStream Created. [userId=" + userId + "]");
 
+        send(userId);
+
         if (!lastEventId.isEmpty()) {
             Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByUserId(String.valueOf(userId));
             events.entrySet().stream()
@@ -77,7 +77,6 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         List<Notification> filteredNotifications = notifications.stream()
                 .filter(notification -> isVolatilityExceeded(notification))
                 .collect(Collectors.toList());
-        System.out.println("알림:"+filteredNotifications.size());
 
         if (filteredNotifications.isEmpty()) {
             return; // 기준을 충족하는 변동성이 없으면 전송하지 않음
@@ -96,7 +95,6 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
         try {
             if (emitter != null) {
-                System.out.println("-------");
                 emitter.send(SseEmitter.event()
                         .id(emitterId)
                         .data(data));
@@ -119,7 +117,26 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             throw new GeneralException(ErrorStatus.CANNOT_LOAD_CHARTDATA);
         }
 
-        return true;
+        Integer count = notification.getStTime() / 10; //몇 번 가져올 것인지 결정
+        Pageable pageable = (Pageable) PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<ChartData> lastNData = chartDataRepository.findByMemeCoinOrderByRecordedTimeDesc(memeCoin, pageable);
+        System.out.println("lastNData: " + lastNData + ", count: " + lastNData.size());
+
+        if (lastNData.size() < count) {
+            return false; // 비교할 데이터가 부족하면 알림을 보내지 않음
+        }
+
+        BigDecimal sum = lastNData.stream()
+                .map(ChartData::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal average = sum.divide(BigDecimal.valueOf(lastNData.size()), 4, RoundingMode.HALF_UP);
+        BigDecimal definedVolatility = new BigDecimal(notification.getVolatility());
+
+        if (notification.getIsRising()) { // 상승인 경우
+            return average.compareTo(definedVolatility) > 0;
+        } else {
+            return average.compareTo(definedVolatility) < 0;
+        }
     }
 
 }
