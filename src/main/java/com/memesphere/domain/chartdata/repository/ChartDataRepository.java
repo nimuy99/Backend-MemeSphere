@@ -28,6 +28,8 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
     LocalDateTime findRecordedTimeByCoinId1();
 
     List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin);
+
     //TODO: 위아래 코드 합치는 방법 찾기
     List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin, Pageable pageable);
+
 }
