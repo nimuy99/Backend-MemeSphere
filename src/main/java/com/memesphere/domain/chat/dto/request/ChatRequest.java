@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatRequest {
 
-    @Schema(description = "메시지 내용")
+    @Schema(description = "닉네임", example = "코인전문가")
+    private String nickname;
+
+    @Schema(description = "메시지 내용", example = "도지코인 현재 얼마인가요?")
     private String message;
 }

@@ -45,7 +45,10 @@ public enum ErrorStatus implements BaseCode {
 
     // 이미지 에러
     INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다."),
-    PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다.");
+    PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다."),
+
+    // 채팅 에러
+    CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT NOT FOUND", "채팅을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
