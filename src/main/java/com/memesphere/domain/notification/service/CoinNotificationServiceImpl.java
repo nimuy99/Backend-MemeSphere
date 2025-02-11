@@ -3,6 +3,7 @@ package com.memesphere.domain.notification.service;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
 import com.memesphere.domain.notification.entity.Notification;
+import com.memesphere.domain.user.entity.User;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.domain.notification.converter.NotificationConverter;
@@ -44,11 +45,11 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
 
     // 알림 등록 API
     @Override
-    public NotificationResponse addNotification(NotificationRequest notificationRequest) {
+    public NotificationResponse addNotification(NotificationRequest notificationRequest, User user) {
         MemeCoin memeCoin = memeCoinRepository.findByName(notificationRequest.getName())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
-        Notification notification = NotificationConverter.toNotification(notificationRequest, memeCoin);
+        Notification notification = NotificationConverter.toNotification(notificationRequest, memeCoin, user);
         notificationRepository.save(notification);
 
         NotificationResponse notificationResponse = NotificationConverter.toNotificationCreateResponse(notification, memeCoin);

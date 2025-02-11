@@ -53,43 +53,27 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         // 최초 연결 더미데이터가 없으면 503 에러가 나므로 더미 데이터 생성
         sendToClient(emitter, emitterId, "EventStream Created. [userId=" + userId + "]");
 
-        send(userId);
-
+        // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (!lastEventId.isEmpty()) {
             Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByUserId(String.valueOf(userId));
             events.entrySet().stream()
                     .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                     .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
         }
-        return emitter;
-    }
-
-    @Override
-    public void send(Long userId) {
 
         List<Notification> notifications = notificationRepository.findAllByUserId(userId); // 사용자가 등록한 알림 전부 가져오기
-
-        if (notifications.isEmpty()) {
-            return; // 저장된 알림이 없는 경우 아무것도 반환하지 않음
-        }
 
         // 변동성을 초과하는 알림 필터링
         List<Notification> filteredNotifications = notifications.stream()
                 .filter(notification -> isVolatilityExceeded(notification))
                 .collect(Collectors.toList());
 
-        if (filteredNotifications.isEmpty()) {
-            return; // 기준을 충족하는 변동성이 없으면 전송하지 않음
-        }
-
-        // 실시간 알림 전송
-        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
-
-        sseEmitters.forEach((key, emitter) -> {
-            filteredNotifications.forEach(notification -> {
-                sendToClient(emitter, key, "변동성 초과 알림");
+        if (!filteredNotifications.isEmpty()) {
+            notifications.forEach(notification -> {
+                send(notification, userId);
             });
-        });
+        }
+        return emitter;
     }
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
@@ -106,6 +90,18 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         }
     }
 
+    @Override
+    public void send(Notification notification, Long userId) {
+
+        // 실시간 알림 전송 - 로그인 한 유저의 SseEmitter 모두 가져오기
+        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
+
+        sseEmitters.forEach((key, emitter) -> {
+                emitterRepository.saveEventCache(key, notification);
+                sendToClient(emitter, key, NotificationConverter.toNotificationCreateResponse(notification, notification.getMemeCoin()));
+        });
+    }
+
     private boolean isVolatilityExceeded(Notification notification) {
         MemeCoin memeCoin = notification.getMemeCoin();
         if (memeCoin == null) {
@@ -120,7 +116,6 @@ public class PushNotificationServiceImpl implements PushNotificationService {
         Integer count = notification.getStTime() / 10; //몇 번 가져올 것인지 결정
         Pageable pageable = (Pageable) PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<ChartData> lastNData = chartDataRepository.findByMemeCoinOrderByRecordedTimeDesc(memeCoin, pageable);
-        System.out.println("lastNData: " + lastNData + ", count: " + lastNData.size());
 
         if (lastNData.size() < count) {
             return false; // 비교할 데이터가 부족하면 알림을 보내지 않음
