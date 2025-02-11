@@ -33,9 +33,6 @@ public class GoogleServiceImpl implements GoogleService{
     @Value("${security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
 
-    @Value("${security.oauth2.client.registration.google.redirect-uri}")
-    private String redirectUri;
-
     @Value("${security.oauth2.client.registration.google.authorization-grant-type}")
     private String authorizationCode;
 
@@ -46,7 +43,7 @@ public class GoogleServiceImpl implements GoogleService{
     private String userInfoUri;
 
 
-    public TokenResponse getAccessTokenFromGoogle(String code) {
+    public TokenResponse getAccessTokenFromGoogle(String code, String redirectUri) {
         try {
             String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
 
