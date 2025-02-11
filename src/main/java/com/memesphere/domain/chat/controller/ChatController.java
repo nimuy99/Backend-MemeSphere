@@ -1,7 +1,6 @@
 package com.memesphere.domain.chat.controller;
 
 import com.memesphere.domain.chat.dto.request.ChatRequest;
-import com.memesphere.domain.chat.dto.response.ChatListResponse;
 import com.memesphere.domain.chat.dto.response.ChatResponse;
 import com.memesphere.domain.chat.service.ChatService;
 import com.memesphere.global.apipayload.ApiResponse;
@@ -9,7 +8,8 @@ import com.memesphere.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -32,17 +32,17 @@ public class ChatController {
         return chatService.saveMessage(coin_id, chatRequest);
     }
 
-    @GetMapping("/chat/{coin_id}/list/")
+    @GetMapping("/chat/{coin_id}/list")
     @Operation(summary = "코인별 채팅 전체 메시지 조회 API",
             description = "특정 코인의 채팅방의 전체 메시지를 보여줍니다.")
-    public ApiResponse<ChatListResponse> getChatList(@PathVariable("coin_id") Long coin_id) {
-        ChatListResponse chatListResponse = chatService.getChatList(coin_id);
+    public ApiResponse<Page<ChatResponse>> getChatList(@PathVariable("coin_id") Long coin_id,
+                                                           Pageable pageable) {
 
-        return ApiResponse.onSuccess(chatListResponse);
+        return ApiResponse.onSuccess(chatService.getChatList(coin_id, pageable));
     }
 
     //최신 댓글 조회 Api
-    @GetMapping("/chat/{coin_id}/latest/")
+    @GetMapping("/chat/{coin_id}/latest")
     @Operation(summary = "코인별 최신 댓글 조회 API",
             description = "특정 코인에 대한 최신 댓글을 반환합니다. 요청 시 최신 댓글 하나만 가져옵니다.")
     public ApiResponse<ChatResponse> getLatestMessages(
