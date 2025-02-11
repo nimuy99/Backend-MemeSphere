@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@Slf4j
 @Tag(name="회원", description = "회원 관련  API")
 @RestController
 @RequestMapping("/user")
