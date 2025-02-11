@@ -49,8 +49,18 @@ public class UserController {
 
     @PostMapping("/login/oauth2/google")
     @Operation(summary = "구글 로그인/회원가입 API")
-    public ApiResponse<LoginResponse> googleLogin(@RequestParam("code") String code) throws IOException {
-        TokenResponse googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code);
+    public ApiResponse<LoginResponse> googleLogin(HttpServletRequest request, @RequestParam("code") String code) throws IOException {
+        TokenResponse googleTokenResponse = null;
+        String origin = request.getHeader("Origin");
+
+        if (origin.equals("http://localhost:3000")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "http://localhost:3000/user/login/oauth2/google");
+        } else if (origin.equals("http://localhost:8080")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "http://localhost:8080/user/login/oauth2/google");
+        } else if (origin.equals("https://15.164.103.195.nip.io")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "https://15.164.103.195.nip.io/user/login/oauth2/google");
+        }
+
         GoogleUserInfoResponse googleUserInfoResponse = googleServiceImpl.getUserInfo(googleTokenResponse.getAccessToken());
         LoginResponse loginResponse = googleServiceImpl.handleUserLogin(googleUserInfoResponse);
 
