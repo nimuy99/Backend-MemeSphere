@@ -1,7 +1,6 @@
 package com.memesphere.domain.chat.service;
 
 import com.memesphere.domain.chat.converter.ChatConverter;
-import com.memesphere.domain.chat.dto.response.ChatListResponse;
 import com.memesphere.domain.chat.entity.Chat;
 import com.memesphere.domain.chat.entity.ChatLike;
 import com.memesphere.domain.chat.repository.ChatLikeRepository;
@@ -15,11 +14,11 @@ import com.memesphere.domain.chat.dto.response.ChatResponse;
 import com.memesphere.domain.memecoin.repository.MemeCoinRepository;
 import com.memesphere.domain.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,18 +45,10 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatListResponse getChatList(Long coin_id) {
+    public Page<ChatResponse> getChatList(Long coin_id, Pageable pageable) {
 
-        List<Chat> chatList = chatRepository.findAllByMemeCoin_Id(coin_id);
-        List<ChatResponse> chatResponses = new ArrayList<>();
-
-        for (Chat chat : chatList) {
-            ChatResponse chatResponse = ChatConverter.toChatResponse(chat);
-            chatResponses.add(chatResponse);
-        }
-
-        ChatListResponse chatListResponse = ChatConverter.toChatListResponse(chatResponses);
-        return chatListResponse;
+        Page<Chat> chatPage = chatRepository.findAllByMemeCoin_Id(coin_id, pageable);
+        return chatPage.map(ChatConverter::toChatResponse);
     }
 
     // 최신 댓글을 가져오는 메서드
@@ -91,7 +82,6 @@ public class ChatService {
 
         // 사용자가 좋아요 눌렀는지 확인
         Optional<ChatLike> existingLike = chatLikeRepository.findByChatAndUser(chat, user);
-        System.out.println("좋아요" + existingLike.isPresent());
 
         if (existingLike.isPresent()) {
             chatLikeRepository.delete(existingLike.get());

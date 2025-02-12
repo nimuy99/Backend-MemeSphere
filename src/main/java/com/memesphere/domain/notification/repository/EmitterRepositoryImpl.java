@@ -39,4 +39,9 @@ public class EmitterRepositoryImpl implements EmitterRepository {
                 .filter(entry -> entry.getKey().startsWith(UserId))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
+    @Override
+    public void saveEventCache(String emitterId, Object event) {
+        eventCache.put(emitterId, event);
+    }
 }
