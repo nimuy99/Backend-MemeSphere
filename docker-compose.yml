@@ -13,3 +13,16 @@ services:
       - "8080:8080"
     depends_on:
       - redis
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    volumes:
+      - ./conf/:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - spring
