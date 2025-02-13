@@ -18,6 +18,7 @@ public class NotificationConverter {
                 .stTime(notificationRequest.getStTime())
                 .isRising(notificationRequest.getIsRising())
                 .user(user)
+                .isOn(true)
                 .build();
     }
 
