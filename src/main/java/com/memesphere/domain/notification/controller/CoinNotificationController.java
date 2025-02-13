@@ -6,9 +6,11 @@ import com.memesphere.domain.notification.dto.request.NotificationRequest;
 import com.memesphere.domain.notification.dto.response.NotificationListResponse;
 import com.memesphere.domain.notification.dto.response.NotificationResponse;
 import com.memesphere.domain.notification.service.CoinNotificationService;
+import com.memesphere.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name="알림", description = "알림 관련 API")
@@ -65,8 +67,9 @@ public class CoinNotificationController {
                     - "is_rising": 상승(true) 또는 하락(false)
                     - "is_on": 알림 on(true) 또는 off(false)
                     ```""")
-    public ApiResponse<NotificationResponse> postNotification(@RequestBody NotificationRequest request) {
-        return ApiResponse.onSuccess(coinNotificationService.addNotification(request));
+    public ApiResponse<NotificationResponse> postNotification(@RequestBody NotificationRequest request,
+                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ApiResponse.onSuccess(coinNotificationService.addNotification(request, customUserDetails.getUser()));
     }
 
     @PatchMapping("/{notification-id}")
@@ -83,7 +86,7 @@ public class CoinNotificationController {
                     ```
                     알림 등록 API 응답 형식과 동일
                     ```""")
-    public ApiResponse<NotificationResponse> updateNotificationStatus(@PathVariable("notification-id") Long id) {
+    public ApiResponse<String> updateNotificationStatus(@PathVariable("notification-id") Long id) {
         return ApiResponse.onSuccess(coinNotificationService.modifyNotification(id));
     }
 

@@ -18,7 +18,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")  //socket 연결 url: ws://localhost:8008/ws
-                .setAllowedOrigins("*");
+                .setAllowedOriginPatterns("*");
     }
 
     /*

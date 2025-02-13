@@ -41,4 +41,8 @@ public class Notification extends BaseEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="coin_id")
     private MemeCoin memeCoin;
+
+    public void updateIsOn(Boolean isOn) {
+        this.isOn = isOn;
+    }
 }

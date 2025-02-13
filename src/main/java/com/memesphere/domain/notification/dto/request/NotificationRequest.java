@@ -22,4 +22,7 @@ public class NotificationRequest {
 
     @Schema(description = "상승 또는 하락", example = "True")
     private Boolean isRising;
+
+    @Schema(description = "알림 켜기/끄기", example = "True")
+    private Boolean isOn;
 }

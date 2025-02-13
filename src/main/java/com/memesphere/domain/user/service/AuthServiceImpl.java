@@ -86,17 +86,17 @@ public class AuthServiceImpl implements AuthService{
         }
 
         /*
-        validateToken이 false 반환할 경우(로그인 시 refreshToken은 redis에 저장됨. . redis에 없으면 TOKEN_INVALID)
+        validateToken이 false 반환할 경우(로그인 시 refreshToken은 redis에 저장됨. . redis에 없으면 INVALID_TOKEN)
          */
         if (!tokenProvider.validateToken(refreshToken)) {
-            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+            throw new GeneralException(ErrorStatus.INVALID_TOKEN);
         }
 
         String email = existingUser.getEmail();
         String redisRefreshToken = redisService.getValue(email);
 
         if (StringUtils.isEmpty(refreshToken) || StringUtils.isEmpty(redisRefreshToken) || !redisRefreshToken.equals(refreshToken)) {
-            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+            throw new GeneralException(ErrorStatus.INVALID_TOKEN);
         }
 
         return tokenProvider.reissue(existingUser, refreshToken);

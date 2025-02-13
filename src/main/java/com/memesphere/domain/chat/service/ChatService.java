@@ -82,7 +82,6 @@ public class ChatService {
 
         // 사용자가 좋아요 눌렀는지 확인
         Optional<ChatLike> existingLike = chatLikeRepository.findByChatAndUser(chat, user);
-        System.out.println("좋아요" + existingLike.isPresent());
 
         if (existingLike.isPresent()) {
             chatLikeRepository.delete(existingLike.get());
