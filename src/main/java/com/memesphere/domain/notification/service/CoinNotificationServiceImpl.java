@@ -77,8 +77,8 @@ public class CoinNotificationServiceImpl implements CoinNotificationService {
     @Override
     public NotificationListResponse removeNotification(Long notificationId) {
 
-        MemeCoin memeCoin = memeCoinRepository.findById(notificationId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
+        Notification existingNotification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.NOTIFICATION_NOT_FOUND));
 
         notificationRepository.deleteById(notificationId);
 
