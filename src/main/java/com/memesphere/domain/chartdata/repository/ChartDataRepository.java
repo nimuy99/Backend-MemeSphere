@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
     @Query("SELECT SUM(c.volume) FROM ChartData c " +
@@ -32,4 +33,9 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
     //TODO: 위아래 코드 합치는 방법 찾기
     List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin, Pageable pageable);
 
+    @Query("SELECT c FROM ChartData c " +
+            "WHERE c.memeCoin.id = :coinId " +
+            "AND c.recordedTime = " +
+            "(SELECT MAX(c2.recordedTime) FROM ChartData c2 WHERE c2.memeCoin = c.memeCoin)")
+    Optional<ChartData> findLatestByCoinId(Long coinId);
 }

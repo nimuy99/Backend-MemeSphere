@@ -31,6 +31,7 @@ public enum ErrorStatus implements BaseCode {
 
     // ChartData load 에러
     CANNOT_LOAD_CHARTDATA(HttpStatus.BAD_REQUEST, "CANNOT LOAD CHARTDATA", "ChartData를 Binance에서 로드할 수 없습니다."),
+    CHARTDATA_NOT_FOUND(HttpStatus.NOT_FOUND, "CHARTDATA NOT FOUND", "차트 데이터를 찾을 수 없습니다."),
 
     // notification 에러
     CANNOT_CHECK_VOLATILITY(HttpStatus.NOT_FOUND, "CANNOT CHECK VOLATILITY", "변동성을 확인할 수 없습니다."),
