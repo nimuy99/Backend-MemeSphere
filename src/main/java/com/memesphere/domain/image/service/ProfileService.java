@@ -1,7 +1,6 @@
 package com.memesphere.domain.image.service;
 
 import com.memesphere.domain.user.entity.User;
-import com.memesphere.domain.user.repository.UserRepository;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.CustomUserDetails;
