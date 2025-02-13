@@ -16,6 +16,7 @@ public class NotificationConverter {
                 .volatility(notificationRequest.getVolatility())
                 .stTime(notificationRequest.getStTime())
                 .isRising(notificationRequest.getIsRising())
+                .isOn(true)
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class NotificationConverter {
                 .volatility(notification.getVolatility())
                 .stTime(notification.getStTime())
                 .isRising(notification.getIsRising())
+                .isOn(notification.getIsOn())
                 .build();
     }
 
