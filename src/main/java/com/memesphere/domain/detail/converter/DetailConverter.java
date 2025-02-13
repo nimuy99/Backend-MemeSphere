@@ -19,6 +19,7 @@ public class DetailConverter {
                 .image(memeCoin.getImage())
                 .keywords(memeCoin.getKeywords())
                 .collectionActive(memeCoin.getCollectionList().isEmpty())
+                .rank(memeCoin.getTrendRank())
                 .build();
     }
 

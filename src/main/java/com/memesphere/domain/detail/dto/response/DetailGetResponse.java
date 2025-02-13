@@ -30,4 +30,7 @@ public class DetailGetResponse {
 
     @Schema(description = "컬렉션 유무", example = "True")
     private boolean collectionActive;
+
+    @Schema(description = "밈코인 순위", example = "1")
+    private Integer rank;
 }

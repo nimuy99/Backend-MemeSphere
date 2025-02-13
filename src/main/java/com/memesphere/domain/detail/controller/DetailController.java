@@ -37,6 +37,7 @@ public class DetailController {
                     - "image": 밈코인 이미지
                     - "keywords": 밈코인 키워드 (리스트 형식)
                     - "collectionActive": 컬렉션 유무 (저장 유무)
+                    - "rank": 밈코인 순위(1 ~ 5위까지, 나머지 순위는 null)
                     ```""")
     public ApiResponse<DetailGetResponse> getDetail(@PathVariable("memeId") Long memeId) {
 
