@@ -11,6 +11,7 @@ import com.memesphere.domain.user.entity.User;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
+import com.memesphere.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -34,6 +37,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
     private final ChartDataRepository chartDataRepository;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // 연결 지속 시간 설정 : 한시간
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
@@ -61,18 +65,6 @@ public class PushNotificationServiceImpl implements PushNotificationService {
                     .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
         }
 
-        List<Notification> notifications = notificationRepository.findAllByUserId(userId); // 사용자가 등록한 알림 전부 가져오기
-
-        // 변동성을 초과하는 알림 필터링
-        List<Notification> filteredNotifications = notifications.stream()
-                .filter(notification -> isVolatilityExceeded(notification))
-                .collect(Collectors.toList());
-
-        if (!filteredNotifications.isEmpty()) {
-            notifications.forEach(notification -> {
-                send(notification, userId);
-            });
-        }
         return emitter;
     }
 
@@ -91,15 +83,35 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     }
 
     @Override
-    public void send(Notification notification, Long userId) {
+    public void send(Long userId) {
 
-        // 실시간 알림 전송 - 로그인 한 유저의 SseEmitter 모두 가져오기
-        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
+        List<Notification> notifications = notificationRepository.findAllByUserId(userId); // 사용자가 등록한 알림 전부 가져오기
 
-        sseEmitters.forEach((key, emitter) -> {
-                emitterRepository.saveEventCache(key, notification);
-                sendToClient(emitter, key, NotificationConverter.toNotificationCreateResponse(notification, notification.getMemeCoin()));
-        });
+        // 변동성을 초과하는 알림 필터링
+        List<Notification> filteredNotifications = notifications.stream()
+                .filter(notification -> isVolatilityExceeded(notification))
+                .collect(Collectors.toList());
+
+        if (!filteredNotifications.isEmpty()) {
+            // 실시간 알림 전송 - 로그인 한 유저의 SseEmitter 모두 가져오기
+            Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(String.valueOf(userId));
+
+            sseEmitters.forEach((key, emitter) -> {
+                executorService.submit(() -> {
+                    filteredNotifications.forEach(notification -> {
+
+                        emitterRepository.saveEventCache(key, notification);
+                        sendToClient(emitter, key, NotificationConverter.toNotificationCreateResponse(notification, notification.getMemeCoin()));
+
+                        try {
+                            Thread.sleep(500); // 0.5초 간격으로 전송
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    });
+                });
+            });
+        }
     }
 
     private boolean isVolatilityExceeded(Notification notification) {
@@ -113,18 +125,20 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             throw new GeneralException(ErrorStatus.CANNOT_LOAD_CHARTDATA);
         }
 
+        LocalDateTime notificationTime = notification.getCreatedAt();
+
         Integer count = notification.getStTime() / 10; //몇 번 가져올 것인지 결정
         Pageable pageable = (Pageable) PageRequest.of(0, count, Sort.by(Sort.Direction.DESC, "createdAt"));
-        List<ChartData> lastNData = chartDataRepository.findByMemeCoinOrderByRecordedTimeDesc(memeCoin, pageable);
+        List<ChartData> lastNData = chartDataRepository.findByMemeCoinAndRecordedTimeAfterOrderByRecordedTimeDesc(memeCoin, notificationTime, pageable);
 
         if (lastNData.size() < count) {
             return false; // 비교할 데이터가 부족하면 알림을 보내지 않음
         }
 
         BigDecimal sum = lastNData.stream()
-                .map(ChartData::getPrice)
+                .map(ChartData::getPriceChangeRate)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal average = sum.divide(BigDecimal.valueOf(lastNData.size()), 4, RoundingMode.HALF_UP);
+        BigDecimal average = sum.divide(BigDecimal.valueOf(count), 4, RoundingMode.HALF_UP);
         BigDecimal definedVolatility = new BigDecimal(notification.getVolatility());
 
         if (notification.getIsRising()) { // 상승인 경우
@@ -133,5 +147,4 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             return average.compareTo(definedVolatility) < 0;
         }
     }
-
 }

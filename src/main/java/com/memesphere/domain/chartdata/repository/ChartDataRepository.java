@@ -30,8 +30,7 @@ public interface ChartDataRepository extends JpaRepository<ChartData, Long> {
 
     List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin);
 
-    //TODO: 위아래 코드 합치는 방법 찾기
-    List<ChartData> findByMemeCoinOrderByRecordedTimeDesc(MemeCoin memeCoin, Pageable pageable);
+    List<ChartData> findByMemeCoinAndRecordedTimeAfterOrderByRecordedTimeDesc(MemeCoin memeCoin, LocalDateTime recordedTime, Pageable pageable);
 
     @Query("SELECT c FROM ChartData c " +
             "WHERE c.memeCoin.id = :coinId " +
