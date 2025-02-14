@@ -55,7 +55,11 @@ public enum ErrorStatus implements BaseCode {
     PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다."),
 
     // 채팅 에러
-    CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT NOT FOUND", "채팅을 찾을 수 없습니다.");
+    CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT NOT FOUND", "채팅을 찾을 수 없습니다."),
+
+    // 네이버 api 에러
+    KEY_UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"NAVER 401 ERROR", "인증 실패. 클라이언트 ID 또는 시크릿이 올바르지 않습니다."),
+    API_FORBIDDEN(HttpStatus.FORBIDDEN, "NAVER 403 ERROR","API 호출 횟수를 초과했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
