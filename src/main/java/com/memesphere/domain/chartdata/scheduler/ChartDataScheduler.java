@@ -46,13 +46,13 @@ public class ChartDataScheduler {
 
                 memeCoinQueryService.updateChartData(memeCoin.getId(), chartData);
 
-                for (Long userId : loggedInUsers) {
-                    pushNotificationService.send(userId);
-                }
-
             } catch (Exception e) {
                 throw new GeneralException(ErrorStatus.CANNOT_LOAD_CHARTDATA);
             }
+        }
+
+        for (Long userId : loggedInUsers) {
+            pushNotificationService.send(userId);
         }
     }
 }
