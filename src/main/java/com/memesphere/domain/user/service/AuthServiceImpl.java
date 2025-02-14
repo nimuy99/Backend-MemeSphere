@@ -111,4 +111,5 @@ public class AuthServiceImpl implements AuthService{
     public boolean checkNicknameDuplicate(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
     }
+
 }

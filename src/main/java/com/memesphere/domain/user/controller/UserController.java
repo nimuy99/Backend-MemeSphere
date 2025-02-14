@@ -115,4 +115,6 @@ public class UserController {
             return ApiResponse.onSuccess("사용 가능한 닉네임입니다.");
         }
     }
+
+
 }
