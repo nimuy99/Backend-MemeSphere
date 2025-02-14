@@ -27,7 +27,7 @@ public class ChartDataScheduler {
     private final BinanceQueryService binanceQueryService;
     private final MemeCoinQueryService memeCoinQueryService;
 
-    @Scheduled(cron = "0 0/1 * * * ?") // 0, 10, 20, 30, 40, 50분에 실행
+    @Scheduled(cron = "0 0/10 * * * ?") // 0, 10, 20, 30, 40, 50분에 실행
     @Transactional
     public void updateChartData() {
 
