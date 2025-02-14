@@ -18,10 +18,10 @@ public class MemeCoinQueryServiceImpl implements MemeCoinQueryService {
 
     @Transactional
     @Override
-    public void updateChartData(Long memeCoinId, ChartData newChartData, Long userId) {
+    public void updateChartData(Long memeCoinId, ChartData newChartData) {
         MemeCoin memeCoin = memeCoinRepository.findById(memeCoinId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMECOIN_NOT_FOUND));
 
-        chartDataService.saveChartData(memeCoin, newChartData, userId);
+        chartDataService.saveChartData(memeCoin, newChartData);
     }
 }
