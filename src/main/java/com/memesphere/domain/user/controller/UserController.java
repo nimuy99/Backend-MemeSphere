@@ -1,14 +1,12 @@
 package com.memesphere.domain.user.controller;
 
 import com.memesphere.domain.user.dto.request.*;
-import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
-import com.memesphere.domain.user.dto.response.TokenResponse;
-import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
+import com.memesphere.domain.user.dto.response.*;
 import com.memesphere.domain.user.service.AuthServiceImpl;
 import com.memesphere.domain.user.service.GoogleServiceImpl;
 import com.memesphere.domain.user.service.KakaoServiceImpl;
+import com.memesphere.domain.user.service.MailServiceImpl;
 import com.memesphere.global.apipayload.ApiResponse;
-import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.CustomUserDetails;
@@ -32,6 +30,7 @@ public class UserController {
     private final KakaoServiceImpl kakaoServiceImpl;
     private final GoogleServiceImpl googleServiceImpl;
     private final AuthServiceImpl authServiceImpl;
+    private final MailServiceImpl mailServiceImpl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @PostMapping("/login/oauth2/kakao")
@@ -111,5 +110,14 @@ public class UserController {
         } else {
             return ApiResponse.onSuccess("사용 가능한 닉네임입니다.");
         }
+    }
+
+    @PostMapping("/send/password")
+    @Operation(summary = "비밀번호 찾기 API")
+    public ApiResponse<?> sendPassword(@RequestParam("email") String email) {
+        EmailResponse mail = mailServiceImpl.createMail(email);
+        mailServiceImpl.sendMail(mail);
+
+        return ApiResponse.onSuccess("이메일 전송이 완료되었습니다.");
     }
 }

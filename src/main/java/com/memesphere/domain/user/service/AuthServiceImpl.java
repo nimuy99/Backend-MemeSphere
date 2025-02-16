@@ -22,7 +22,6 @@ public class AuthServiceImpl implements AuthService{
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final UserServiceImpl userServiceImpl;
     private final TokenProvider tokenProvider;
     private final RedisService redisService;
 
