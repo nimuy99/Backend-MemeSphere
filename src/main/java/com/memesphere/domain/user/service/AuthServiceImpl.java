@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService{
         }
 
         User newUser = UserConverter.toAuthUser(signUpRequest, passwordEncoder);
-        userServiceImpl.save(newUser);
+        userRepository.save(newUser);
     }
 
     public LoginResponse handleUserLogin(SignInRequest signInRequest) {

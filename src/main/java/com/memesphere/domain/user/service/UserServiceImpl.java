@@ -15,7 +15,4 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByLoginId(loginId).orElse(null);
     }
 
-    public void save(User user){
-        userRepository.save(user);
-    }
 }

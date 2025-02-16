@@ -4,5 +4,4 @@ import com.memesphere.domain.user.entity.User;
 
 public interface UserService {
     User findByLoginId(Long loginId);
-    void save(User user);
 }
