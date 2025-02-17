@@ -1,6 +1,7 @@
 package com.memesphere.domain.user.converter;
 
 import com.memesphere.domain.user.dto.request.SignUpRequest;
+import com.memesphere.domain.user.dto.response.EmailResponse;
 import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
 import com.memesphere.domain.user.entity.SocialType;
 import com.memesphere.domain.user.entity.User;
@@ -49,5 +50,14 @@ public class UserConverter {
                 .build();
     }
 
+    // 비밀번호 찾기 이메일
+    public static EmailResponse toEmailResponse(String tmpPassword, String memberEmail, String title, String message, String fromAddress) {
+        return EmailResponse.builder()
+                .toAddress(memberEmail)
+                .title(title)
+                .message(message + tmpPassword)
+                .fromAddress(fromAddress)
+                .build();
+    }
 }
 

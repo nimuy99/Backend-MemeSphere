@@ -110,20 +110,21 @@ public class UserController {
         }
     }
 
-    @PostMapping("/send/password")
+    @PostMapping("/password/send")
     @Operation(summary = "비밀번호 찾기 API")
     public ApiResponse<?> sendPassword(@RequestParam("email") String email) {
         // 임시 비밀번호 생성 및 저장
         String tmpPassword = userServiceImpl.getTmpPassword();
         userServiceImpl.updatePassword(tmpPassword, email);
 
+        // 메일 생성 및 전송
         EmailResponse mailResponse = mailServiceImpl.createMail(tmpPassword, email);
         mailServiceImpl.sendMail(mailResponse);
 
         return ApiResponse.onSuccess("이메일 전송이 완료되었습니다.");
     }
 
-    @PostMapping("/change/password")
+    @PostMapping("/password/change")
     @Operation(summary = "비밀번호 변경 API")
     public ApiResponse<?> sendPassword(@RequestParam("newPassword") String newPassword, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (customUserDetails == null) {

@@ -1,5 +1,6 @@
 package com.memesphere.domain.user.service;
 
+import com.memesphere.domain.user.converter.UserConverter;
 import com.memesphere.domain.user.dto.response.EmailResponse;
 import com.memesphere.domain.user.entity.User;
 import com.memesphere.domain.user.repository.UserRepository;
@@ -9,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -33,14 +32,7 @@ public class MailServiceImpl implements MailService {
             throw new GeneralException(ErrorStatus.SOCIAL_LOGIN_NOT_ALLOWED);
         }
 
-        EmailResponse emailResponse = EmailResponse.builder()
-                .toAddress(memberEmail)
-                .title(title)
-                .message(message + tmpPassword)
-                .fromAddress(fromAddress)
-                .build();
-
-        return emailResponse;
+        return UserConverter.toEmailResponse(tmpPassword, memberEmail, title, message, fromAddress);
     }
 
     @Override
