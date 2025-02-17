@@ -62,7 +62,7 @@ public class SearchConverter {
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
                 .currentPrice(chartData.getPrice())
-                .priceChange(chartData.getPriceChangeRate())
+                .priceChangeRate(chartData.getPriceChangeRate())
                 .weightedAveragePrice(chartData.getWeighted_average_price())
                 .volume(chartData.getVolume())
                 .isCollected(isCollected)

@@ -4,5 +4,5 @@ import com.memesphere.domain.chartdata.entity.ChartData;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 
 public interface ChartDataQueryService {
-    void saveChartData(MemeCoin memeCoin, ChartData chartData, Long userId);
+    void saveChartData(MemeCoin memeCoin, ChartData chartData);
 }

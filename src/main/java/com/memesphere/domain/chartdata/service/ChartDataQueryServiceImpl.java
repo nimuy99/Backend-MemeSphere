@@ -13,13 +13,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChartDataQueryServiceImpl implements ChartDataQueryService {
-    private final PushNotificationService pushNotificationService;
     private final ChartDataRepository chartDataRepository;
     private static final int MAX_CHART_DATA_CNT = 6;
 
     @Override
     @Transactional
-    public void saveChartData(MemeCoin memeCoin, ChartData newChartData, Long userId) {
+    public void saveChartData(MemeCoin memeCoin, ChartData newChartData) {
         List<ChartData> chartDataList = chartDataRepository.findByMemeCoinOrderByRecordedTimeDesc(memeCoin);
 
         if (chartDataList.size() >= MAX_CHART_DATA_CNT) {
@@ -30,7 +29,5 @@ public class ChartDataQueryServiceImpl implements ChartDataQueryService {
 
         newChartData.setMemeCoin(memeCoin);
         chartDataRepository.save(newChartData);
-
-        pushNotificationService.send(userId);
     }
 }

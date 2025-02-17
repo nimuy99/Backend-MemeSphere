@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CollectionPreviewResponse {
+public class CollectionGridPreviewResponse {
     @Schema(description = "밈코인 id", example = "1")
     Long coinId;
     @Schema(description = "밈코인 name", example = "도지코인")

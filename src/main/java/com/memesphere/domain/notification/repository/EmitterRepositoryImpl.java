@@ -29,7 +29,7 @@ public class EmitterRepositoryImpl implements EmitterRepository {
     @Override
     public Map<String, SseEmitter> findAllEmitterStartWithByUserId(String UserId) {
         return emitters.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(UserId))
+                .filter(entry -> entry.getKey().startsWith(UserId + "_"))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
