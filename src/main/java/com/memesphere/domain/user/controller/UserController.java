@@ -115,11 +115,23 @@ public class UserController {
     public ApiResponse<?> sendPassword(@RequestParam("email") String email) {
         // 임시 비밀번호 생성 및 저장
         String tmpPassword = userServiceImpl.getTmpPassword();
-        userServiceImpl.updateTmpPassword(tmpPassword, email);
+        userServiceImpl.updatePassword(tmpPassword, email);
 
         EmailResponse mailResponse = mailServiceImpl.createMail(tmpPassword, email);
         mailServiceImpl.sendMail(mailResponse);
 
         return ApiResponse.onSuccess("이메일 전송이 완료되었습니다.");
+    }
+
+    @PostMapping("/change/password")
+    @Operation(summary = "비밀번호 변경 API")
+    public ApiResponse<?> sendPassword(@RequestParam("newPassword") String newPassword, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
+        userServiceImpl.updatePassword(newPassword, customUserDetails.getUser().getEmail());
+
+        return ApiResponse.onSuccess("비밀번호 변경이 완료되었습니다.");
     }
 }

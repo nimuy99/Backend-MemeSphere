@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateTmpPassword(String tmpPassword, String memberEmail) {
+    public void updatePassword(String tmpPassword, String memberEmail) {
         String encryptPassword = passwordEncoder.encode(tmpPassword);
         User existingUser = userRepository.findByEmail(memberEmail).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
