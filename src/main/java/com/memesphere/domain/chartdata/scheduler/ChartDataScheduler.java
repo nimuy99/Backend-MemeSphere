@@ -42,7 +42,7 @@ public class ChartDataScheduler {
                 String symbol = memeCoin.getSymbol() + "USDT";
                 BinanceTickerResponse response = binanceQueryService.getTickerData(symbol);
 
-                ChartData chartData = toChartData(memeCoin,response);
+                ChartData chartData = toChartData(memeCoin, response);
 
                 memeCoinQueryService.updateChartData(memeCoin.getId(), chartData);
 
