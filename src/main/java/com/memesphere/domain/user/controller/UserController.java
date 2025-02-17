@@ -29,7 +29,6 @@ public class UserController {
     private final AuthServiceImpl authServiceImpl;
     private final MailServiceImpl mailServiceImpl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final UserServiceImpl userServiceImpl;
 
     @PostMapping("/login/oauth2/kakao")
     @Operation(summary = "카카오 로그인/회원가입 API")
@@ -114,8 +113,8 @@ public class UserController {
     @Operation(summary = "비밀번호 찾기 API")
     public ApiResponse<?> sendPassword(@RequestParam("email") String email) {
         // 임시 비밀번호 생성 및 저장
-        String tmpPassword = userServiceImpl.getTmpPassword();
-        userServiceImpl.updatePassword(tmpPassword, email);
+        String tmpPassword = authServiceImpl.getTmpPassword();
+        authServiceImpl.updatePassword(tmpPassword, email);
 
         // 메일 생성 및 전송
         EmailResponse mailResponse = mailServiceImpl.createMail(tmpPassword, email);
@@ -131,7 +130,7 @@ public class UserController {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
 
-        userServiceImpl.updatePassword(newPassword, customUserDetails.getUser().getEmail());
+        authServiceImpl.updatePassword(newPassword, customUserDetails.getUser().getEmail());
 
         return ApiResponse.onSuccess("비밀번호 변경이 완료되었습니다.");
     }
