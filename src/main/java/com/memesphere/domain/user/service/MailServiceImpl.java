@@ -19,23 +19,15 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
 
-    private static final String title = "MemeSphere 비밀번호 안내 이메일입니다.";
-    private static final String message = "안녕하세요. MemeSphere 비밀번호 안내 메일입니다. "
-            +"\n" + "회원님의 비밀번호는 아래와 같습니다."+"\n";
+    private static final String title = "MemeSphere 임시 비밀번호 안내 이메일입니다.";
+    private static final String message = "안녕하세요. MemeSphere 임시 비밀번호 안내 메일입니다. "
+            +"\n" + "회원님의 임시 비밀번호는 아래와 같습니다. 로그인 후 반드시 비밀번호를 변경해주세요."+"\n";
     private static final String fromAddress = "memesphere01@gmail.com";
 
-    /** 이메일 생성 **/
     @Override
-    public EmailResponse createMail(String memberEmail) {
-        User existingUser = userRepository.findByEmail(memberEmail).orElse(null);
-        /*
-        임시 비밀번호 발급 로직 추가 예정
-         */
+    public EmailResponse createMail(String tmpPassword, String memberEmail) {
+        User existingUser = userRepository.findByEmail(memberEmail).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
         String password = existingUser.getPassword();
-
-        if (existingUser == null) {
-            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
-        }
 
         if (password == null) {
             throw new GeneralException(ErrorStatus.SOCIAL_LOGIN_NOT_ALLOWED);
@@ -44,14 +36,13 @@ public class MailServiceImpl implements MailService {
         EmailResponse emailResponse = EmailResponse.builder()
                 .toAddress(memberEmail)
                 .title(title)
-                .message(message + password)
+                .message(message + tmpPassword)
                 .fromAddress(fromAddress)
                 .build();
 
         return emailResponse;
     }
 
-    /** 이메일 전송 **/
     @Override
     public void sendMail(EmailResponse email) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();

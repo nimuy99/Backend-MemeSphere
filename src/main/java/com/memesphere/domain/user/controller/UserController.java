@@ -2,10 +2,7 @@ package com.memesphere.domain.user.controller;
 
 import com.memesphere.domain.user.dto.request.*;
 import com.memesphere.domain.user.dto.response.*;
-import com.memesphere.domain.user.service.AuthServiceImpl;
-import com.memesphere.domain.user.service.GoogleServiceImpl;
-import com.memesphere.domain.user.service.KakaoServiceImpl;
-import com.memesphere.domain.user.service.MailServiceImpl;
+import com.memesphere.domain.user.service.*;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
@@ -32,6 +29,7 @@ public class UserController {
     private final AuthServiceImpl authServiceImpl;
     private final MailServiceImpl mailServiceImpl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserServiceImpl userServiceImpl;
 
     @PostMapping("/login/oauth2/kakao")
     @Operation(summary = "카카오 로그인/회원가입 API")
@@ -115,8 +113,12 @@ public class UserController {
     @PostMapping("/send/password")
     @Operation(summary = "비밀번호 찾기 API")
     public ApiResponse<?> sendPassword(@RequestParam("email") String email) {
-        EmailResponse mail = mailServiceImpl.createMail(email);
-        mailServiceImpl.sendMail(mail);
+        // 임시 비밀번호 생성 및 저장
+        String tmpPassword = userServiceImpl.getTmpPassword();
+        userServiceImpl.updateTmpPassword(tmpPassword, email);
+
+        EmailResponse mailResponse = mailServiceImpl.createMail(tmpPassword, email);
+        mailServiceImpl.sendMail(mailResponse);
 
         return ApiResponse.onSuccess("이메일 전송이 완료되었습니다.");
     }
