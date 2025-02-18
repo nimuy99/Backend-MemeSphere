@@ -29,6 +29,7 @@ public class NotificationConverter {
                 .volatility(notification.getVolatility())
                 .stTime(notification.getStTime())
                 .isRising(notification.getIsRising())
+                .coinId(memeCoin.getId())
                 .build();
     }
 
