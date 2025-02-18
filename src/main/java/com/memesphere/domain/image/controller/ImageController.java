@@ -5,9 +5,11 @@ import com.memesphere.domain.image.dto.request.ImageExtensionRequest;
 import com.memesphere.domain.image.service.ImageService;
 import com.memesphere.domain.image.service.ProfileService;
 import com.memesphere.global.apipayload.ApiResponse;
+import com.memesphere.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/image")
@@ -33,15 +35,15 @@ public class ImageController {
         return ApiResponse.onSuccess(url);
     }
 
-    //프로필 이미지 조회 Api
-    @GetMapping("/profile/{user_id}")
+    // 프로필 이미지 조회 Api
+    @GetMapping("/profile")
     @Operation(summary = "프로필 이미지 조회 API",
-            description = "회원가입한 유저의 프로필 이미지를 반환합니다.")
-    public ApiResponse<String> getProfile(@PathVariable("user_id") Long user_id) {
-        String profileImage = profileService.getProfileImage(user_id);
+            description = "현재 로그인한 유저의 프로필 이미지를 반환합니다.")
+    public ApiResponse<String> getProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // 현재 로그인한 유저 정보에서 프로필 이미지 가져오기
+        String profileImage = profileService.getProfileImage(customUserDetails);
 
-        // null이거나 ""이면 result를 null로 반환
-        return ApiResponse.onSuccess((profileImage == null || profileImage.isEmpty()) ? "null" : profileImage);
+        return ApiResponse.onSuccess(profileImage);
     }
 
 }

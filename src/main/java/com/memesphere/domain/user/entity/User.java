@@ -67,4 +67,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ChatLike> chatLikeList = new ArrayList<>();
+
+    public void updatePassword(String password){
+        this.password = password;
+    }
 }

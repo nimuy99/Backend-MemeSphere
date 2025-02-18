@@ -1,17 +1,9 @@
 package com.memesphere.domain.user.controller;
 
-import com.memesphere.domain.user.dto.request.ReissueRequest;
-import com.memesphere.domain.user.dto.request.NicknameRequest;
-import com.memesphere.domain.user.dto.request.SignInRequest;
-import com.memesphere.domain.user.dto.request.SignUpRequest;
-import com.memesphere.domain.user.dto.response.GoogleUserInfoResponse;
-import com.memesphere.domain.user.dto.response.TokenResponse;
-import com.memesphere.domain.user.dto.response.KakaoUserInfoResponse;
-import com.memesphere.domain.user.service.AuthServiceImpl;
-import com.memesphere.domain.user.service.GoogleServiceImpl;
-import com.memesphere.domain.user.service.KakaoServiceImpl;
+import com.memesphere.domain.user.dto.request.*;
+import com.memesphere.domain.user.dto.response.*;
+import com.memesphere.domain.user.service.*;
 import com.memesphere.global.apipayload.ApiResponse;
-import com.memesphere.domain.user.dto.response.LoginResponse;
 import com.memesphere.global.apipayload.code.status.ErrorStatus;
 import com.memesphere.global.apipayload.exception.GeneralException;
 import com.memesphere.global.jwt.CustomUserDetails;
@@ -35,6 +27,7 @@ public class UserController {
     private final KakaoServiceImpl kakaoServiceImpl;
     private final GoogleServiceImpl googleServiceImpl;
     private final AuthServiceImpl authServiceImpl;
+    private final MailServiceImpl mailServiceImpl;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @PostMapping("/login/oauth2/kakao")
@@ -49,8 +42,18 @@ public class UserController {
 
     @PostMapping("/login/oauth2/google")
     @Operation(summary = "구글 로그인/회원가입 API")
-    public ApiResponse<LoginResponse> googleLogin(@RequestParam("code") String code) throws IOException {
-        TokenResponse googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code);
+    public ApiResponse<LoginResponse> googleLogin(HttpServletRequest request, @RequestParam("code") String code) throws IOException {
+        TokenResponse googleTokenResponse = null;
+        String origin = request.getHeader("Origin");
+
+        if (origin.equals("http://localhost:3000")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "http://localhost:3000/user/login/oauth2/google");
+        } else if (origin.equals("http://localhost:8080")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "http://localhost:8080/user/login/oauth2/google");
+        } else if (origin.equals("https://15.164.103.195.nip.io")) {
+            googleTokenResponse = googleServiceImpl.getAccessTokenFromGoogle(code, "https://15.164.103.195.nip.io/user/login/oauth2/google");
+        }
+
         GoogleUserInfoResponse googleUserInfoResponse = googleServiceImpl.getUserInfo(googleTokenResponse.getAccessToken());
         LoginResponse loginResponse = googleServiceImpl.handleUserLogin(googleUserInfoResponse);
 
@@ -104,5 +107,31 @@ public class UserController {
         } else {
             return ApiResponse.onSuccess("사용 가능한 닉네임입니다.");
         }
+    }
+
+    @PostMapping("/password/send")
+    @Operation(summary = "비밀번호 찾기 API")
+    public ApiResponse<?> sendPassword(@RequestParam("email") String email) {
+        // 임시 비밀번호 생성 및 저장
+        String tmpPassword = authServiceImpl.getTmpPassword();
+        authServiceImpl.updatePassword(tmpPassword, email);
+
+        // 메일 생성 및 전송
+        EmailResponse mailResponse = mailServiceImpl.createMail(tmpPassword, email);
+        mailServiceImpl.sendMail(mailResponse);
+
+        return ApiResponse.onSuccess("이메일 전송이 완료되었습니다.");
+    }
+
+    @PostMapping("/password/change")
+    @Operation(summary = "비밀번호 변경 API")
+    public ApiResponse<?> sendPassword(@RequestParam("newPassword") String newPassword, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (customUserDetails == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
+        authServiceImpl.updatePassword(newPassword, customUserDetails.getUser().getEmail());
+
+        return ApiResponse.onSuccess("비밀번호 변경이 완료되었습니다.");
     }
 }
