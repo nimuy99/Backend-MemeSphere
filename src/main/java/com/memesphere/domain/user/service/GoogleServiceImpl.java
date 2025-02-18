@@ -24,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 public class GoogleServiceImpl implements GoogleService{
 
     private final TokenProvider tokenProvider;
-    private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
 
     @Value("${security.oauth2.client.registration.google.client-id}")

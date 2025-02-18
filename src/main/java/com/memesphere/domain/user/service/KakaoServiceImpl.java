@@ -22,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class KakaoServiceImpl implements KakaoService {
 
     private final TokenProvider tokenProvider;
-    private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
     private final RedisService redisService;
 
@@ -70,7 +69,7 @@ public class KakaoServiceImpl implements KakaoService {
     }
 
     public LoginResponse handleUserLogin(KakaoUserInfoResponse kakaoUserInfoResponse) {
-        User existingUser = userServiceImpl.findByLoginId(kakaoUserInfoResponse.getId());
+        User existingUser = userRepository.findByLoginId(kakaoUserInfoResponse.getId()).orElse(null);
         String accessToken;
 
         if (existingUser != null) {

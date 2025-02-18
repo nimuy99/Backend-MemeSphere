@@ -31,6 +31,7 @@ public enum ErrorStatus implements BaseCode {
 
     // ChartData load 에러
     CANNOT_LOAD_CHARTDATA(HttpStatus.BAD_REQUEST, "CANNOT LOAD CHARTDATA", "ChartData를 Binance에서 로드할 수 없습니다."),
+    CHARTDATA_NOT_FOUND(HttpStatus.NOT_FOUND, "CHARTDATA NOT FOUND", "차트 데이터를 찾을 수 없습니다."),
 
     // notification 에러
     CANNOT_CHECK_VOLATILITY(HttpStatus.NOT_FOUND, "CANNOT CHECK VOLATILITY", "변동성을 확인할 수 없습니다."),
@@ -48,13 +49,18 @@ public enum ErrorStatus implements BaseCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "EXPIRED TOKEN", "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "UNSUPPORTED TOKEN", "지원하지 않는 토큰입니다."),
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "INVALID SIGNATURE", "잘못된 JWT 서명입니다"),
+    SOCIAL_LOGIN_NOT_ALLOWED(HttpStatus.FORBIDDEN, "SOCIAL LOGIN NOT ALLOWED", "소셜 로그인 계정으로 비밀번호를 찾을 수 없습니다."),
 
     // 이미지 에러
     INVALID_FILE_EXTENTION(HttpStatus.BAD_REQUEST, "INVALID FILE EXTENSION", "지원되지 않는 파일 형식입니다."),
     PRESIGNED_URL_FAILED(HttpStatus.BAD_REQUEST, "PRESIGNED URL GENERATION FAILED", "presigned URL 생성에 실패했습니다."),
 
     // 채팅 에러
-    CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT NOT FOUND", "채팅을 찾을 수 없습니다.");
+    CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT NOT FOUND", "채팅을 찾을 수 없습니다."),
+
+    // 네이버 api 에러
+    KEY_UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"NAVER 401 ERROR", "인증 실패. 클라이언트 ID 또는 시크릿이 올바르지 않습니다."),
+    API_FORBIDDEN(HttpStatus.FORBIDDEN, "NAVER 403 ERROR","API 호출 횟수를 초과했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

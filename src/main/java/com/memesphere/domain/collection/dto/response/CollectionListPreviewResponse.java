@@ -1,4 +1,4 @@
-package com.memesphere.domain.search.dto.response;
+package com.memesphere.domain.collection.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchListPreviewResponse {
+public class CollectionListPreviewResponse {
     @Schema(description = "밈코인 id", example = "1")
     Long coinId;
     @Schema(description = "밈코인 name", example = "도지코인")
@@ -21,12 +21,11 @@ public class SearchListPreviewResponse {
     String symbol;
     @Schema(description = "차트 데이터의 price", example = "2000")
     BigDecimal currentPrice;
-    @Schema(description = "차트 데이터의 weighted average price", example = "10000")
-    BigDecimal weightedAveragePrice;
-    @Schema(description = "차트 데이터의 volume", example = "5")
-    BigDecimal volume;
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
     BigDecimal priceChangeRate;
-    @Schema(description = "collection에 해당 밈코인 유무", example = "true / false")
-    Boolean isCollected;
+    @Schema(description = "차트 데이터의 weighted average price", example = "10000")
+    BigDecimal weightedAveragePrice; // market cap 대신 사용
+    @Schema(description = "차트 데이터의 volume", example = "5")
+    BigDecimal volume;
 }
+

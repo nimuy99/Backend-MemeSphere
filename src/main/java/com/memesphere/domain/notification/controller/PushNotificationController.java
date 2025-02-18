@@ -26,6 +26,8 @@ public class PushNotificationController {
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE) //서버가 클라이언트에게 이벤트 스트림을 전송한다는 것을 명시
     @Operation(summary = "알림 전송 API",
             description = """
+                    클라이언트와 서버 연결을 시작합니다. \n
+                    연결은 1시간 동안 유지됩니다.
                     등록한 알림이 기준 시간 내 변동성에 해당하는 경우 알림을 전송합니다. \n
                     변동성은 직접 계산하지 않고 외부 API에서 받아오는 정보를 기준으로 하고 있습니다.
                     """)

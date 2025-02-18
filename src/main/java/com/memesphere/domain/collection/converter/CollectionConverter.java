@@ -1,13 +1,17 @@
 package com.memesphere.domain.collection.converter;
 
 import com.memesphere.domain.chartdata.entity.ChartData;
+import com.memesphere.domain.collection.dto.response.CollectionListPreviewResponse;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.memecoin.entity.MemeCoin;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
-import com.memesphere.domain.collection.dto.response.CollectionPreviewResponse;
+import com.memesphere.domain.collection.dto.response.CollectionGridPreviewResponse;
+import com.memesphere.domain.search.entity.ViewType;
 import com.memesphere.domain.user.entity.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,14 +22,24 @@ public class CollectionConverter {
                 .user(user).memeCoin(coin).build();
     }
 
-    public static CollectionPageResponse toCollectionPageDTO(Page<Collection> collectionPage) {
-        List<CollectionPreviewResponse> collectionItems = collectionPage.getContent().stream()
-                .map(collection -> toCollectionPreviewDTO(collection))
-                .collect(Collectors.toList());
+    public static CollectionPageResponse toCollectionPageDTO(Page<Collection> collectionPage, ViewType viewType) {
+        List<CollectionGridPreviewResponse> gridItems = null;
+        List<CollectionListPreviewResponse> listItems = null;
+
+        if (viewType == ViewType.GRID) {
+            gridItems = collectionPage.stream()
+                    .map(collection -> toCollectionGridPreviewDTO(collection))
+                    .collect(Collectors.toList());
+        } else if (viewType == ViewType.LIST) {
+            listItems = collectionPage.stream()
+                    .map(collection -> toCollectionListPreviewDTO(collection))
+                    .collect(Collectors.toList());
+        }
 
         return CollectionPageResponse.builder()
-                .collectionItems(collectionItems)
-                .listSize(collectionItems.size())
+                .gridItems(gridItems)
+                .listItems(listItems)
+                .listSize(collectionPage.getContent().size())
                 .totalPage(collectionPage.getTotalPages())
                 .totalElements(collectionPage.getTotalElements())
                 .isFirst(collectionPage.isFirst())
@@ -33,11 +47,11 @@ public class CollectionConverter {
                 .build();
     }
 
-    private static CollectionPreviewResponse toCollectionPreviewDTO(Collection collection) {
+    private static CollectionGridPreviewResponse toCollectionGridPreviewDTO(Collection collection) {
         MemeCoin memeCoin = collection.getMemeCoin();
         ChartData chartData = memeCoin.getChartDataList().get(0);
 
-        return CollectionPreviewResponse.builder()
+        return CollectionGridPreviewResponse.builder()
                 .coinId(memeCoin.getId())
                 .name(memeCoin.getName())
                 .symbol(memeCoin.getSymbol())
@@ -47,6 +61,21 @@ public class CollectionConverter {
                 .lowPrice(chartData.getLow_price())
                 .priceChange(chartData.getPriceChange())
                 .priceChangeRate(chartData.getPriceChangeRate())
+                .build();
+    }
+
+    public static CollectionListPreviewResponse toCollectionListPreviewDTO(Collection collection) {
+        MemeCoin memeCoin = collection.getMemeCoin();
+        ChartData chartData = memeCoin.getChartDataList().get(0);
+
+        return CollectionListPreviewResponse.builder()
+                .coinId(memeCoin.getId())
+                .name(memeCoin.getName())
+                .symbol(memeCoin.getSymbol())
+                .currentPrice(chartData.getPrice())
+                .priceChangeRate(chartData.getPriceChangeRate())
+                .weightedAveragePrice(chartData.getWeighted_average_price())
+                .volume(chartData.getVolume())
                 .build();
     }
 }

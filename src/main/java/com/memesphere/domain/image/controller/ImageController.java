@@ -43,7 +43,7 @@ public class ImageController {
         // 현재 로그인한 유저 정보에서 프로필 이미지 가져오기
         String profileImage = profileService.getProfileImage(customUserDetails);
 
-        return ApiResponse.onSuccess((profileImage == null || profileImage.isEmpty()) ? "null" : profileImage);
+        return ApiResponse.onSuccess(profileImage);
     }
 
 }

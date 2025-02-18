@@ -1,6 +1,8 @@
 package com.memesphere.domain.collection.controller;
 
 import com.memesphere.domain.collection.service.CollectionCommandService;
+import com.memesphere.domain.search.entity.SortType;
+import com.memesphere.domain.search.entity.ViewType;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.domain.collection.entity.Collection;
 import com.memesphere.domain.collection.dto.response.CollectionPageResponse;
@@ -32,6 +34,8 @@ public class CollectionRestController {
     @GetMapping("/collection")
     @Operation(summary = "사용자의 밈코인 콜렉션 모음 조회 API")
     public ApiResponse<CollectionPageResponse> getCollectionList (
+            @RequestParam(name = "viewType", defaultValue = "GRID") ViewType viewType, // 뷰 타입 (grid 또는 list)
+            @RequestParam(name = "sortType", defaultValue = "PRICE_CHANGE") SortType sortType, // 정렬 기준 (MKTCap, 24h Volume, Price)
             @AuthenticationPrincipal CustomUserDetails userDetails, // 현재 로그인한 사용자
             @CheckPage @RequestParam(name = "page") Integer page // 페이지 번호
     ) {
@@ -41,8 +45,8 @@ public class CollectionRestController {
         // 유저를 찾지 못하면(로그인을 안 했으면) 콜렉션 접근 못하도록 에러 처리
         if (userId == null) throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
 
-        Page<Collection> collectionPage = collectionQueryService.getCollectionPage(userId, pageNumber);
-        return ApiResponse.onSuccess(CollectionConverter.toCollectionPageDTO(collectionPage));
+        Page<Collection> collectionPage = collectionQueryService.getCollectionPage(userId, pageNumber, viewType, sortType);
+        return ApiResponse.onSuccess(CollectionConverter.toCollectionPageDTO(collectionPage, viewType));
     }
 
     @PostMapping("/collection/{coinId}")

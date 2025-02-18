@@ -12,4 +12,6 @@ public interface AuthService {
     LoginResponse reissueAccessToken(String refreshToken, User existingUser);
     void checkPassword(User user, String password);
     boolean checkNicknameDuplicate(String nickname);
+    String getTmpPassword();
+    void updatePassword(String tmpPassword, String memberEmail);
 }
