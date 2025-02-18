@@ -7,6 +7,7 @@ import com.memesphere.domain.chat.dto.request.ChatRequest;
 import com.memesphere.domain.chat.dto.response.ChatResponse;
 import com.memesphere.domain.user.entity.User;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ChatConverter {
@@ -21,7 +22,10 @@ public class ChatConverter {
     }
 
     public static ChatResponse toChatResponse(Chat chat, User user) {
+        boolean isLiked = chat.getChatLikeList().stream()
+                .anyMatch(chatLike -> Objects.equals(chatLike.getUser().getId(), user.getId()));
 
+        if (chat.getChatLikeList().isEmpty()) {}
         return ChatResponse.builder()
                 .id(chat.getId())
                 .message(chat.getMessage())
@@ -29,7 +33,7 @@ public class ChatConverter {
                 .likes(chat.getChatLikeList().size())
                 .createdAt(chat.getCreatedAt())
                 .nickname(chat.getUser().getNickname())
-                .isLiked(chat.getChatLikeList().contains(user))
+                .isLiked(isLiked)
                 .build();
     }
 
