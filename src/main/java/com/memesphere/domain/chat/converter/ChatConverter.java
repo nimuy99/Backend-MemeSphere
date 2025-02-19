@@ -22,10 +22,9 @@ public class ChatConverter {
     }
 
     public static ChatResponse toChatResponse(Chat chat, User user) {
-        boolean isLiked = chat.getChatLikeList().stream()
+        boolean isLiked = user != null && chat.getChatLikeList().stream()
                 .anyMatch(chatLike -> Objects.equals(chatLike.getUser().getId(), user.getId()));
 
-        if (chat.getChatLikeList().isEmpty()) {}
         return ChatResponse.builder()
                 .id(chat.getId())
                 .message(chat.getMessage())
