@@ -25,6 +25,9 @@ public class ChatResponse {
     @Schema(description = "좋아요 수", example = "17")
     private int likes;
 
+    @Schema(description = "좋아요 여부", example = "True")
+    private boolean isLiked;
+
     @Schema(description = "전송 시간", example = "2025-01-01T00:00:00")
     private LocalDateTime createdAt;
 }

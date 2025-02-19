@@ -3,6 +3,7 @@ package com.memesphere.domain.chat.controller;
 import com.memesphere.domain.chat.dto.request.ChatRequest;
 import com.memesphere.domain.chat.dto.response.ChatResponse;
 import com.memesphere.domain.chat.service.ChatService;
+import com.memesphere.domain.user.entity.User;
 import com.memesphere.global.apipayload.ApiResponse;
 import com.memesphere.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,20 +37,22 @@ public class ChatController {
     @Operation(summary = "코인별 채팅 전체 메시지 조회 API",
             description = "특정 코인의 채팅방의 전체 메시지를 보여줍니다.")
     public ApiResponse<Page<ChatResponse>> getChatList(@PathVariable("coin_id") Long coin_id,
-                                                           Pageable pageable) {
+                                                           Pageable pageable,
+                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        User user = (customUserDetails != null) ? customUserDetails.getUser() : null;
 
-        return ApiResponse.onSuccess(chatService.getChatList(coin_id, pageable));
+        return ApiResponse.onSuccess(chatService.getChatList(coin_id, pageable, user));
     }
 
     //최신 댓글 조회 Api
     @GetMapping("/chat/{coin_id}/latest")
     @Operation(summary = "코인별 최신 댓글 조회 API",
             description = "특정 코인에 대한 최신 댓글을 반환합니다. 요청 시 최신 댓글 하나만 가져옵니다.")
-    public ApiResponse<ChatResponse> getLatestMessages(
-            @PathVariable("coin_id") Long coin_id) {
-
+    public ApiResponse<ChatResponse> getLatestMessages(@PathVariable("coin_id") Long coin_id,
+                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        User user = customUserDetails.getUser();
         // 최신 댓글을 가져오는 서비스 메서드 호출
-        ChatResponse latestMessage = chatService.getLatestMessages(coin_id);
+        ChatResponse latestMessage = chatService.getLatestMessages(coin_id, user);
 
         return ApiResponse.onSuccess(latestMessage);
     }

@@ -28,7 +28,7 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
     public Page<Collection> getCollectionPage(Long userId, Integer pageNumber, ViewType viewType, SortType sortType) {
 
         int pageSize = switch (viewType) {
-            case GRID -> 9;
+            case GRID -> 12;
             case LIST -> 20;
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_VIEW_TYPE);
         };

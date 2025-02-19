@@ -28,4 +28,7 @@ public class NotificationResponse {
 
     @Schema(description = "알림 켜기/끄기", example = "True")
     private Boolean isOn;
+
+    @Schema(description = "코인 아이디", example = "1")
+    private Long coinId;
 }

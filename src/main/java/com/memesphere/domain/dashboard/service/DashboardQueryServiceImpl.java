@@ -77,7 +77,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
                 Collections.emptyList() : collectionQueryService.getUserCollectionIds(userId);
 
         int pageSize = switch (viewType) {
-            case GRID -> 9;
+            case GRID -> 12;
             case LIST -> 20;
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_VIEW_TYPE);
         };

@@ -7,6 +7,9 @@ import com.memesphere.domain.chat.dto.request.ChatRequest;
 import com.memesphere.domain.chat.dto.response.ChatResponse;
 import com.memesphere.domain.user.entity.User;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class ChatConverter {
 
     public static Chat toChat(MemeCoin memeCoin, ChatRequest chatRequest, User user) {
@@ -18,7 +21,9 @@ public class ChatConverter {
                 .build();
     }
 
-    public static ChatResponse toChatResponse(Chat chat) {
+    public static ChatResponse toChatResponse(Chat chat, User user) {
+        boolean isLiked = user != null && chat.getChatLikeList().stream()
+                .anyMatch(chatLike -> Objects.equals(chatLike.getUser().getId(), user.getId()));
 
         return ChatResponse.builder()
                 .id(chat.getId())
@@ -27,6 +32,7 @@ public class ChatConverter {
                 .likes(chat.getChatLikeList().size())
                 .createdAt(chat.getCreatedAt())
                 .nickname(chat.getUser().getNickname())
+                .isLiked(isLiked)
                 .build();
     }
 

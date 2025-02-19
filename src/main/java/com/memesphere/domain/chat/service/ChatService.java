@@ -41,19 +41,20 @@ public class ChatService {
         Chat chat = ChatConverter.toChat(memeCoin, chatRequest, user);
         Chat savedChat = chatRepository.save(chat);
 
-        return ChatConverter.toChatResponse(savedChat);
+        return ChatConverter.toChatResponse(savedChat, user);
     }
 
     @Transactional
-    public Page<ChatResponse> getChatList(Long coin_id, Pageable pageable) {
+    public Page<ChatResponse> getChatList(Long coin_id, Pageable pageable, User user) {
 
         Page<Chat> chatPage = chatRepository.findAllByMemeCoin_Id(coin_id, pageable);
-        return chatPage.map(ChatConverter::toChatResponse);
+
+        return chatPage.map(chat -> ChatConverter.toChatResponse(chat, user));
     }
 
     // 최신 댓글을 가져오는 메서드
     @Transactional
-    public ChatResponse getLatestMessages(Long coin_id) {
+    public ChatResponse getLatestMessages(Long coin_id, User user) {
 
         MemeCoin memeCoin = memeCoinRepository.findById(coin_id)
                 //id에 해당하는 밈코인 없을 때
@@ -68,7 +69,7 @@ public class ChatService {
         }
 
         // 최신 댓글을 ChatResponse로 변환하여 반환
-        return ChatConverter.toChatResponse(latestChat);
+        return ChatConverter.toChatResponse(latestChat, user);
     }
 
     @Transactional

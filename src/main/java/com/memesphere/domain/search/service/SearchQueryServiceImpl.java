@@ -26,7 +26,7 @@ public class SearchQueryServiceImpl implements SearchQueryService {
         // sortType --> MKT_CAP, VOLUME_24H, PRICE
 
         int pageSize = switch (viewType) {
-            case GRID -> 9;
+            case GRID -> 12;
             case LIST -> 20;
             default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_VIEW_TYPE);
         };
