@@ -25,19 +25,19 @@ public class DashboardTrendResponse {
     private BigDecimal volume;
 
     @Schema(description = "현재가", example = "0.20")
-    private BigDecimal price;
+    private Double price;
 
     @Schema(description = "가격 변화량", example = "-0.03")
-    private BigDecimal priceChange;
+    private Double priceChange;
 
     @Schema(description = "가격 변화량 절대값", example = "0.03")
-    private BigDecimal priceChangeAbsolute;
+    private Double priceChangeAbsolute;
 
     @Schema(description = "가격 변화 방향", example = "down")
     private String priceChangeDirection;
 
     @Schema(description = "가격 변화율", example = "-6.35")
-    private BigDecimal priceChangeRate;
+    private Double priceChangeRate;
 
     @Schema(description = "순위 변화 방향", example = "down")
     private String rankChangeDirection;

@@ -20,13 +20,13 @@ public class SearchListPreviewResponse {
     @Schema(description = "밈코인 symbol", example = "DOGE")
     String symbol;
     @Schema(description = "차트 데이터의 price", example = "2000")
-    BigDecimal currentPrice;
+    Double currentPrice;
     @Schema(description = "차트 데이터의 weighted average price", example = "10000")
-    BigDecimal weightedAveragePrice;
+    Double weightedAveragePrice;
     @Schema(description = "차트 데이터의 volume", example = "5")
     BigDecimal volume;
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
-    BigDecimal priceChangeRate;
+    Double priceChangeRate;
     @Schema(description = "collection에 해당 밈코인 유무", example = "true / false")
     Boolean isCollected;
 }

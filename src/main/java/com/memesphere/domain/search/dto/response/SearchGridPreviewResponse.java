@@ -22,15 +22,15 @@ public class SearchGridPreviewResponse {
     @Schema(description = "밈코인 image", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
     String image;
     @Schema(description = "차트 데이터의 price", example = "2000")
-    BigDecimal currentPrice;
+    Double currentPrice;
     @Schema(description = "차트 데이터의 high_price", example = "2500")
-    BigDecimal highPrice;
+    Double highPrice;
     @Schema(description = "차트 데이터의 low_price", example = "1500")
-    BigDecimal lowPrice;
+    Double lowPrice;
     @Schema(description = "차트 데이터의 price_change", example = "500")
-    BigDecimal priceChange;
+    Double priceChange;
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
-    BigDecimal priceChangeRate;
+    Double priceChangeRate;
     @Schema(description = "collection에 해당 밈코인 유무", example = "true / false")
     Boolean isCollected;
 }

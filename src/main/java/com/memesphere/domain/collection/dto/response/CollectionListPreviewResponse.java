@@ -20,11 +20,11 @@ public class CollectionListPreviewResponse {
     @Schema(description = "밈코인 symbol", example = "DOGE")
     String symbol;
     @Schema(description = "차트 데이터의 price", example = "2000")
-    BigDecimal currentPrice;
+    Double currentPrice;
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
-    BigDecimal priceChangeRate;
+    Double priceChangeRate;
     @Schema(description = "차트 데이터의 weighted average price", example = "10000")
-    BigDecimal weightedAveragePrice; // market cap 대신 사용
+    Double weightedAveragePrice; // market cap 대신 사용
     @Schema(description = "차트 데이터의 volume", example = "5")
     BigDecimal volume;
 }

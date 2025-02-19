@@ -70,8 +70,8 @@ public class DashboardConverter {
                 .volume(data.getVolume())
                 .price(data.getPrice())
                 .priceChange(data.getPriceChange())
-                .priceChangeAbsolute(data.getPriceChange().abs())
-                .priceChangeDirection(data.getPriceChangeRate().compareTo(BigDecimal.ZERO) < 0 ? "down" : "up")
+                .priceChangeAbsolute(Math.abs(data.getPriceChange()))
+                .priceChangeDirection(data.getPriceChangeRate() < 0 ? "down" : "up")
                 .priceChangeRate(data.getPriceChangeRate())
                 .rankChangeDirection(rankDirection)
                 .build();
