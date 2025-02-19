@@ -39,7 +39,7 @@ public class ChatController {
     public ApiResponse<Page<ChatResponse>> getChatList(@PathVariable("coin_id") Long coin_id,
                                                            Pageable pageable,
                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        User user = customUserDetails.getUser();
+        User user = (customUserDetails != null) ? customUserDetails.getUser() : null;
 
         return ApiResponse.onSuccess(chatService.getChatList(coin_id, pageable, user));
     }
