@@ -24,16 +24,13 @@ public class CollectionListPreviewResponse {
     String symbol;
 
     @Schema(description = "차트 데이터의 price", example = "2000")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    Double currentPrice;
+    String currentPrice;
 
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    Double priceChangeRate;
+    String priceChangeRate;
 
     @Schema(description = "차트 데이터의 weighted average price", example = "10000")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    Double weightedAveragePrice; // market cap 대신 사용
+    String weightedAveragePrice; // market cap 대신 사용
 
     @Schema(description = "차트 데이터의 volume", example = "5")
     BigDecimal volume;

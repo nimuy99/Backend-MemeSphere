@@ -26,23 +26,19 @@ public class DashboardTrendResponse {
     private BigDecimal volume;
 
     @Schema(description = "현재가", example = "0.20")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    private Double price;
+    private String price;
 
     @Schema(description = "가격 변화량", example = "-0.03")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    private Double priceChange;
+    private String priceChange;
 
     @Schema(description = "가격 변화량 절대값", example = "0.03")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    private Double priceChangeAbsolute;
+    private String priceChangeAbsolute;
 
     @Schema(description = "가격 변화 방향", example = "down")
     private String priceChangeDirection;
 
     @Schema(description = "가격 변화율", example = "-6.35")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    private Double priceChangeRate;
+    private String priceChangeRate;
 
     @Schema(description = "순위 변화 방향", example = "down")
     private String rankChangeDirection;

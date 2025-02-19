@@ -24,19 +24,16 @@ public class SearchListPreviewResponse {
     String symbol;
 
     @Schema(description = "차트 데이터의 price", example = "2000")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    Double currentPrice;
+    String currentPrice;
 
     @Schema(description = "차트 데이터의 weighted average price", example = "10000")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    Double weightedAveragePrice;
+    String weightedAveragePrice;
 
     @Schema(description = "차트 데이터의 volume", example = "5")
     BigDecimal volume;
 
     @Schema(description = "차트 데이터의 price_change_rate", example = "+2.4%")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00000000")
-    Double priceChangeRate;
+    String priceChangeRate;
 
     @Schema(description = "collection에 해당 밈코인 유무", example = "true / false")
     Boolean isCollected;
