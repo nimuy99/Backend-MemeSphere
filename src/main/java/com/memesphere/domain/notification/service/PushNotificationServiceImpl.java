@@ -144,11 +144,6 @@ public class PushNotificationServiceImpl implements PushNotificationService {
             return false; // 비교할 데이터가 부족하면 알림을 보내지 않음
         }
 
-//        BigDecimal sum = lastNData.stream()
-//                .map(ChartData::getPriceChangeRate)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        BigDecimal average = sum.divide(BigDecimal.valueOf(count), 4, RoundingMode.HALF_UP);
-//        BigDecimal definedVolatility = new BigDecimal(notification.getVolatility());
         Double sum = lastNData.stream()
                 .mapToDouble(ChartData::getPriceChangeRate)
                 .sum();
